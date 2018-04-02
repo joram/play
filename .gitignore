@@ -3,3 +3,4 @@
 
 # language scruff
 *.pyc
+Pipfile.lock
