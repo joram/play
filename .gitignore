@@ -1,0 +1,6 @@
+# editor scruff
+.idea*
+
+# language scruff
+*.pyc
+Pipfile.lock
