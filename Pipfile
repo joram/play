@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 Django = "==2.0.3"
+shortuuid = "*"
 
 [dev-packages]
 

@@ -12,9 +12,16 @@ This is the module that users of all types use to interact with the game engine 
 - setup databases
 - visit the app att `localhost:8000`
 
-## Libraries
+### Libraries
 Using the latest python/django
 ```
 Python 3.6.3
 Django 2.0.3
 ```
+
+## Docker Stuff
+```
+docker build . -t triptracks
+docker tag triptracks us.gcr.io/tripplanner-1488762973379/triptracks:latest
+```
+
