@@ -8,11 +8,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = ShortUUIDField(prefix="user", max_length=128, primary_key=True)
     team_id = models.CharField(max_length=128)
 
-    # is_admin = models.BooleanField(default=False)
-    is_bounty = models.BooleanField(default=False)
-    is_registration = models.BooleanField(default=False)
-    is_tournament = models.BooleanField(default=False)
-
     USERNAME_FIELD = 'id'
     REQUIRED_FIELDS = []
 
@@ -22,10 +17,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Team(models.Model):
     id = ShortUUIDField(prefix="team", max_length=128, primary_key=True)
+    team_admin_id = models.CharField(max_length=128)
     name = models.CharField(max_length=128)
     description = models.TextField()
-    tournament_snake_id = models.CharField(max_length=128)
-    tournament_bracket = models.CharField(max_length=128)
 
     class Meta:
         app_label = 'play'
