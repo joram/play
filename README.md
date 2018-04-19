@@ -12,7 +12,7 @@ This is the module that users of all types use to interact with the game engine 
 - setup databases
 - visit the app att `localhost:8000`
 
-## Libraries
+### Libraries
 Using the latest python/django
 ```
 Python 3.6.3
