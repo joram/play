@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from apps.play.views.home import home
 
+
 urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^login/$', auth_views.login, name='login'),
@@ -25,4 +26,3 @@ urlpatterns = [
     url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
     url(r'^admin/', admin.site.urls),
 ]
-from social_django import urls
