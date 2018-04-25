@@ -12,9 +12,15 @@ This is the module that users of all types use to interact with the game engine 
 - setup databases
 - visit the app att `localhost:8000`
 
-### Libraries
-Using the latest python/django
-```
-Python 3.6.3
-Django 2.0.3
+### Github OAuth
+Go here: `https://github.com/settings/applications`
+
+Filling in the following:
+- URL = `http://localhost:8000`
+- Callback = `http://localhost:8000/oauth/complete/github`
+
+Set the generated secrets in environment variables:
+```bash
+GITHUB_CLIENT_ID=...
+GITHUB_CLIENT_SECRET=...
 ```
