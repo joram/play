@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load play_extras %}
+
+{% block content %}
+<div class="container">
+
+    <h2 class="py-3">
+        Create a Game
+    </h2>
+
+    <form class="form-horizontal" id="CreateGameForm">
+
+        <div class="form-group card">
+
+            <div class="card-header">
+                Game Options
+            </div>
+
+            <div class="card-body">
+
+                <div class="form-row">
+
+                    <label class="col-form-label col-lg-1 pl-3" for="Width">Width:</label>
+                    <input type="number" class="form-control col-lg-3" min="0" id="Width" value="20">
+
+                    <label class="col-form-label col-lg-1 pl-3" for="Height">Height:</label>
+                    <input type="number" class="form-control col-lg-3" min="0" id="Height" value="20">
+
+                    <label class="col-form-label col-lg-1 pl-3" for="Food">Food:</label>
+                    <input type="number" class="form-control col-lg-3" min="0" id="Food" value="10">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="form-group card">
+
+            <div class="card-header">
+                Snakes
+            </div>
+
+            <div class="card-body">
+
+                {% for i in 10|times %}
+
+                <div class="form-row my-1">
+
+                    <label class="col-form-label col-lg-2 col-form-label-sm pl-3" for="SnakeURL{{forloop.counter}}">
+                        URL:
+                    </label>
+
+                    <input type="text" class="form-control form-control-sm col-lg-4" id="SnakeURL{{forloop.counter}}">
+
+                    <label class="col-form-label col-lg-2 col-form-label-sm pl-3" for="SnakeName{{forloop.counter}}">
+                        Name:
+                    </label>
+
+                    <input type="text" class="form-control col-lg-4 form-control-sm" id="SnakeName{{forloop.counter}}">
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="Create Game">
+            <input class="btn btn-link" type="button" value="Show" disabled>
+        </div>
+
+
+    </form>
+
+</div>
+{% endblock %}
