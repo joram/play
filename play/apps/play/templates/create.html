@@ -18,16 +18,16 @@
 
             <div class="card-body">
 
-                <div class="form-row">
+                <div class="form-row" id="BoardOptions">
 
                     <label class="col-form-label col-lg-1 pl-3" for="Width">Width:</label>
-                    <input type="number" class="form-control col-lg-3" min="0" id="Width" value="20">
+                    <input type="number" class="form-control col-lg-3" min="0" name="Width" id="Width" value="20">
 
                     <label class="col-form-label col-lg-1 pl-3" for="Height">Height:</label>
-                    <input type="number" class="form-control col-lg-3" min="0" id="Height" value="20">
+                    <input type="number" class="form-control col-lg-3" min="0" name="Height" id="Height" value="20">
 
                     <label class="col-form-label col-lg-1 pl-3" for="Food">Food:</label>
-                    <input type="number" class="form-control col-lg-3" min="0" id="Food" value="10">
+                    <input type="number" class="form-control col-lg-3" min="0" name="Food" id="Food" value="10">
 
                 </div>
 
@@ -45,19 +45,27 @@
 
                 {% for i in 10|times %}
 
-                <div class="form-row my-1">
+                <div class="form-row my-1 snake-row">
 
-                    <label class="col-form-label col-lg-2 col-form-label-sm pl-3" for="SnakeURL{{forloop.counter}}">
+                    <label class="col-form-label col-lg-2 col-form-label-sm pl-3"
+                           for="SnakeURL{{forloop.counter}}">
                         URL:
                     </label>
 
-                    <input type="text" class="form-control form-control-sm col-lg-4" id="SnakeURL{{forloop.counter}}">
+                    <input type="text"
+                           class="form-control form-control-sm col-lg-4"
+                           id="SnakeURL{{forloop.counter}}"
+                           name="Snake.URL"/>
 
-                    <label class="col-form-label col-lg-2 col-form-label-sm pl-3" for="SnakeName{{forloop.counter}}">
+                    <label class="col-form-label col-lg-2 col-form-label-sm pl-3"
+                           for="SnakeName{{forloop.counter}}">
                         Name:
                     </label>
 
-                    <input type="text" class="form-control col-lg-4 form-control-sm" id="SnakeName{{forloop.counter}}">
+                    <input type="text"
+                           class="form-control col-lg-4 form-control-sm"
+                           id="SnakeName{{forloop.counter}}"
+                           name="Snake.Name"/>
 
                 </div>
 
@@ -76,4 +84,56 @@
     </form>
 
 </div>
+
+<script>
+    /**
+     * Serializes HTML form data to JSON.
+     * Based on Stack Overflow example here:
+     *   https://stackoverflow.com/questions/35936553/jquery-convert-html-form-to-json-in-a-correct-format
+     */
+    function serializeFormJSON(form) {
+        let o = {};
+        let a = form.serializeArray();
+
+        $.each(a, function() {
+            // If an item was already defined, consider it a list.
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+
+                o[this.name].push(this.value || '');
+            }
+            else {
+                o[this.name] = this.value || '';
+            }
+        });
+
+        return o;
+    }
+
+    $("#CreateGameForm").submit((e) => {
+        e.preventDefault();
+
+        // Serialize board options as JSON
+        let gameOptions = serializeFormJSON($("#BoardOptions").children(":input"));
+
+        // Serialize snake options
+        let snakes = [];
+        $("div.snake-row").each((ind, ele) => {
+
+            let snake = {
+                "Name": $(ele).children("input[name='Snake.Name']").val(),
+                "URL":  $(ele).children("input[name='Snake.URL']").val()
+            };
+            if (snake.Name && snake.URL)
+                snakes.push(snake);
+
+        });
+        gameOptions.Snakes = snakes;
+
+        console.log(gameOptions);
+    });
+
+</script>
 {% endblock %}
