@@ -4,9 +4,23 @@
 This is the module that users of all types use to interact with the game engine and other pieces.
 
 ## Setup
+
+### On Mac
+- install brew https://brew.sh/
+- clone the repo: `git clone git@github.com:battlesnakeio:play`
+- install python3: `brew install python3`
+- install libraries: `pip3 install -r requirements.txt`
+- go into play folder: `cd play`
+- migrate: `django-admin migrate`
+- start the server: `django-admin runserver`
+- setup databases
+- visit the app att `localhost:8000`
+
 ### On Linux
+- clone the repo: `git clone git@github.com:battlesnakeio:play`
 - install python3: `apt-get install python3`
 - install libraries: `pip install -r requirements.txt`
+- go into the play folder `cd play`
 - migrate: `django-admin migrate`
 - start the server: `django-admin runserver`
 - setup databases
