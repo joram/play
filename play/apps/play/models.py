@@ -14,7 +14,7 @@ class UserManager(DjangoUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = ShortUUIDField(prefix="user", max_length=128, primary_key=True)
     team_id = models.CharField(max_length=128)
-    username = models.CharField(max_length=39)
+    username = models.CharField(max_length=39, unique=True)
     email = models.CharField(max_length=512)
 
     USERNAME_FIELD = 'username'
