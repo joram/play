@@ -11,7 +11,16 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-from settings.util import get_env
+import sys
+
+
+def get_env(key, default=None, allow_default=True):
+    if key not in os.environ:
+        if not allow_default:
+            raise NotImplementedError("Environment variable is unset: '%s'" % key)
+        print("using default value for %s=%s" % (key, default))
+    return os.environ.get(key, default)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'k_yymwtq2*b3q2_jkn2d7!hiw!*hu4f^wl(v33-#*o0k-$@-g6'
+SECRET_KEY = get_env("BATTLESNAKEIO_SECRET", "thisshouldbeset", True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,8 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.play',
     'social_django',
+    'apps.play',
 ]
 
 MIDDLEWARE = [
@@ -110,8 +119,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GITHUB_KEY = get_env('GITHUB_CLIENT_ID')
-SOCIAL_AUTH_GITHUB_SECRET = get_env('GITHUB_CLIENT_SECRET')
+SOCIAL_AUTH_GITHUB_KEY = get_env('BATTLESNAKEIO_GITHUB_CLIENT_ID')
+SOCIAL_AUTH_GITHUB_SECRET = get_env('BATTLESNAKEIO_GITHUB_CLIENT_SECRET')
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
