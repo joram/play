@@ -11,15 +11,15 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import sys
 
 
 def get_env(key, default=None, allow_default=True):
     if key not in os.environ:
-        if not allow_default:
-            raise NotImplementedError("Environment variable is unset: '%s'" % key)
-        print("using default value for %s=%s" % (key, default))
-    return os.environ.get(key, default)
+        if allow_default:
+            print("using default value for %s=%s" % (key, default))
+            return default
+        raise NotImplementedError("Environment variable is unset: '%s'" % key)
+    return os.environ[key]
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -88,13 +88,20 @@ WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+DB_NAME = get_env("POSTGRES_DB", "battlesnakeio_play", True)
+DB_USER = get_env("POSTGRES_USER", None, False)
+DB_PASS = get_env("POSTGRES_PASSWORD", None, False)
+DB_HOST = get_env("BATTLESNAKEIO_POSTGRES_HOST", None, False)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': DB_HOST,
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

@@ -12,6 +12,7 @@ RUN apk add --no-cache python3 && \
 RUN mkdir /battlesnakeio_play
 RUN cd /battlesnakeio_play
 ENV PYTHONPATH="${PYTHONPATH}:/battlesnakeio_play"
+ENV DJANGO_SETTINGS_MODULE="settings.settings"
 WORKDIR /battlesnakeio_play
 
 ADD requirements.txt /battlesnakeio_play/requirements.txt
