@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% block content %}
+<main class="container-fluid text-center">
+  <h1>Edit Team</h1>
+
+  <div class="form-group card">
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %} {% include '_form.html' with form=form %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+
+</main>
+{% endblock %}
