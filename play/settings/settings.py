@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.authentication',
     'apps.tournament',
+    'apps.snake',
+    'apps.game',
     'social_django',
     'widget_tweaks',
     'django_extensions',
@@ -140,3 +142,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+
+ENGINE_URL = get_env('ENGINE_URL', 'http://localhost:3005')
+BOARD_URL = get_env('BOARD_URL', 'http://localhost:3000')
