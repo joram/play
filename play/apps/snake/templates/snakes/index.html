@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% block content %}
+<main class="container-fluid">
+
+  <div class="card">
+    <div class="card-header">
+      Snakes
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for snake in snakes %}
+        <li class="list-group-item">
+          {{ snake.name }}
+          <span class="pull-right">
+            <a href="/snakes/{{ snake.id }}/edit">
+              <i class="fa fa-edit"></i>
+            </a>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="card-body">
+      <a class="card-link" href="/snakes/new">Add</a>
+    </div>
+  </div>
+
+</main>
+{% endblock %}
