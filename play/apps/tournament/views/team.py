@@ -52,7 +52,7 @@ def create(request):
 @with_current_team
 @transaction.atomic
 def update(request):
-    form = TeamForm(request.user, request.PATCH, instance=request.team)
+    form = TeamForm(request.user, request.POST, instance=request.team)
     if form.is_valid():
         form.save()
         return redirect('/team')
