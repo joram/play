@@ -34,7 +34,7 @@ class AddTeamMemberForm(forms.Form):
         cleaned_data = super().clean()
         try:
             cleaned_data['user'] = User.objects.get(
-                username=cleaned_data['username'].lower()
+                username=cleaned_data['username']
             )
         except User.DoesNotExist:
             raise forms.ValidationError(
