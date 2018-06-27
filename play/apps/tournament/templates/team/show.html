@@ -12,7 +12,12 @@
     </div>
     <div class="card-body">
       <h5 class="card-title">{{ team.name }}</h5>
-      {{ team.description }}
+      <p>
+        {{ team.description }}
+      </p>
+      <p>
+        Snake: <a href="{{ team.snake.url }}"><code>{{ team.snake.url }}</code></a>
+      </p>
     </div>
     <ul class="list-group list-group-flush">
       {% for member in members %}

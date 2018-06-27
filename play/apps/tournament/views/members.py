@@ -8,6 +8,12 @@ from apps.tournament.middleware import with_current_team
 
 @login_required
 @with_current_team
+def index(request):
+    return redirect('/members/new')
+
+
+@login_required
+@with_current_team
 def new(request):
     return render(request, 'members/new.html', {
         'form': AddTeamMemberForm(request.user, request.team),
