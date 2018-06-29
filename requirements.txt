@@ -3,4 +3,7 @@ pytz==2018.3
 shortuuid==0.5.0
 social-auth-app-django==2.1.0
 django-widget-tweaks==1.4.2
+<<<<<<< HEAD
 django-extensions==2.0.7
+=======
+>>>>>>> cfe581066d2bc1d256c397214a5b9b9e237474cf
