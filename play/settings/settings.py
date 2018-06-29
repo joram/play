@@ -146,11 +146,8 @@ STATICFILES_DIRS = [
 
 ENGINE_URL = get_env('ENGINE_URL', 'http://localhost:3005')
 BOARD_URL = get_env('BOARD_URL', 'http://localhost:3000')
-<<<<<<< HEAD
 
 # Silencing system checks that are unneeded.
 # https://docs.djangoproject.com/en/2.1/ref/checks/
 
 SILENCED_SYSTEM_CHECKS = ['fields.W342']
-=======
->>>>>>> cfe581066d2bc1d256c397214a5b9b9e237474cf
