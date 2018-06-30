@@ -6,11 +6,11 @@ urlpatterns = [
     url(r'^games/$', method_dispatch(
         GET=views.games.index,
         POST=views.games.create,
-    )),
+    ), name='games'),
     url(r'^games/new/$', method_dispatch(
         GET=views.games.new,
-    )),
+    ), name='games_new'),
     url(r'^games/(?P<id>.+)/$', method_dispatch(
         GET=views.games.show,
-    ))
+    ), name='games_show')
 ]

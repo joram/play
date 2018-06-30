@@ -1,22 +1,18 @@
 from util.fields import ShortUUIDField
 from django.db import models
 from django.contrib.auth.models import (
-    PermissionsMixin, AbstractBaseUser, UserManager as DjangoUserManager
+    AbstractBaseUser, UserManager as DjangoUserManager
 )
 
 
 class UserManager(DjangoUserManager):
 
     def _create_user(self, username, email, password, **extra_fields):
-        if 'is_staff' in extra_fields:
-            del extra_fields['is_staff']
-        return DjangoUserManager._create_user(
-            self, username, email, password, **extra_fields)
+        return super()._create_user(username, email, password)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser):
     id = ShortUUIDField(prefix="usr", max_length=128, primary_key=True)
-    team_id = models.CharField(max_length=128)
     username = models.CharField(max_length=39, unique=True)
     email = models.CharField(max_length=512)
 

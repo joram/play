@@ -1,14 +1,16 @@
-from apps.snake.models import Snake
+from apps.snake.models import Snake, UserSnake
 
 
 class SnakeFactory:
-    def basic(self, n=1, commit=False):
+    def basic(self, n=1, commit=False, user=None):
         if n > 1:
-            return [self.basic(commit=commit) for _ in range(n)]
+            return [self.basic(commit=commit, user=user) for _ in range(n)]
         snake = Snake(
             name='test',
             url='test',
         )
+        if user:
+            UserSnake.objects.create(user=user, snake=snake)
         if commit:
             snake.save()
         return snake

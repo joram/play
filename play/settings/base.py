@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     'apps.tournament',
     'apps.snake',
     'apps.game',
-    'apps.leaderboard',
     'social_django',
     'widget_tweaks',
     'django_extensions',
