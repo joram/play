@@ -47,8 +47,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.authentication',
+    'apps.tournament',
+    'apps.snake',
+    'apps.game',
     'social_django',
-    'apps.play',
+    'widget_tweaks',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +72,9 @@ ROOT_URLCONF = 'urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            (os.path.join(BASE_DIR, 'templates'))
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,7 +138,7 @@ SOCIAL_AUTH_GITHUB_SECRET = get_env('BATTLESNAKEIO_GITHUB_CLIENT_SECRET')
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
-AUTH_USER_MODEL = 'play.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 LANGUAGE_CODE = 'en-us'
 
@@ -148,3 +155,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+
+ENGINE_URL = get_env('ENGINE_URL', 'http://localhost:3005')
+BOARD_URL = get_env('BOARD_URL', 'http://localhost:3000')
+
+# Silencing system checks that are unneeded.
+# https://docs.djangoproject.com/en/2.1/ref/checks/
+
+SILENCED_SYSTEM_CHECKS = ['fields.W342']

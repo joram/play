@@ -4,7 +4,5 @@
 # language scruff
 *.pyc
 Pipfile.lock
-play/db.sqlite3
-
-# secrets
+db.sqlite3
 .env
