@@ -95,18 +95,14 @@ WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DB_NAME = get_env("POSTGRES_DB", "battlesnakeio_play", True)
-DB_USER = get_env("POSTGRES_USER", None, False)
-DB_PASS = get_env("POSTGRES_PASSWORD", None, False)
-DB_HOST = get_env("BATTLESNAKEIO_POSTGRES_HOST", None, False)
+# DB_NAME = get_env("POSTGRES_DB", "battlesnakeio_play", True)
+# DB_USER = get_env("POSTGRES_USER", None, False)
+# DB_PASS = get_env("POSTGRES_PASSWORD", None, False)
+# DB_HOST = get_env("BATTLESNAKEIO_POSTGRES_HOST", None, False)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASS,
-        'HOST': DB_HOST,
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
