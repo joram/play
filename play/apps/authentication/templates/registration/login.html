@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.min.css">
+{% endblock %}
+
+{% block navbar_right %}{% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<div style="margin: auto; width: 300px; padding-top: 20%;" class="text-center">
+  <a style="width: 100%;" class="btn btn-block btn-social btn-github text-center" href="{% url 'social:begin' 'github' %}">
+    <span class="fa fa-github"></span> Sign in with GitHub
+  </a>
+</div>
+{% endblock %}

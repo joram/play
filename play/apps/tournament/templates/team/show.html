@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block content %}
+<main class="container-fluid">
+
+  <div class="card">
+    <div class="card-header">
+      Team
+      <span class="pull-right">
+        <a href="/team/edit">
+          <i class="fa fa-edit"></i>
+        </a>
+      </span>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{ team.name }}</h5>
+      <p>
+        {{ team.description }}
+      </p>
+      <p>
+        Snake: <a href="{{ team.snake.url }}"><code>{{ team.snake.url }}</code></a>
+      </p>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for member in members %}
+        <li class="list-group-item">
+          {{ member.user.username }}
+          <span class="pull-right">
+            <form action="/team/members/{{ member.user.id }}/" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit" class="btn btn-link">
+                <i class="fa fa-trash"></i>
+              </button>
+            </form>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="card-body">
+      <a class="card-link" href="/team/members/new">Add</a>
+    </div>
+  </div>
+
+
+</main>
+
+{% endblock %}
