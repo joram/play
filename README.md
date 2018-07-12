@@ -26,6 +26,7 @@ This is the module that users of all types use to interact with the [game engine
 4. From inside the project `play` folder, run the migrations: `django-admin migrate`
 5. Start the server with:
     ```shell
+    ENV=local \
     PYTHONPATH=~/path/to/play/play \
     DJANGO_SETTINGS_MODULE=settings.settings \
     django-admin runserver
