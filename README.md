@@ -35,10 +35,11 @@ This is the module that users of all types use to interact with the [game engine
 
 ### Github OAuth App Configuration
 
-Go here: <https://github.com/settings/applications>
+Go here: <https://github.com/settings/applications/new>
 
 Fill in the following:
 
+- Name = whatever you want
 - URL = <http://localhost:8000>
 - Callback = <http://localhost:8000/oauth/complete/github>
 
