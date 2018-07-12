@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
+import dotenv
+
 
 def get_env(key, default=None, allow_default=True):
     if key not in os.environ:
@@ -25,6 +27,9 @@ def get_env(key, default=None, allow_default=True):
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Read values from the .env file
+dot_env_path = os.path.join(BASE_DIR + "/.env")
+dotenv.read_dotenv(dot_env_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
