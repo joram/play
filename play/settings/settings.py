@@ -27,9 +27,20 @@ def get_env(key, default=None, allow_default=True):
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Read values from the .env file
-dot_env_path = os.path.join(BASE_DIR + "/.env")
-dotenv.read_dotenv(dot_env_path)
+# Get environment variable ENV from the system
+# default to production if it doesn't exist
+ENV = get_env('ENV', 'production', True)
+
+def is_local_env():
+    return ENV == 'local'
+
+def is_production_env():
+    return ENV == 'production'
+
+if is_local_env():
+    # Read environment values from the .env file
+    dot_env_path = os.path.join(BASE_DIR + "/.env")
+    dotenv.read_dotenv(dot_env_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -38,7 +49,7 @@ dotenv.read_dotenv(dot_env_path)
 SECRET_KEY = get_env("BATTLESNAKEIO_SECRET", "thisshouldbeset", True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if is_production_env() else True
 
 ALLOWED_HOSTS = []
 
