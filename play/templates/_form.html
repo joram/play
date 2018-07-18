@@ -30,6 +30,11 @@
     {% else %}
       {% render_field field class="form-control" %}
     {% endif %}
+    {% if field.field.required %}
+    <div class="invalid-feedback">
+      {{field.label}} is required
+    </div>
+    {% endif %}
 
     {% if field.help_text %}
       <small class="form-text text-muted">{{ field.help_text }}</small>
