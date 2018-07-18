@@ -1,12 +1,14 @@
-{% extends 'base.html' %} {% block content %}
-<main class="container-fluid text-center">
-  <h1>Edit Snake</h1>
+{% extends 'base.html' %}
+{% block content %}
+<main class="container-fluid">
+  <h1 class="text-center">Edit Snake</h1>
 
   <div class="form-group card">
     <div class="card-body">
       <form method="post" novalidate action="/snakes/{{ snake.id }}/">
         <input type="hidden" name="_method" value="put">
-        {% csrf_token %} {% include '_form.html' with form=form %}
+        {% csrf_token %}
+        {% include '_form.html' with form=form %}
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
