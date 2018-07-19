@@ -14,7 +14,7 @@ def test_show(client):
     id = 'a879f127-55c2-4b0c-99c9-bce09c9fc0cf'
     user_factory.login_as(client)
     response = client.get(f'/games/{id}/')
-    url = "http://localhost:3000/?engine=http%3A//localhost%3A3005&game=a879f127-55c2-4b0c-99c9-bce09c9fc0cf"
+    url = "game=a879f127-55c2-4b0c-99c9-bce09c9fc0cf"
     assert response.status_code == 200
     assert url in response.content.decode('utf-8')
 
