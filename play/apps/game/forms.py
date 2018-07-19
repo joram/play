@@ -1,13 +1,18 @@
 from django import forms
-from apps.game.engine import run_game
+from apps.game import engine
 
 
 class GameForm(forms.Form):
+    """
+    GameForm initializes a game and posts this to the backend to start the game.
+    this should be massively improved as the HTML is pretty ugly that it
+    produces.
+    """
     MAX_SNAKES = 10
 
-    width = forms.IntegerField()
-    height = forms.IntegerField()
-    food = forms.IntegerField()
+    width = forms.IntegerField(initial=10)
+    height = forms.IntegerField(initial=10)
+    food = forms.IntegerField(initial=10)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,5 +44,4 @@ class GameForm(forms.Form):
         }
 
     def submit(self):
-        print(self.cleaned_data)
-        return run_game(self.cleaned_data)
+        return engine.run(self.cleaned_data)
