@@ -39,4 +39,4 @@ class GameForm(forms.Form):
         }
 
     def submit(self):
-        return engine.run(self.cleaned_data)
+        return engine.run_game(self.cleaned_data)
