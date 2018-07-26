@@ -1,11 +1,13 @@
-{% extends 'base.html' %} {% block content %}
-<main class="container-fluid text-center">
-  <h1>Add Team Member</h1>
+{% extends 'base.html' %}
+{% block content %}
+<main class="container-fluid">
+  <h1 class="text-center">Add Team Member</h1>
 
   <div class="form-group card">
     <div class="card-body">
       <form method="post" novalidate action="/team/members/">
-        {% csrf_token %} {% include '_form.html' with form=form %}
+        {% csrf_token %}
+        {% include '_form.html' with form=form %}
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>

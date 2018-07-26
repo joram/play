@@ -1,25 +1,42 @@
 from django import forms
-from apps.game.engine import run_game
+from apps.game import engine
 
 
 class GameForm(forms.Form):
+    """
+    GameForm initializes a game and posts this to the backend to start the game.
+    this should be massively improved as the HTML is pretty ugly that it
+    produces.
+    """
+    DEFAULT_HEIGHT = 20
+    DEFAULT_WIDTH = 20
+    DEFAULT_FOOD = 5
     MAX_SNAKES = 10
 
-    width = forms.IntegerField()
-    height = forms.IntegerField()
-    food = forms.IntegerField()
+    width = forms.IntegerField(initial=DEFAULT_WIDTH)
+    height = forms.IntegerField(initial=DEFAULT_HEIGHT)
+    food = forms.IntegerField(initial=DEFAULT_FOOD)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for i in range(self.MAX_SNAKES):
+        for i in range(1, self.MAX_SNAKES + 1):
             self.fields[f'snake_name_{i}'] = forms.CharField(
-                max_length=100, label=f'Snake {i} Name',
+                max_length=100,
+                label=f'Snake {i} Name',
                 required=False,
+                widget=forms.TextInput()
             )
+
             self.fields[f'snake_url_{i}'] = forms.CharField(
-                max_length=100, label=f'Snake {i} Url',
+                max_length=100,
+                label=f'Snake {i} Url',
                 required=False,
+                widget=forms.URLInput()
             )
+
+            # Note: This "groups" is used to create the form on the front end
+            self.fields[f'snake_name_{i}'].group = 'snake'
+            self.fields[f'snake_url_{i}'].group = 'snake'
 
     def clean(self):
         cleaned_data = super().clean()
@@ -39,5 +56,4 @@ class GameForm(forms.Form):
         }
 
     def submit(self):
-        print(self.cleaned_data)
-        return run_game(self.cleaned_data)
+        return engine.run(self.cleaned_data)
