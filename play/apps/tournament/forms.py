@@ -41,7 +41,7 @@ class TeamForm(forms.ModelForm):
 
 
 class AddTeamMemberForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(required=True)
 
     def __init__(self, user, team, *args, **kwargs):
         self.user = user

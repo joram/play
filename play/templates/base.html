@@ -21,17 +21,17 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">Battlesnake 2019</a>
     {% block navbar %}
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/team">Tournament</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/snakes">Snakes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/games">Play</a>
-        </li>
-      </ul>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/team">Tournament</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/snakes">Snakes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/games">Play</a>
+      </li>
+    </ul>
     {% endblock %}
     <div class="navbar-right">
       {% block navbar_right %}
@@ -44,6 +44,23 @@
   {% block content %}{% endblock %}
 </body>
 <script>
+  (function() {
+    // Pulled from the Bootstrap docs
+    // Fetchs all the forms in the document to apply custom Bootstrap validation styles to
+    // then loops over them and prevent submissions, triggering custom Bootstrap styling
+    'use strict';
+    window.addEventListener('load', function() {
+      Array.prototype.filter.call(document.forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+    }, false)
+  })();
   domready(function () {
     {% block js_dom_ready %}{% endblock %}
   })
