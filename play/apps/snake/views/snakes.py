@@ -44,7 +44,7 @@ def create(request):
         return redirect('/snakes')
     return render(request, 'snakes/new.html', {
         'form': form,
-    })
+    }, status=400)
 
 
 @login_required
@@ -57,7 +57,7 @@ def update(request, id):
         return redirect('/snakes')
     return render(request, 'snakes/edit.html', {
         'form': form,
-    })
+    }, status=400)
 
 
 @login_required
