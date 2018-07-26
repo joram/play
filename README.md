@@ -28,8 +28,7 @@ This is the module that users of all types use to interact with the [game engine
     ```shell
     ENV=local \
     PYTHONPATH=~/path/to/play/play \
-    DJANGO_SETTINGS_MODULE=settings.settings \
-    django-admin runserver
+    ./manage.py runserver
     ```
 6. Setup databases
 7. Visit the app running at <http://localhost:8000>
@@ -38,7 +37,8 @@ This is the module that users of all types use to interact with the [game engine
 
 To run tests:
 
-```
+```shell
+cd play
 pytest
 ```
 
