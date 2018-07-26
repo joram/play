@@ -45,7 +45,7 @@ def create(request):
         return redirect('/team')
     return render(request, 'team/new.html', {
         'form': form,
-    })
+    }, status=400)
 
 
 @login_required
@@ -58,4 +58,4 @@ def update(request):
         return redirect('/team')
     return render(request, 'team/edit.html', {
         'form': form,
-    })
+    }, status=400)

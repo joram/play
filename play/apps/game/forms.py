@@ -1,8 +1,13 @@
 from django import forms
-from apps.game.engine import run_game
+from apps.game import engine
 
 
 class GameForm(forms.Form):
+    """
+    GameForm initializes a game and posts this to the backend to start the game.
+    this should be massively improved as the HTML is pretty ugly that it
+    produces.
+    """
     DEFAULT_HEIGHT = 20
     DEFAULT_WIDTH = 20
     DEFAULT_FOOD = 5
@@ -51,5 +56,4 @@ class GameForm(forms.Form):
         }
 
     def submit(self):
-        print(self.cleaned_data)
-        return run_game(self.cleaned_data)
+        return engine.run(self.cleaned_data)

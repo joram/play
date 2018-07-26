@@ -33,4 +33,4 @@ def create(request):
         return redirect(f'/games/{game_id}')
     return render(request, 'games/new.html', {
         'form': form,
-    })
+    }, status=400)
