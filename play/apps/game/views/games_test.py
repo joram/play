@@ -19,7 +19,7 @@ def test_show(client):
     assert url in response.content.decode('utf-8')
 
 
-@mock.patch('apps.game.engine.run_game')
+@mock.patch('apps.game.engine.run')
 def test_create(mock_run, client):
     id = 'a879f127-55c2-4b0c-99c9-bce09c9fc0cf'
     mock_run.return_value = id
