@@ -30,7 +30,7 @@ def create(request):
         return redirect('/team')
     return render(request, 'members/new.html', {
         'form': form,
-    })
+    }, status=400)
 
 
 @login_required

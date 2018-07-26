@@ -34,6 +34,14 @@ This is the module that users of all types use to interact with the [game engine
 6. Setup databases
 7. Visit the app running at <http://localhost:8000>
 
+### Tests
+
+To run tests:
+
+```
+pytest
+```
+
 ### Github OAuth App Configuration
 
 Go here: <https://github.com/settings/applications/new>
