@@ -63,9 +63,10 @@ BATTLESNAKEIO_SECRET=battlesnakeio
 BATTLESNAKEIO_GITHUB_CLIENT_ID=...
 BATTLESNAKEIO_GITHUB_CLIENT_SECRET=...
 BATTLESNAKEIO_POSTGRES_HOST=...
-POSTGRES_DB=battlesnakeio_play
-POSTGRES_USER=battlensakeio
-POSTGRES_PASSWORD=battlesnakeio
+BATTLESNAKEIO_POSTGRES_PORT=5432
+BATTLESNAKEIO_POSTGRES_DB=battlesnakeio_play
+BATTLESNAKEIO_POSTGRES_USER=battlensakeio
+BATTLESNAKEIO_POSTGRES_PASSWORD=battlesnakeio
 ```
 
 *NOTE:* Don't use the defaults, it is highly encouraged you customize these values
