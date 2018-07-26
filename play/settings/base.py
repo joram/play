@@ -112,16 +112,28 @@ WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DB_NAME = get_env("POSTGRES_DB", "battlesnakeio_play", True)
-# DB_USER = get_env("POSTGRES_USER", None, False)
-# DB_PASS = get_env("POSTGRES_PASSWORD", None, False)
-# DB_HOST = get_env("BATTLESNAKEIO_POSTGRES_HOST", None, False)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+if is_production_env():
+    '''
+    Only enable the PG config if we're running in production
+    '''
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': get_env("BATTLESNAKEIO_POSTGRES_DB", "battlesnakeio_play", True),
+            'USER': get_env("BATTLESNAKEIO_POSTGRES_USER", None, False),
+            'PASSWORD': get_env("BATTLESNAKEIO_POSTGRES_PASSWORD", None, False),
+            'HOST': get_env("BATTLESNAKEIO_POSTGRES_HOST", None, False),
+            'PORT': get_env("BATTLESNAKEIO_POSTGRES_PORT", None, False),
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
