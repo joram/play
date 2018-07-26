@@ -1,5 +1,5 @@
 from django import forms
-from apps.game.engine import run_game
+from apps.game import engine
 
 
 class GameForm(forms.Form):
@@ -39,5 +39,4 @@ class GameForm(forms.Form):
         }
 
     def submit(self):
-        print(self.cleaned_data)
-        return run_game(self.cleaned_data)
+        return engine.run_game(self.cleaned_data)
