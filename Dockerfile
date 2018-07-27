@@ -9,7 +9,7 @@ RUN apk add --no-cache python3 build-base postgresql-dev python3-dev musl-dev &&
     rm -r /root/.cache
 
 ENV PYTHONPATH="${PYTHONPATH}:/app"
-ENV DJANGO_SETTINGS_MODULE="settings.settings"
+ENV DJANGO_SETTINGS_MODULE="settings.base"
 WORKDIR /app
 
 ADD requirements.txt /app/requirements.txt
