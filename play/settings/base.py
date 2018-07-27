@@ -54,7 +54,7 @@ DEBUG = False if is_production_env() else True
 
 ALLOWED_HOSTS = []
 
-if is_production_env():    
+if is_production_env():
     ALLOWED_HOSTS = [ get_env("BATTLESNAKEIO_DOMAIN", None, False) ]
 
 # Application definition
@@ -128,11 +128,11 @@ if is_production_env():
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': get_env("BATTLESNAKEIO_POSTGRES_DB", "battlesnakeio_play", True),
-            'USER': get_env("BATTLESNAKEIO_POSTGRES_USER", None, False),
-            'PASSWORD': get_env("BATTLESNAKEIO_POSTGRES_PASSWORD", None, False),
-            'HOST': get_env("BATTLESNAKEIO_POSTGRES_HOST", None, False),
-            'PORT': get_env("BATTLESNAKEIO_POSTGRES_PORT", None, False),
+            'NAME': get_env("POSTGRES_DB", "battlesnakeio_play", True),
+            'USER': get_env("POSTGRES_USER", None, False),
+            'PASSWORD': get_env("POSTGRES_PASSWORD", None, False),
+            'HOST': get_env("POSTGRES_HOST", None, False),
+            'PORT': get_env("POSTGRES_PORT", None, False),
         }
     }
 
