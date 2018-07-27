@@ -54,6 +54,8 @@ DEBUG = False if is_production_env() else True
 
 ALLOWED_HOSTS = []
 
+if is_production_env():    
+    ALLOWED_HOSTS = [ get_env("BATTLESNAKEIO_DOMAIN", None, False) ]
 
 # Application definition
 
