@@ -8,6 +8,8 @@ RUN apk add --no-cache python3 build-base postgresql-dev python3-dev musl-dev &&
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
     rm -r /root/.cache
 
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 ENV DJANGO_SETTINGS_MODULE="settings.base"
 WORKDIR /app

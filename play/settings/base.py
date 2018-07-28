@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+import logging
 import os
+import sys
 
 import dotenv
 
@@ -101,7 +103,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',  # <--
+                'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
         },
@@ -185,10 +187,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
 
 ENGINE_URL = get_env('ENGINE_URL', 'http://localhost:3005')
 BOARD_URL = get_env('BOARD_URL', 'http://localhost:3000')
@@ -197,3 +199,53 @@ BOARD_URL = get_env('BOARD_URL', 'http://localhost:3000')
 # https://docs.djangoproject.com/en/2.1/ref/checks/
 
 SILENCED_SYSTEM_CHECKS = ['fields.W342']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'simple': {
+            'format': '%(message)s'
+        },
+        'standard': {
+            'format': '[%(process)d] [%(levelname)s] %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        'console': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Route all logs to console by default.
+        'apps': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'settings': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        # Library loggers
+        'gunicorn': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False
+        },
+        'requests': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False
+        },
+    }
+}
