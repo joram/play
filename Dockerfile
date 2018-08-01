@@ -8,16 +8,19 @@ RUN apk add --no-cache python3 build-base postgresql-dev python3-dev musl-dev &&
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
     rm -r /root/.cache
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONPATH="${PYTHONPATH}:/app"
-ENV DJANGO_SETTINGS_MODULE="settings.base"
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH="${PYTHONPATH}:/app" \
+    DJANGO_SETTINGS_MODULE="settings.base"
+
 WORKDIR /app
 
 ADD requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
-COPY ./play /app/
+COPY ./play \
+    ./entrypoint.sh \
+    /app/
 
 EXPOSE 8000
-CMD ["gunicorn", "wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
