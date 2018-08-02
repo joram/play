@@ -36,8 +36,8 @@
     {% endblock %}
     <div class="navbar-right">
       {% block navbar_right %}
-        <span class="navbar-text">
-          <small>Logged in as:</small> <strong>{{ user.username }}</strong>
+        <span class="navbar-text small">
+          Logged in as: <strong>{{ user.username }}</strong> | <a href="/logout">Logout</a>
         </span>
       {% endblock %}
     </div>
