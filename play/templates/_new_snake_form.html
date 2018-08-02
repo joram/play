@@ -1,78 +1,104 @@
 {% load widget_tweaks %}
 
-{% for hidden_field in form.hidden_fields %}
+{% for hidden_field in game_form.hidden_fields %}
   {{ hidden_field }}
 {% endfor %}
 
-{% if form.non_field_errors %}
-  <div class="alert alert-danger" role="alert">
-    {% for error in form.non_field_errors %}
-      {{ error }}
-    {% endfor %}
-  </div>
+{% if game_form.non_field_errors %}
+<div class="alert alert-danger" role="alert">
+  {% for error in game_form.non_field_errors %}
+  {{ error }}
+  {% endfor %}
+</div>
 {% endif %}
 
-{% regroup form.visible_fields by field.group as field_groups %}
+{% for field in game_form %}
+<div class="form-group">
+  {{ field.label_tag }}
 
-{% for field_group in field_groups %}
-  {% if forloop.last %}
-  <hr />
-  {% endif %}
-  {% for field in field_group.list %}
-    {% if not field_group.grouper %}
-      <div class="form-group">
-        <label>{{ field.label_tag }}</label>
-
-        {% if form.is_bound %}
-          {% if field.errors %}
-            {% render_field field class="form-control is-invalid" %}
-            {% for error in field.errors %}
-              <div class="invalid-feedback">
-                {{ error }}
-              </div>
-            {% endfor %}
-          {% else %}
-            {% render_field field class="form-control is-valid" %}
-          {% endif %}
-        {% else %}
-          {% render_field field class="form-control" %}
-        {% endif %}
-
-        {% if field.help_text %}
-          <small class="form-text text-muted">{{ field.help_text }}</small>
-        {% endif %}
-      </div>
-    {% endif %}
-
-    {% if field_group.grouper == 'snake' %}
-      {% if forloop.counter0|divisibleby:2 %}
-        <div class="form-row">
-      {% endif %}
-      <div class="form-group col-md-6">
-        <label>{{ field.label_tag }}</label>
-
-        {% if form.is_bound %}
-          {% if field.errors %}
-            {% render_field field class="form-control is-invalid" %}
-            {% for error in field.errors %}
-              <div class="invalid-feedback">
-                {{ error }}
-              </div>
-            {% endfor %}
-          {% else %}
-            {% render_field field class="form-control is-valid" %}
-          {% endif %}
-        {% else %}
-          {% render_field field class="form-control" %}
-        {% endif %}
-
-        {% if field.help_text %}
-        <small class="form-text text-muted">{{ field.help_text }}</small>
-        {% endif %}
-      </div>
-      {% if forloop.counter|divisibleby:2 %}
+  {% if game_form.is_bound %}
+    {% if field.errors %}
+      {% render_field field class="form-control is-invalid" %}
+      {% for error in field.errors %}
+        <div class="invalid-feedback">
+          {{ error }}
         </div>
-      {% endif %}
+      {% endfor %}
+    {% else %}
+      {% render_field field class="form-control is-valid" %}
     {% endif %}
-  {% endfor %}
+  {% else %}
+    {% render_field field class="form-control" %}
+  {% endif %}
+
+  {% if field.help_text %}
+    <small class="form-text text-muted">{{ field.help_text }}</small>
+  {% endif %}
+</div>
 {% endfor %}
+
+<hr />
+
+<div id="snake_form_rows">
+  <datalist id="user-snakes">
+    {% for snake in snakes %}
+      <option value="{{snake.url}}">
+    {% endfor %}
+  </datalist>
+
+  <div class="form-group d-flex justify-content-end js-snake-add"></div>
+
+  {{ snake_formset.management_form }}
+
+  {% for form in snake_formset %}
+    <div class="card form-group js-snake-formset">
+      <div class="card-body form-row">
+        <div class="col-10">
+          {% for field in form %}
+            <div class="form-group row">
+              <label for="{{ field.id_for_label }}" class="col-4 col-form-label">
+                {{ field.label }}
+              </label>
+
+              <div class="col-8">
+                {% if form.is_bound %}
+                  {% if field.errors %}
+                    {% if 'url' in field.html_name %}
+                      {% render_field field list="user-snakes" class="form-control is-invalid" %}
+                    {% else %}
+                      {% render_field field class="form-control is-invalid" %}
+                    {% endif %}
+                    {% for error in field.errors %}
+                      <div class="invalid-feedback">
+                        {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    {% if 'url' in field.html_name %}
+                      {% render_field field list="user-snakes" class="form-control is-valid" %}
+                    {% else %}
+                      {% render_field field class="form-control is-valid" %}
+                    {% endif %}
+                  {% endif %}
+                {% else %}
+                  {% if 'url' in field.html_name %}
+                    {% render_field field list="user-snakes" class="form-control" %}
+                  {% else %}
+                    {% render_field field class="form-control" %}
+                  {% endif %}
+                {% endif %}
+
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="col-2 d-flex align-items-center justify-content-end">
+          <div class="form-group js-snake-remove"></div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
