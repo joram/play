@@ -14,6 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/domready/1.0.8/ready.min.js" integrity="sha256-z7v8HmIeZylwLaPn0X0Ym8dFyV0vkFVe4BkVW/iuwmQ=" crossorigin="anonymous"></script>
+  <script src="{% static 'jquery.formset.js' %}"></script>
   {% block extra_js %}{% endblock %}
 
 </head>
@@ -35,8 +36,8 @@
     {% endblock %}
     <div class="navbar-right">
       {% block navbar_right %}
-        <span class="navbar-text">
-          <small>Logged in as:</small> <strong>{{ user.username }}</strong>
+        <span class="navbar-text small">
+          Logged in as: <strong>{{ user.username }}</strong> | <a href="/logout">Logout</a>
         </span>
       {% endblock %}
     </div>
@@ -44,23 +45,6 @@
   {% block content %}{% endblock %}
 </body>
 <script>
-  (function() {
-    // Pulled from the Bootstrap docs
-    // Fetchs all the forms in the document to apply custom Bootstrap validation styles to
-    // then loops over them and prevent submissions, triggering custom Bootstrap styling
-    'use strict';
-    window.addEventListener('load', function() {
-      Array.prototype.filter.call(document.forms, function(form) {
-        form.addEventListener('submit', function(event) {
-          if (form.checkValidity() === false) {
-            event.preventDefault()
-            event.stopPropagation()
-          }
-          form.classList.add('was-validated')
-        }, false)
-      })
-    }, false)
-  })();
   domready(function () {
     {% block js_dom_ready %}{% endblock %}
   })

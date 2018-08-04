@@ -1,17 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from apps.snake.models import UserSnake
+
+from apps.snake.models import UserSnake, get_user_snakes
 from apps.snake.forms import SnakeForm
 
 
 @login_required
 def index(request):
-    snakes = [
-        user_snake.snake for user_snake in
-        UserSnake.objects.filter(user_id=request.user.id).
-        prefetch_related('snake')
-    ]
+    snakes = get_user_snakes(request.user)
     return render(request, 'snakes/index.html', {
         'snakes': snakes,
         'user': request.user,

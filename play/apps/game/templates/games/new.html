@@ -1,16 +1,34 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <main class="container-fluid">
   <h1 class="text-center">New Game</h1>
 
   <div class="form-group card">
     <div class="card-body">
-      <form method="post" novalidate action="/games/">
+      <form method="post" novalidate action="/games/new/">
         {% csrf_token %}
-        {% include '_new_snake_form.html' with form=form %}
-        <button type="submit" class="btn btn-primary">Submit</button>
+        {% include '_new_snake_form.html' with game_form=game_form snake_formset=snake_formset %}
+        <hr />
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-block">
+            Create Game
+          </button>
+        </div>
       </form>
     </div>
   </div>
 </main>
+{% endblock %}
+
+{% block js_dom_ready %}
+$(".js-snake-formset").formset({
+  prefix: 'snake',
+  addText: 'Add Snake',
+  deleteText: 'Remove',
+  addCssClass: 'btn btn-secondary btn-small',
+  deleteCssClass: 'btn btn-danger btn-small',
+  addContainerClass: 'js-snake-add',
+  deleteContainerClass: 'js-snake-remove',
+})
 {% endblock %}
