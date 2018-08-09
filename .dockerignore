@@ -1,0 +1,3 @@
+play/db.sqlite3
+play/.pytest_cache
+play/.*env

@@ -1,6 +1,12 @@
-FROM alpine:3.7
+FROM nginx:1.15.2-alpine
 
-RUN apk add --no-cache python3 build-base postgresql-dev python3-dev musl-dev && \
+RUN apk add --no-cache \
+    supervisor \
+    python3 \
+    build-base \
+    postgresql-dev \
+    python3-dev \
+    musl-dev && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
