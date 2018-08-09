@@ -59,6 +59,11 @@ ALLOWED_HOSTS = []
 if is_production_env():
     ALLOWED_HOSTS = [ get_env("BATTLESNAKEIO_DOMAIN", None, False) ]
 
+# Forwarding through the proxy
+if is_production_env():
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PROTO = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -202,7 +207,7 @@ SILENCED_SYSTEM_CHECKS = ['fields.W342']
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'simple': {
             'format': '%(message)s'
