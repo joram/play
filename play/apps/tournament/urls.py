@@ -16,10 +16,10 @@ urlpatterns = [
     )),
     url(r'^team/members/$', method_dispatch(
         GET=tournament_views.members.index,
-        POST=tournament_views.members.create,
     )),
     url(r'^team/members/new/$', method_dispatch(
         GET=tournament_views.members.new,
+        POST=tournament_views.members.new,
     )),
     url(r'^team/members/(?P<id>\w+)/$', method_dispatch(
         DELETE=tournament_views.members.delete,

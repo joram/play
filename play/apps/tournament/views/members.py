@@ -9,28 +9,27 @@ from apps.tournament.middleware import with_current_team
 @login_required
 @with_current_team
 def index(request):
-    return redirect('/members/new')
-
-
-@login_required
-@with_current_team
-def new(request):
-    return render(request, 'members/new.html', {
-        'form': AddTeamMemberForm(request.user, request.team),
-    })
+    return redirect('/team/members/new')
 
 
 @login_required
 @with_current_team
 @transaction.atomic
-def create(request):
-    form = AddTeamMemberForm(request.user, request.team, request.POST)
-    if form.is_valid():
-        form.save()
-        return redirect('/team')
+def new(request):
+    if request.method == 'POST':
+        form = AddTeamMemberForm(request.user, request.team, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/team')
+        else:
+            status = 400
+    else:
+        status = 200
+        form = AddTeamMemberForm(request.user, request.team)
+
     return render(request, 'members/new.html', {
         'form': form,
-    }, status=400)
+    }, status=status)
 
 
 @login_required

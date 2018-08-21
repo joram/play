@@ -5,7 +5,7 @@
 
   <div class="form-group card">
     <div class="card-body">
-      <form method="post" novalidate action="/team/members/">
+      <form method="post" novalidate action="/team/members/new/">
         {% csrf_token %}
         {% include '_form.html' with form=form %}
         <button type="submit" class="btn btn-primary">Submit</button>

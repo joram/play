@@ -50,25 +50,26 @@ class AddTeamMemberForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        try:
-            cleaned_data['user'] = User.objects.get(
-                username=cleaned_data['username']
-            )
-        except User.DoesNotExist:
-            raise forms.ValidationError(
-                _('User does not exist: %(username)s'),
-                params={'username': cleaned_data['username']},
-            )
+        if 'username' in cleaned_data:
+            try:
+                cleaned_data['user'] = User.objects.get(
+                    username=cleaned_data['username']
+                )
+            except User.DoesNotExist:
+                raise forms.ValidationError(
+                    _('User does not exist: %(username)s'),
+                    params={'username': cleaned_data['username']},
+                )
 
-        try:
-            TeamMember.objects.get(
-                user_id=cleaned_data['user'].id, team_id=self.team.id)
-            raise forms.ValidationError(
-                _('User already belongs to a team: %(username)s'),
-                params={'username': cleaned_data['username']},
-            )
-        except TeamMember.DoesNotExist:
-            pass
+            try:
+                TeamMember.objects.get(
+                    user_id=cleaned_data['user'].id, team_id=self.team.id)
+                raise forms.ValidationError(
+                    _('User already belongs to a team: %(username)s'),
+                    params={'username': cleaned_data['username']},
+                )
+            except TeamMember.DoesNotExist:
+                pass
 
         return cleaned_data
 
