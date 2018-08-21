@@ -20,13 +20,30 @@
         Snake: <a href="{{ team.snake.url }}"><code>{{ team.snake.url }}</code></a>
       </p>
     </div>
-    <ul class="list-group list-group-flush">
+    <ul class="unstyled-list">
       {% for member in members %}
-        <li class="list-group-item">
-          {{ member.user.username }}
+        <li class="media">
+          <img
+            src="https://github.com/{{member.user.username}}.png?size=64"
+            alt="{{member.user.username}} GitHub profile avatar"
+            height="64"
+            width="64"
+            class="mr-3"
+          />
+          <div class="media-body">
+            <a href="https://github.com/{{member.user.username}}">
+              <h5>
+                {{member.user.username}}
+              </h5>
+            </a>
 
+            {% if member.is_team_admin %}
+            <p><strong>Team Captain</strong></p>
+            {% endif %}
+
+          </div>
           {% if member.user.username != user.username %}
-          <span class="pull-right">
+          <div class="pull-right">
             <button
               type="submit"
               class="btn btn-link"
@@ -36,7 +53,7 @@
               data-username="{{ member.user.username }}">
               <i class="fa fa-trash"></i>
             </button>
-          </span>
+          </div>
           {% endif %}
         </li>
       {% endfor %}

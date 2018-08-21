@@ -22,3 +22,14 @@ class TeamMember(models.Model):
     class Meta:
         app_label = 'tournament'
         unique_together = (('team', 'user'))
+        ordering = ['id']
+
+    @property
+    def is_team_admin(self):
+        try:
+            oldest_member_id = TeamMember.objects.order_by('id')[0].user.id
+            return self.user.id == oldest_member_id
+        except TeamMember.DoesNotExist:
+            pass
+
+        return False

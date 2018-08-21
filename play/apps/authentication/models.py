@@ -33,4 +33,3 @@ class User(AbstractBaseUser):
             pass
 
         return False
-
