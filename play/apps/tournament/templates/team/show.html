@@ -24,15 +24,20 @@
       {% for member in members %}
         <li class="list-group-item">
           {{ member.user.username }}
+
+          {% if member.user.username != user.username %}
           <span class="pull-right">
-            <form action="/team/members/{{ member.user.id }}/" method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="_method" value="delete">
-              <button type="submit" class="btn btn-link">
-                <i class="fa fa-trash"></i>
-              </button>
-            </form>
+            <button
+              type="submit"
+              class="btn btn-link"
+              data-toggle="modal"
+              data-target="#delete_user_modal"
+              data-id="{{ member.user.id }}"
+              data-username="{{ member.user.username }}">
+              <i class="fa fa-trash"></i>
+            </button>
           </span>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
@@ -40,8 +45,43 @@
       <a class="card-link" href="/team/members/new">Add</a>
     </div>
   </div>
-
-
 </main>
 
+<div class="modal fade" id="delete_user_modal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-text"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn btn-primary">Delete User</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 {% endblock %}
+
+{% block js_dom_ready %}
+$('#delete_user_modal').on('show.bs.modal', function (event) {
+  var $button = $(event.relatedTarget)
+  var id = $button.data('id')
+  var username = $button.data('username')
+  var $modal = $(this)
+  $modal.find('.modal-text').text('Are you sure you want to delete ' + username + '?')
+  $modal.find('form').attr('action', '/team/members/' + id + '/')
+})
+{% endblock %}
+

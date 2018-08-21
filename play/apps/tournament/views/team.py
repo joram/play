@@ -30,11 +30,11 @@ def edit(request):
 
 
 @login_required
-@with_current_team
 @transaction.atomic
 def new(request):
-    # If the user is on a team already, don't let them make a new one
-    if request.team:
+    # Don't use the middleware here, check manually.
+    # If the user is on a team already, don't let them make a new one.
+    if request.user.assigned_to_team():
         return redirect('/team/')
 
     if request.method == 'POST':
