@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ValidationError
 from django.utils.translation import gettext as _
 from apps.tournament.models import Team, TeamMember
 from apps.authentication.models import User
@@ -56,7 +57,7 @@ class AddTeamMemberForm(forms.Form):
                     username=cleaned_data['username']
                 )
             except User.DoesNotExist:
-                raise forms.ValidationError(
+                raise ValidationError(
                     _('User does not exist: %(username)s'),
                     params={'username': cleaned_data['username']},
                 )
@@ -64,7 +65,7 @@ class AddTeamMemberForm(forms.Form):
             try:
                 TeamMember.objects.get(
                     user_id=cleaned_data['user'].id, team_id=self.team.id)
-                raise forms.ValidationError(
+                raise ValidationError(
                     _('User already belongs to a team: %(username)s'),
                     params={'username': cleaned_data['username']},
                 )

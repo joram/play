@@ -19,13 +19,6 @@ def index(request):
 
 
 @login_required
-def new(request):
-    return render(request, 'team/new.html', {
-        'form': TeamForm(request.user),
-    })
-
-
-@login_required
 @with_current_team
 def edit(request):
     user = request.user
@@ -37,15 +30,27 @@ def edit(request):
 
 
 @login_required
+@with_current_team
 @transaction.atomic
-def create(request):
-    form = TeamForm(request.user, request.POST)
-    if form.is_valid():
-        form.save()
-        return redirect('/team')
+def new(request):
+    # If the user is on a team already, don't let them make a new one
+    if request.team:
+        return redirect('/team/')
+
+    if request.method == 'POST':
+        form = TeamForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/team')
+        else:
+            status = 400
+    else:
+        status = 200
+        form = TeamForm(request.user)
+
     return render(request, 'team/new.html', {
         'form': form,
-    }, status=400)
+    }, status=status)
 
 
 @login_required
