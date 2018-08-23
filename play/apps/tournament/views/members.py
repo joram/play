@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from apps.tournament.models import TeamMember
@@ -19,7 +20,9 @@ def new(request):
     if request.method == 'POST':
         form = AddTeamMemberForm(request.user, request.team, request.POST)
         if form.is_valid():
-            form.save()
+            member = form.save()
+            username = member.user.username
+            messages.success(request, f'{username} successfully added to team')
             return redirect('/team')
         else:
             status = 400
@@ -37,7 +40,10 @@ def new(request):
 def delete(request, id=None):
     team = TeamMember.objects.get(user_id=request.user.id).team
     try:
-        TeamMember.objects.get(user_id=id, team_id=team.id).delete()
+        member = TeamMember.objects.get(user_id=id, team_id=team.id)
+        username = member.user.username
+        member.delete()
+        messages.success(request, f'{username} successfully removed from team')
     except TeamMember.DoesNotExist:
         pass
     return redirect('/team')

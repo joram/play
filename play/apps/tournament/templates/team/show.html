@@ -1,74 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="container-fluid">
+<div class="card">
+  <div class="card-header">
+    My Team
+    <span class="pull-right">
+      <a href="/team/edit">
+        <i class="fa fa-edit"></i> Edit
+      </a>
+    </span>
+  </div>
+  <div class="card-body container">
+    <div class="row">
+      <div class="col-md-6">
+        <h4 class="card-title">{{ team.name }}</h4>
+        <p>
+          {{ team.description }}
+        </p>
+        <p>
+          Team Snake URL: <br />
+          <a href="{{ team.snake.url }}"><code>{{ team.snake.url }}</code></a>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <h4 class="card-title d-inline-block">Members</h4>
+        <a class="btn btn-primary btn-sm float-right" href="/team/members/new">Add</a>
 
-  <div class="card">
-    <div class="card-header">
-      My Team
-      <span class="pull-right">
-        <a href="/team/edit">
-          <i class="fa fa-edit"></i> Edit
-        </a>
-      </span>
-    </div>
-    <div class="card-body container">
-      <div class="row">
-        <div class="col-md-6">
-          <h4 class="card-title">{{ team.name }}</h4>
-          <p>
-            {{ team.description }}
-          </p>
-          <p>
-            Team Snake URL: <br />
-            <a href="{{ team.snake.url }}"><code>{{ team.snake.url }}</code></a>
-          </p>
-        </div>
-        <div class="col-md-6">
-          <h4 class="card-title d-inline-block">Members</h4>
-          <a class="btn btn-primary btn-sm float-right" href="/team/members/new">Add</a>
+        <ul class="list-unstyled">
+          {% for member in members %}
+            <li class="media">
+              <img
+                src="https://github.com/{{member.user.username}}.png?size=64"
+                alt="{{member.user.username}} GitHub profile avatar"
+                height="64"
+                width="64"
+                class="mr-3"
+              />
+              <div class="media-body">
+                <a href="https://github.com/{{member.user.username}}" class="d-inline-block">
+                  <h5>
+                    {{member.user.username}}
+                  </h5>
+                </a>
 
-          <ul class="list-unstyled">
-            {% for member in members %}
-              <li class="media">
-                <img
-                  src="https://github.com/{{member.user.username}}.png?size=64"
-                  alt="{{member.user.username}} GitHub profile avatar"
-                  height="64"
-                  width="64"
-                  class="mr-3"
-                />
-                <div class="media-body">
-                  <a href="https://github.com/{{member.user.username}}">
-                    <h5 class="d-inline-block">
-                      {{member.user.username}}
-                    </h5>
+                {% if member.user.username != user.username and not member.is_team_admin %}
+                <button
+                  type="submit"
+                  class="btn btn-danger btn-sm float-right"
+                  data-toggle="modal"
+                  data-target="#delete_user_modal"
+                  data-id="{{ member.user.id }}"
+                  data-username="{{ member.user.username }}">
+                  <i class="fa fa-trash"></i>
+                </button>
+                {% endif %}
 
-                    {% if member.user.username != user.username and not member.is_team_admin %}
-                    <button
-                      type="submit"
-                      class="btn btn-danger btn-sm float-right"
-                      data-toggle="modal"
-                      data-target="#delete_user_modal"
-                      data-id="{{ member.user.id }}"
-                      data-username="{{ member.user.username }}">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                    {% endif %}
-                  </a>
+                {% if member.is_team_admin %}
+                <p><strong>Captain</strong></p>
+                {% endif %}
 
-                  {% if member.is_team_admin %}
-                  <p><strong>Captain</strong></p>
-                  {% endif %}
-
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </div>
-</main>
+</div>
 
 <div class="modal fade" id="delete_user_modal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
