@@ -51,7 +51,7 @@
                   </h5>
                 </a>
 
-                {% if member.user.username != user.username and not member.is_team_admin %}
+                {% if not member.is_team_admin %}
                 <button
                   type="submit"
                   class="btn btn-danger btn-sm float-right"
