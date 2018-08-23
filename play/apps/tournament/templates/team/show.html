@@ -18,7 +18,16 @@
         </p>
         <p>
           Team Snake URL: <br />
-          <a href="{{ team.snake.url }}"><code>{{ team.snake.url }}</code></a>
+          {% if team.snake.url %}
+          <code>{{ team.snake.url }}</code>
+          <button class="btn btn-link btn-sm" data-clipboard-text="{{ team.snake.url }}" title="Copy to clipboard">
+            <i class="fa fa-copy"></i>
+          </button>
+          {% else %}
+          <span class="badge badge-pill badge-danger">
+            No Snake URL provided!
+          </span>
+          {% endif %}
         </p>
       </div>
       <div class="col-md-6">
@@ -84,7 +93,7 @@
           <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="_method" value="delete">
-            <button type="submit" class="btn btn-primary">Delete User</button>
+            <button type="submit" class="btn btn-primary">Delete</button>
           </form>
         </div>
       </div>

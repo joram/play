@@ -6,18 +6,79 @@
   </div>
   <ul class="list-group list-group-flush">
     {% for snake in snakes %}
-      <li class="list-group-item">
-        {{ snake.name }}
-        <span class="pull-right">
-          <a href="/snakes/{{ snake.id }}/edit">
-            <i class="fa fa-edit"></i>
-          </a>
-        </span>
-      </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <div>
+        <h5>
+          {{ snake.name }}
+        </h5>
+        <p>
+          <code>{{ snake.url }}</code>
+          <button class="btn btn-link btn-sm" data-clipboard-text="{{ snake.url }}" title="Copy to clipboard">
+            <i class="fa fa-copy"></i>
+          </button>
+        </p>
+      </div>
+      <div>
+        <a href="/snakes/{{ snake.id }}/edit" class="btn btn-primary btn-sm" title="Edit snake details">
+          <i class="fa fa-edit"></i>
+        </a>
+        <button
+          type="submit"
+          class="btn btn-danger btn-sm"
+          title="Delete snake"
+          data-toggle="modal"
+          data-target="#delete_snake_modal"
+          data-id="{{ snake.id }}"
+          data-name="{{ snake.name }}">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </li>
     {% endfor %}
   </ul>
   <div class="card-body">
+    {% if not snakes %}
+    <p>You have no snakes to play with — why not add one?</p>
+    {% endif %}
     <a class="card-link" href="/snakes/new">Add</a>
   </div>
 </div>
+
+<div class="modal fade" id="delete_snake_modal" tabindex="-1" role="dialog" aria-labelledby="deleteSnakeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteSnakeModalLabel">Delete Snake</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-text"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn btn-primary">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 {% endblock %}
+
+{% block js_dom_ready %}
+$('#delete_snake_modal').on('show.bs.modal', function (event) {
+  var $button = $(event.relatedTarget)
+  var id = $button.data('id')
+  var name = $button.data('name')
+  var $modal = $(this)
+  $modal.find('.modal-text').text('Are you sure you want to delete ' + name + '?')
+  $modal.find('form').attr('action', '/snakes/' + id + '/')
+})
+{% endblock %}
+

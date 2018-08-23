@@ -60,7 +60,7 @@ class SnakeForm(forms.Form):
 
     url = forms.CharField(
         max_length=100,
-        label=f'Snake Url',
+        label=f'Snake URL',
         required=True,
         widget=forms.URLInput()
     )

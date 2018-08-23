@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
@@ -38,6 +39,7 @@ def create(request):
     form = SnakeForm(request.user, request.POST)
     if form.is_valid():
         form.save()
+        messages.success(request, 'Snake successfully created')
         return redirect('/snakes')
     return render(request, 'snakes/new.html', {
         'form': form,
@@ -51,6 +53,7 @@ def update(request, id):
     form = SnakeForm(request.user, request.POST, instance=snake)
     if form.is_valid():
         form.save()
+        messages.success(request, 'Snake successfully updated')
         return redirect('/snakes')
     return render(request, 'snakes/edit.html', {
         'form': form,
@@ -62,4 +65,5 @@ def update(request, id):
 def delete(request, id):
     snake = UserSnake.objects.get(snake_id=id, user_id=request.user.id).snake
     snake.delete()
+    messages.success(request, 'Snake successfully deleted')
     return redirect('/snakes')
