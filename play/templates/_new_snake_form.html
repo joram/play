@@ -12,8 +12,9 @@
 </div>
 {% endif %}
 
+<div class="form-row">
 {% for field in game_form %}
-<div class="form-group">
+<div class="col-4 form-group">
   {{ field.label_tag }}
 
   {% if game_form.is_bound %}
@@ -36,6 +37,7 @@
   {% endif %}
 </div>
 {% endfor %}
+</div>
 
 <hr />
 

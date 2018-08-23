@@ -68,22 +68,21 @@ class AddTeamMemberForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        if 'username' in cleaned_data:
-            username = cleaned_data['username']
-            try:
-                cleaned_data['user'] = User.objects.get(username=username)
-            except User.DoesNotExist:
-                raise ValidationError(f"Hmm, {username} can't be found. Have they logged in yet?")
+        username = cleaned_data.get('username')
+        try:
+            cleaned_data['user'] = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise ValidationError(f"Hmm, {username} can't be found. Have they logged in yet?")
 
-            try:
-                # If this lookup raises an exception, then we can continue
-                team_name = TeamMember.objects.get(
-                    user_id=cleaned_data['user'].id,
-                    team_id=self.team.id
-                ).team.name
-                raise ValidationError(f'{username} already belongs to {team_name}')
-            except TeamMember.DoesNotExist:
-                pass
+        try:
+            # If this lookup raises an exception, then we can continue
+            team_name = TeamMember.objects.get(
+                user_id=cleaned_data['user'].id,
+                team_id=self.team.id
+            ).team.name
+            raise ValidationError(f'{username} already belongs to {team_name}')
+        except TeamMember.DoesNotExist:
+            pass
 
         return cleaned_data
 
