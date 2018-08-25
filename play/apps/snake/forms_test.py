@@ -12,7 +12,7 @@ def test_create_form():
 
     form = SnakeForm(user, {
         'name': 'test',
-        'url': 'test',
+        'url': 'http://example.com',
     })
     assert form.is_valid()
 
