@@ -12,8 +12,9 @@
 </div>
 {% endif %}
 
+<div class="form-row">
 {% for field in game_form %}
-<div class="form-group">
+<div class="col-4 form-group">
   {{ field.label_tag }}
 
   {% if game_form.is_bound %}
@@ -32,10 +33,11 @@
   {% endif %}
 
   {% if field.help_text %}
-    <small class="form-text text-muted">{{ field.help_text }}</small>
+    <small class="form-text text-muted">{{ field.help_text|safe }}</small>
   {% endif %}
 </div>
 {% endfor %}
+</div>
 
 <hr />
 
@@ -89,7 +91,7 @@
                 {% endif %}
 
                 {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
+                <small class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
               </div>
             </div>

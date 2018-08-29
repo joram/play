@@ -22,7 +22,7 @@ def test_create(client):
     user = user_factory.login_as(client)
     team = team_factory.basic(user=user, snake=snake_factory.basic(commit=True))
 
-    response = client.post('/team/members/', {
+    response = client.post('/team/members/new/', {
         'username': 'test2',
     })
     assert response.status_code == 302

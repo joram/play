@@ -1,12 +1,22 @@
 from django import forms
+from django.forms import ValidationError
 from django.utils.translation import gettext as _
 from apps.tournament.models import Team, TeamMember
 from apps.authentication.models import User
 from apps.snake.models import Snake
+from apps.utils.url import is_valid_url
+
 
 
 class TeamForm(forms.ModelForm):
-    snake_url = forms.CharField(max_length=255)
+    snake_url = forms.CharField(
+        max_length=255,
+        label='URL',
+        help_text='Be sure to add a <strong>valid</strong> Snake URL before \
+                    the tournament starts, otherwise you may not be able to compete!',
+        required=False,
+        widget=forms.URLInput()
+    )
 
     class Meta:
         model = Team
@@ -16,6 +26,14 @@ class TeamForm(forms.ModelForm):
         self.user = user
         super().__init__(*args, **kwargs)
         self.load_snake_data()
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data.get('snake_url') and not is_valid_url(cleaned_data.get('snake_url')):
+            raise ValidationError('Snake requires a valid URL')
+
+        return cleaned_data
 
     def load_snake_data(self):
         if self.instance and self.instance.snake_id:
@@ -50,23 +68,19 @@ class AddTeamMemberForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
+        username = cleaned_data.get('username')
         try:
-            cleaned_data['user'] = User.objects.get(
-                username=cleaned_data['username']
-            )
+            cleaned_data['user'] = User.objects.get(username=username)
         except User.DoesNotExist:
-            raise forms.ValidationError(
-                _('User does not exist: %(username)s'),
-                params={'username': cleaned_data['username']},
-            )
+            raise ValidationError(f"Hmm, {username} can't be found. Have they logged in yet?")
 
         try:
-            TeamMember.objects.get(
-                user_id=cleaned_data['user'].id, team_id=self.team.id)
-            raise forms.ValidationError(
-                _('User already belongs to a team: %(username)s'),
-                params={'username': cleaned_data['username']},
-            )
+            # If this lookup raises an exception, then we can continue
+            team_name = TeamMember.objects.get(
+                user_id=cleaned_data['user'].id,
+                team_id=self.team.id
+            ).team.name
+            raise ValidationError(f'{username} already belongs to {team_name}')
         except TeamMember.DoesNotExist:
             pass
 

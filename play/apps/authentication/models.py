@@ -23,3 +23,13 @@ class User(AbstractBaseUser):
 
     class Meta:
         app_label = 'authentication'
+
+    def assigned_to_team(self):
+        from apps.tournament.models import TeamMember
+        try:
+            team = TeamMember.objects.get(user_id=self.id).team
+            return True
+        except TeamMember.DoesNotExist:
+            pass
+
+        return False

@@ -22,3 +22,4 @@ class TeamMember(models.Model):
     class Meta:
         app_label = 'tournament'
         unique_together = (('team', 'user'))
+        ordering = ['id']

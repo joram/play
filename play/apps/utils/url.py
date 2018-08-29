@@ -6,5 +6,7 @@ def is_valid_url(url):
     try:
         validate(url)
         return True
+    except AttributeError:
+        return False
     except ValidationError:
         return False

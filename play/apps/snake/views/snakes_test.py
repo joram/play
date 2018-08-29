@@ -23,7 +23,7 @@ def test_create(client):
     user = user_factory.login_as(client)
     response = client.post('/snakes/', {
         'name': 'test2',
-        'url': 'test',
+        'url': 'http://example.com',
     }, follow=True)
     assert response.status_code == 200
     assert UserSnake.objects.get(user=user).snake.name == 'test2'
@@ -41,7 +41,7 @@ def test_update(client):
     snake = snake_factory.basic(commit=True, user=user)
     response = client.post(f'/snakes/{snake.id}/', {
         'name': 'testnew',
-        'url': 'test',
+        'url': 'http://example.com',
         '_method': 'PUT',
     })
     assert response.status_code == 302

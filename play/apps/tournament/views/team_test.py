@@ -22,18 +22,12 @@ def test_index_redirect(client):
     assert response.status_code == 302
 
 
-def test_new(client):
-    user_factory.login_as(client)
-    response = client.get('/team/new/')
-    assert response.status_code == 200
-
-
 def test_create(client):
     user = user_factory.login_as(client)
-    response = client.post('/team/', {
+    response = client.post('/team/new/', {
         'name': 'test2',
         'description': 'test',
-        'snake_url': 'test',
+        'snake_url': 'http://example.com',
     })
     assert response.status_code == 302
     assert TeamMember.objects.get(user=user) is not None
@@ -54,12 +48,12 @@ def test_update(client):
     response = client.post(f'/team/', {
         'name': 'test3',
         'description': 'test',
-        'snake_url': 'testnew',
+        'snake_url': 'http://example.com',
         '_method': 'put',
     })
     assert response.status_code == 302
     snake.refresh_from_db()
     team.refresh_from_db()
     assert snake.name == 'test3'
-    assert snake.url == 'testnew'
+    assert snake.url == 'http://example.com'
     assert team.name == 'test3'

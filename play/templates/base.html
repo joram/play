@@ -10,9 +10,10 @@
   <link rel="stylesheet" href="{% static 'application.css' %}">
   {% block extra_css %}{% endblock %}
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/domready/1.0.8/ready.min.js" integrity="sha256-z7v8HmIeZylwLaPn0X0Ym8dFyV0vkFVe4BkVW/iuwmQ=" crossorigin="anonymous"></script>
   <script src="{% static 'jquery.formset.js' %}"></script>
   {% block extra_js %}{% endblock %}
@@ -42,10 +43,59 @@
       {% endblock %}
     </div>
   </nav>
-  {% block content %}{% endblock %}
+  <main class="container-fluid">
+    {% for message in messages %}
+    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+  </main>
 </body>
 <script>
   domready(function () {
+    /**
+     * ClipboardJS integration on buttons
+     */
+    $('[data-clipboard-text]').tooltip({
+      trigger: 'click',
+      placement: 'top'
+    })
+
+    function setTooltip (triggerElem, message) {
+      $(triggerElem)
+        .tooltip('hide')
+        .attr('data-original-title', message)
+        .tooltip('show')
+    }
+
+    function hideTooltip () {
+      setTimeout(function () {
+        // Blanket-hide all
+        $('[data-clipboard-text]').tooltip('hide')
+      }, 1000)
+    }
+
+    var clipboard = new ClipboardJS('[data-clipboard-text]')
+
+    clipboard.on('success', function (event) {
+      setTooltip(event.trigger, 'Copied!')
+      hideTooltip()
+    })
+
+    clipboard.on('error', function (event) {
+      setTooltip('Failed to copy!')
+      hideTooltip()
+    })
+
+    /**
+     * Individual page JS
+     */
+
     {% block js_dom_ready %}{% endblock %}
   })
 </script>

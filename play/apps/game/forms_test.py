@@ -12,7 +12,8 @@ def test_submit(mock_run):
         'width': 10,
         'height': 10,
         'food': 10,
-    })
+    }, snakes=[{'name': 'foo', 'url': 'http://example.com'}])
+
     assert form.is_valid()
     assert form.submit() == engine_id
     assert len(mock_run.call_args_list) == 1
