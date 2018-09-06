@@ -1,26 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="mb-4 text-center">Game</h1>
+<div class="container-fluid text-center" style="padding-bottom: 2rem;">
+  <h1>Game <small class="text-muted">{{ id }}</small></h1>
 
-<div class="card">
-  <div class="card-header">
-    <code>{{ id }}</code>
-  </div>
-  <div class="card-body">
-    <iframe
-      id="iframe_game"
-      src="{{ url | safe }}"
-      width="100%"
-      height="700px"
-      frameborder="0"
-      scrolling="no"
-      marginheight="0"
-      marginwidth="0">
-    </iframe>
-    <button type="button" id="iframe_restart" class="btn btn-primary">
-      <span class="fa fa-refresh"></span> Restart Game
-    </button>
-  </div>
+  <button
+  type="button"
+    id="iframe_restart"
+    class="btn btn-primary"
+    >
+    <span class="fa fa-refresh"></span> Restart Game
+  </button>
+</div>
+{% endblock %}
+
+{% block outside_content %}
+<div style="overflow: hidden; padding-top: 56.25%; position: relative;">
+  <iframe
+    id="iframe_game"
+    src="{{ url | safe }}"
+    frameborder="0"
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0"
+    style="
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+    ">
+  </iframe>
 </div>
 {% endblock %}
 
