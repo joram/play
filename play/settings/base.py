@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.authentication',
     'apps.tournament',
+    'apps.leaderboard',
     'apps.snake',
     'apps.game',
     'social_django',
