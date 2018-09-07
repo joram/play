@@ -6,6 +6,12 @@
       Leaderboard
       <a class="pull-right" href="/leaderboard/snakes/">My Snakes</a>
     </div>
+
+    <ol class="list-group">
+      {% for snake in ranked %}
+        <li class="list-group-item">{{ snake.name }}: {{ snake.rank }}</li>
+      {% endfor %}
+    </ol>
   </div>
 
 </main>
