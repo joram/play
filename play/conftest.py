@@ -4,7 +4,6 @@ Pytest configuration. Add fixtures and wrappers for all test functions here.
 import pytest
 import django
 from django.conf import settings
-from urls import *
 
 
 @pytest.fixture(autouse=True)
