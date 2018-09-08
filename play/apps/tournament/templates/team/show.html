@@ -2,7 +2,7 @@
 {% block content %}
 <div class="card">
   <div class="card-header">
-    My Team
+    My Tournament Team
     <span class="pull-right">
       <a href="/team/edit">
         <i class="fa fa-edit"></i> Edit
@@ -25,10 +25,11 @@
           </button>
           {% else %}
           <span class="badge badge-pill badge-danger">
-            No Snake URL provided!
+            No Snake URL provided
           </span>
           {% endif %}
         </p>
+        <p class="text-danger"><small>Be sure to add a <strong>valid</strong> Snake URL here before the tournament starts, otherwise you may not be able to compete!</small></p>
       </div>
       <div class="col-md-6">
         <h4 class="card-title d-inline-block">Members</h4>
@@ -36,13 +37,13 @@
 
         <ul class="list-unstyled">
           {% for member in members %}
-            <li class="media">
+            <li class="media mb-3">
               <img
                 src="https://github.com/{{member.user.username}}.png?size=64"
                 alt="{{member.user.username}} GitHub profile avatar"
                 height="64"
                 width="64"
-                class="mr-3"
+                class="mr-3 rounded"
               />
               <div class="media-body">
                 <a href="https://github.com/{{member.user.username}}" class="d-inline-block">

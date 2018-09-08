@@ -12,7 +12,7 @@ class TeamForm(forms.ModelForm):
     snake_url = forms.CharField(
         max_length=255,
         label='URL',
-        help_text='Be sure to add a <strong>valid</strong> Snake URL before \
+        help_text='Be sure to add a <strong>valid</strong> Snake URL here before \
                     the tournament starts, otherwise you may not be able to compete!',
         required=False,
         widget=forms.URLInput()

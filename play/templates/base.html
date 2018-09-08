@@ -25,26 +25,53 @@
     <a class="navbar-brand" href="/">Battlesnake 2019</a>
     {% block navbar %}
     <ul class="navbar-nav mr-auto">
+      <!-- TODO: Enable Tournament link the day before the tournament -->
+      <!--
+        <li class="nav-item">
+          <a class="nav-link" href="#">Tournament</a>
+        </li>
+      -->
       <li class="nav-item">
-        <a class="nav-link" href="/team">Tournament</a>
+        <a class="nav-link" href="/snakes">My Snakes</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/snakes">Snakes</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/games">Play</a>
+        <a class="nav-link" href="/games">Games</a>
       </li>
     </ul>
     {% endblock %}
     <div class="navbar-right">
       {% block navbar_right %}
-        <span class="navbar-text small">
-          Logged in as: <strong>{{ user.username }}</strong> | <a href="/logout">Logout</a>
-        </span>
+        <div class="dropdown">
+          <a href="#"
+            class="dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            style="text-decoration: none; color: var(--dark)"
+          >
+            <img
+              src="https://github.com/{{ user.username }}.png?size=64"
+              alt="{{ user.username }} GitHub profile avatar"
+              height="24"
+              width="24"
+              class="rounded"
+            />
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <p class="dropdown-header">
+              Logged in as <br />
+              <strong>{{ user.username }}</strong>
+            </p>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/team">My Tournament Team</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/logout">Logout</a>
+          </div>
+        </div>
       {% endblock %}
     </div>
   </nav>
-  <main class="container-fluid">
+  <main class="app container-fluid">
     {% for message in messages %}
     <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">

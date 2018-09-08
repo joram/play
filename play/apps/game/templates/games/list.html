@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center">
+  <h1 class="mb-4">Games</h1>
+
+  <p class="mb-4">
+    <a href="/games/new/" class="btn btn-primary" title="Create a new game">New Game</a>
+  </p>
+
+  <p>You can view active and historical games below!</p>
+</div>
+
+<ul class="list-group">
+  {% for game in games %}
+    <li class="list-group-item d-flex w-100 justify-content-between">
+      <div>
+        <h5 class="mb-1">
+          Game
+          {% if game.status == 'complete' %}
+            <a href="#" data-toggle="modal" data-target="#modal_{{game.id}}"><small>View game report</small></a>
+          {% endif %}
+        </h5>
+        <p class="mb-1">
+          {% for snake in game.config.snakes %}
+            {{snake.name}}
+            {% if not forloop.last %}<span class="badge badge-info">vs</span>{% endif %}
+          {% endfor %}
+        </p>
+        <div>
+          {% if game.status == 'pending' %}<span class="badge badge-warning">{{game.status}}</span>{% endif %}
+          {% if game.status == 'running' %}<span class="badge badge-info">{{game.status}}</span>{% endif %}
+          {% if game.status == 'error' %}<span class="badge badge-danger">{{game.status}}</span>{% endif %}
+          {% if game.status == 'stopped' %}<span class="badge badge-secondary">{{game.status}}</span>{% endif %}
+          {% if game.status == 'complete' %}<span class="badge badge-success">{{game.status}}</span>{% endif %}
+          <small>
+            {{game.height}} x {{game.width}} board / {{game.food}} food / turn {{game.turn}}
+          </small>
+        </div>
+      </div>
+      <div class="align-self-center">
+        <a href="/games/{{game.engine_id}}" class="btn btn-light btn-lg" title="Replay this game">
+          <i class="fa fa-play"></i>
+        </a>
+      </div>
+
+      <div class="modal fade" id="modal_{{game.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Game Report</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              {% for snake in game.snakes %}
+                {% if not snake.death %}
+                  <p class="mb-1">
+                    <strong>👑 Winner 👑</strong>  {{snake.snake.name}}
+                  </p>
+                {% endif %}
+              {% endfor %}
+              <p class="mb-1">
+                <strong>Competing snakes:</strong>
+                {% for snake in game.config.snakes %}
+                  {{snake.name}}
+                  {% if not forloop.last %}<span class="badge badge-info">vs</span>{% endif %}
+                {% endfor %}
+              </p>
+              <p class="mb-1">
+                <strong>Game Stats:</strong>
+                {{game.height}} x {{game.width}} board,
+                {{game.food}} food,
+                {{game.turn}} turns
+              </p>
+
+              <p class="mb-1"></p>
+            </div>
+            <div class="modal-footer">
+              <small>Engine ID: {{game.engine_id}}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
+
+{% block js_dom_ready %}
+{% endblock %}

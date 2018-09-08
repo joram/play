@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
 <h1 class="mb-4 text-center">New Game</h1>
@@ -7,7 +8,95 @@
   <div class="card-body">
     <form method="post" novalidate action="/games/new/">
       {% csrf_token %}
-      {% include '_new_snake_form.html' with game_form=game_form snake_formset=snake_formset %}
+
+      {% for hidden_field in game_form.hidden_fields %}
+        {{ hidden_field }}
+      {% endfor %}
+
+      {% if game_form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {% for error in game_form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-row">
+        {% for field in game_form %}
+          <div class="col-4 form-group">
+            {{ field.label_tag }}
+
+            {% if game_form.is_bound %}
+              {% if field.errors %}
+                {% render_field field class="form-control is-invalid" %}
+                {% for error in field.errors %}
+                  <div class="invalid-feedback">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% else %}
+                {% render_field field class="form-control is-valid" %}
+              {% endif %}
+            {% else %}
+              {% render_field field class="form-control" %}
+            {% endif %}
+
+            {% if field.help_text %}
+              <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <hr />
+
+      <div id="snake_form_rows">
+        <div class="form-group d-flex justify-content-end js-snake-add"></div>
+
+        {{ snake_formset.management_form }}
+
+        {% for form in snake_formset %}
+          <div class="card form-group js-snake-formset">
+            <div class="card-body form-row">
+              {% for field in form %}
+                {% render_field field %}
+              {% endfor %}
+              <div>
+                <h5 class="js-snake-name"></h5>
+                <p class="js-snake-url"></p>
+              </div>
+
+              <div class="d-flex w-100 align-items-center justify-content-center">
+                <div class="dropdown mr-3">
+                  <button type="button"
+                    class="btn btn-secondary dropdown-toggle"
+                    data-toggle="dropdown"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    Choose Snake
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" style="max-width: 330px;">
+                    {% for snake in snakes %}
+                    <a href="#"
+                      title="{{snake.name}}"
+                      class="dropdown-item text-truncate js-choose-snake"
+                      data-id="{{snake.id}}"
+                      data-name="{{snake.name}}"
+                      data-url="{{snake.url}}"
+                    >
+                      {{snake.name}}
+                    </a>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="js-snake-remove"></div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
       <hr />
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-block">
@@ -20,7 +109,7 @@
 {% endblock %}
 
 {% block js_dom_ready %}
-$(".js-snake-formset").formset({
+$('.js-snake-formset').formset({
   prefix: 'snake',
   addText: 'Add Snake',
   deleteText: 'Remove',
@@ -28,5 +117,21 @@ $(".js-snake-formset").formset({
   deleteCssClass: 'btn btn-danger btn-small',
   addContainerClass: 'js-snake-add',
   deleteContainerClass: 'js-snake-remove',
+})
+
+$(document).on('click', '.js-choose-snake', function (event) {
+  event.preventDefault()
+  var $button = $(this)
+  var id = $button.data('id')
+  var name = $button.data('name')
+  var url = $button.data('url')
+
+  $formRow = $(this).closest('.js-snake-formset')
+  $formRow.find('input[name*="id"]').val(id)
+  $formRow.find('input[name*="name"]').val(name)
+  $formRow.find('input[name*="url"]').val(url)
+
+  $formRow.find('.js-snake-name').text(name)
+  $formRow.find('.js-snake-url').text(url)
 })
 {% endblock %}

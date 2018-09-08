@@ -36,7 +36,8 @@ class Game(models.Model):
         with transaction.atomic():
             # For all loaded snakes ensure that they exist.
             for s in self.snakes:
-                GameSnake.objects.get_or_create(snake=s, game=self)
+                snake = Snake.objects.get(id=s['id'])
+                GameSnake.objects.get_or_create(snake=snake, game=self)
             return super().save(*args, **kwargs)
 
     def config(self):
@@ -69,12 +70,14 @@ class Game(models.Model):
             status = engine.status(self.engine_id)
             self.status = status['status']
             self.turn = status['turn']
-            for game_snake in GameSnake.objects.filter(game_id=self.id)\
-                                               .prefetch_related('snake'):
+            for game_snake in GameSnake.objects.filter(game_id=self.id).prefetch_related('snake'):
                 snake_status = status['snakes'][game_snake.snake.id]
                 game_snake.death = snake_status['death']
                 game_snake.save()
             self.save()
+
+    def get_snakes(self):
+        return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
 
     class Meta:
         app_label = 'game'
