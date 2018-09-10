@@ -20,9 +20,13 @@ def status(id):
     status = data['Game'].get('Status', 'pending')
     turn = data['LastFrame'].get('Turn', 0)
     gsnakes = data['LastFrame'].get('Snakes', [])
-    snakes = {
-        s['ID']: {'death': s.get('Death', {}).get('Cause', '')} for s in gsnakes
-    }
+
+    snakes = {}
+    for s in gsnakes:
+        id = s['ID']
+        snakes[id] = {
+            'death': s['Death']['Cause'] if s['Death'] else ''
+        }
 
     return {
         'status': status,
