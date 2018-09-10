@@ -20,16 +20,6 @@ def index(request):
     for game in games:
         game.snakes = game.get_snakes()
 
-    active_statuses = (
-        Game.Status.PENDING,
-        Game.Status.RUNNING,
-        Game.Status.STOPPED,
-    )
-
-    # HACK: we should really use whats in apps/game/jobs.py for this, but this works for now
-    for game in games.filter(status__in=active_statuses):
-        game.update_from_engine()
-
     return render(request, 'games/list.html', {
         'games': games,
     })
