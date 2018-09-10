@@ -8,6 +8,6 @@
   Hack for modals inside list-group-items
   https://github.com/twbs/bootstrap/issues/25206
 */
-.list-group-item, .list-group-item:hover{ z-index: auto; }
+.list-group-item, .list-group-item:hover{ z-index: auto !important; }
 
 
