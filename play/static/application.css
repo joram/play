@@ -11,3 +11,13 @@
 .list-group-item, .list-group-item:hover{ z-index: auto !important; }
 
 
+/**
+ * Fullscreen game board
+ */
+
+.fullscreen-board-frame {
+  position: relative;
+  max-width: 90vw;
+  height: 60vh;
+  margin: 0 auto;
+}
