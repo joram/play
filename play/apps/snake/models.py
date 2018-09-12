@@ -1,5 +1,4 @@
 from django.db import models
-
 from util.fields import ShortUUIDField
 from apps.authentication.models import User
 

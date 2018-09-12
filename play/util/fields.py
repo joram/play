@@ -1,5 +1,56 @@
 import shortuuid
 from django.db import models
+from django.db.models import DateTimeField
+
+from util.time import now as time_now
+
+
+class CreatedDateTimeField(DateTimeField):
+    """
+    CreationDateTimeField
+    By default, sets editable=False, blank=True, default=now
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('editable', False)
+        kwargs.setdefault('blank', True)
+        kwargs.setdefault('default', time_now)
+        DateTimeField.__init__(self, *args, **kwargs)
+
+    def get_internal_type(self):
+        return "DateTimeField"
+
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        # We'll just introspect ourselves, since we inherit.
+        from south.modelsinspector import introspector
+        field_class = "django.db.models.fields.DateTimeField"
+        args, kwargs = introspector(self)
+        return (field_class, args, kwargs)
+
+
+class ModifiedDateTimeField(CreatedDateTimeField):
+    """
+    ModificationDateTimeField
+    By default, sets editable=False, blank=True, default=now
+    Sets value to now on each save of the model.
+    """
+
+    def pre_save(self, model, add):
+        value = time_now()
+        setattr(model, self.attname, value)
+        return value
+
+    def get_internal_type(self):
+        return "DateTimeField"
+
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        # We'll just introspect ourselves, since we inherit.
+        from south.modelsinspector import introspector
+        field_class = "django.db.models.fields.DateTimeField"
+        args, kwargs = introspector(self)
+        return (field_class, args, kwargs)
 
 
 class ShortUUIDField(models.CharField):
