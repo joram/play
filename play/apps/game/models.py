@@ -1,13 +1,11 @@
 from django.db import models, transaction
 from util.fields import ShortUUIDField
-# from util.models import BaseModel
+from util.models import BaseModel
 from apps.game import engine
 from apps.snake.models import Snake
 
 
-# ENABLE IN ANOTHER PR WHEN THE COLUMNS EXIST
-# class Game(BaseModel):
-class Game(models.Model):
+class Game(BaseModel):
     """
     Game tracks a game started on the engine locally in the snake database. You
     can initialize a game through this model and call run() to start the game.

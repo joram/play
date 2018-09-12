@@ -12,7 +12,8 @@ from apps.utils.helpers import generate_game_url
 
 @login_required
 def index(request):
-    games = Game.objects.all().order_by('-status', 'id')
+    # TODO: filter these by the current team in a future update
+    games = Game.objects.all().order_by('-status', 'created')
 
     if games.count() == 0:
         return redirect('/games/new')
