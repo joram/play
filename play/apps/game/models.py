@@ -38,7 +38,7 @@ class Game(BaseModel):
             # For all loaded snakes ensure that they exist.
             for s in self.snakes:
                 snake = Snake.objects.get(id=s['id'])
-                GameSnake.objects.get_or_create(snake=snake, game=self)
+                GameSnake.objects.create(snake=snake, game=self)
             return super().save(*args, **kwargs)
 
     def config(self):
@@ -54,7 +54,7 @@ class Game(BaseModel):
             config['snakes'].append({
                 'name': snake.snake.name,
                 'url': snake.snake.url,
-                'id': snake.snake.id,
+                'id': snake.id,
             })
         return config
 
@@ -72,7 +72,7 @@ class Game(BaseModel):
             self.status = status['status']
             self.turn = status['turn']
             for game_snake in GameSnake.objects.filter(game_id=self.id).prefetch_related('snake'):
-                snake_status = status['snakes'][game_snake.snake.id]
+                snake_status = status['snakes'][game_snake.id]
                 game_snake.death = snake_status['death']
                 game_snake.save()
             self.save()
@@ -85,11 +85,11 @@ class Game(BaseModel):
 
 
 class GameSnake(models.Model):
+    id = ShortUUIDField(prefix='gs', max_length=128, primary_key=True)
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    death = models.CharField(default="pending", max_length=128)
+    death = models.CharField(default='pending', max_length=128)
     turns = models.IntegerField(default=0)
 
     class Meta:
         app_label = 'game'
-        unique_together = (('snake', 'game'),)
