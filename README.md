@@ -59,6 +59,7 @@ Copy the generated secrets in to your `.env` (described below)
 Your `.env` file should contain the following:
 
 ```bash
+BATTLESNAKEIO_DOMAIN=play.battlesnake.io
 BATTLESNAKEIO_SECRET=battlesnakeio
 BATTLESNAKEIO_GITHUB_CLIENT_ID=...
 BATTLESNAKEIO_GITHUB_CLIENT_SECRET=...
