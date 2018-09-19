@@ -13,7 +13,7 @@ snake_factory = SnakeFactory()
 @mock.patch('apps.game.engine.status')
 def test_game_status_job(status_mock):
     game = game_factory.basic()
-    snakes = snake_factory.basic(n=10, commit=True)
+    snakes = snake_factory.basic(n=8, commit=True)
 
     status_mock.return_value = {
         'status': 'running',
@@ -22,7 +22,7 @@ def test_game_status_job(status_mock):
     }
 
     game.engine_id = str(uuid.uuid4())
-    game.snakes = snakes
+    game.snakes = [{'id': snake.id, 'name': snake.name, 'url': snake.url} for snake in snakes]
     game.save()
 
     GameStatusJob().run()

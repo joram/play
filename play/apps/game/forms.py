@@ -18,8 +18,10 @@ def get_snakes_from_request(request_data):
     ```
     {
         ...
+        'snake-0-id: ...,
         'snake-0-name: ...,
         'snake-0-url: ...,
+        'snake-1-id: ...,
         'snake-1-name: ...,
         'snake-1-url: ...,
         ...
@@ -39,6 +41,9 @@ def get_snakes_from_request(request_data):
                 # The object at the current index doesn't exist
                 # in the list yet, so add one
                 snakes.append({})
+            # Get snake data from the formset data in the request
+            if 'id' in k and v:
+                snakes[i]['id'] = request_data.get(f'snake-{i}-id')
             if 'name' in k and v:
                 snakes[i]['name'] = request_data.get(f'snake-{i}-name')
             if 'url' in k and v:
@@ -51,27 +56,15 @@ class SnakeForm(forms.Form):
     SnakeForm initializes a row containing snake name and url
     """
 
-    name = forms.CharField(
-        max_length=100,
-        label=f'Snake Name',
-        required=True,
-        widget=forms.TextInput()
-    )
-
-    url = forms.CharField(
-        max_length=100,
-        label=f'Snake URL',
-        required=True,
-        widget=forms.URLInput()
-    )
+    id = forms.CharField(widget=forms.HiddenInput())
+    name = forms.CharField(widget=forms.HiddenInput())
+    url = forms.CharField(widget=forms.HiddenInput())
 
 
 class GameForm(forms.Form):
     """
     GameForm initializes a game and posts this to the engine to start the game.
     """
-    # MAX_SNAKES = 10
-
     width = forms.IntegerField(initial=20, required=True)
     height = forms.IntegerField(initial=20, required=True)
     food = forms.IntegerField(initial=5, required=True)
@@ -104,4 +97,6 @@ class GameForm(forms.Form):
         }
 
     def submit(self):
-        return engine.run(self.cleaned_data)
+        game = Game(**self.cleaned_data)
+        game.save()
+        return game.run()

@@ -1,13 +1,12 @@
 from django.db import models
-
 from util.fields import ShortUUIDField
 from apps.authentication.models import User
 
+
 def get_user_snakes(user):
     return [
-        user_snake.snake for user_snake in
-        UserSnake.objects.filter(user_id=user.id).
-        prefetch_related('snake')
+        user_snake.snake
+        for user_snake in UserSnake.objects.filter(user_id=user.id).prefetch_related('snake')
     ]
 
 

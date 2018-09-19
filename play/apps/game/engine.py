@@ -17,13 +17,21 @@ def status(id):
     res.raise_for_status()
     data = res.json()
 
-    status = data["Game"]["Status"]
-    turn = data["LastFrame"]["Turn"]
-    snakes = {
-        s["ID"]: {
-            "death": s["Death"]["Cause"] if s["Death"] else status,
-            "turn": s["Death"]["Turn"] if s["Death"] else turn,
+    status = data['Game'].get('Status', 'pending')
+    turn = data['LastFrame'].get('Turn', 0)
+    gsnakes = data['LastFrame'].get('Snakes', [])
+
+    snakes = {}
+    for s in gsnakes:
+        id = s['ID']
+        snakes[id] = {
+            'death': s['Death']['Cause'] if s['Death'] else ''
+            "turn": s["Death"]["Turn"] if s["Death"] else turn
         }
-        for s in data["LastFrame"]["Snakes"]
+
+    return {
+        'status': status,
+        'turn': turn,
+        'snakes': snakes,
     }
     return {"status": status, "turn": turn, "snakes": snakes}

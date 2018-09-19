@@ -1,4 +1,23 @@
-main {
+.app {
   padding-top: 50px;
+  padding-bottom: 50px;
   max-width: 800px;
+}
+
+/*
+  Hack for modals inside list-group-items
+  https://github.com/twbs/bootstrap/issues/25206
+*/
+.list-group-item, .list-group-item:hover{ z-index: auto !important; }
+
+
+/**
+ * Fullscreen game board
+ */
+
+.fullscreen-board-frame {
+  position: relative;
+  max-width: 90vw;
+  height: 60vh;
+  margin: 0 auto;
 }

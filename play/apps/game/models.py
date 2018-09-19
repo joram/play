@@ -1,10 +1,11 @@
 from django.db import models, transaction
 from util.fields import ShortUUIDField
+from util.models import BaseModel
 from apps.game import engine
 from apps.snake.models import Snake
 
 
-class Game(models.Model):
+class Game(BaseModel):
     """
     Game tracks a game started on the engine locally in the snake database. You
     can initialize a game through this model and call run() to start the game.
@@ -37,7 +38,8 @@ class Game(models.Model):
         with transaction.atomic():
             # For all loaded snakes ensure that they exist.
             for s in self.snakes:
-                GameSnake.objects.get_or_create(snake=s, game=self)
+                snake = Snake.objects.get(id=s['id'])
+                GameSnake.objects.create(snake=snake, game=self)
             return super().save(*args, **kwargs)
 
     def config(self):
@@ -77,14 +79,18 @@ class Game(models.Model):
                 game_snake.save()
             self.save()
 
+    def get_snakes(self):
+        return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
+
     class Meta:
         app_label = "game"
 
 
 class GameSnake(models.Model):
+    id = ShortUUIDField(prefix='gs', max_length=128, primary_key=True)
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    death = models.CharField(default="pending", max_length=128)
+    death = models.CharField(default='pending', max_length=128)
     turns = models.IntegerField(default=0)
 
     class Meta:

@@ -7,7 +7,7 @@ class SnakeFactory:
             return [self.basic(commit=commit, user=user) for _ in range(n)]
         snake = Snake(
             name='test',
-            url='test',
+            url='http://foo.bar',
         )
         if user:
             UserSnake.objects.create(user=user, snake=snake)

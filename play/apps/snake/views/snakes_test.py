@@ -8,7 +8,7 @@ snake_factory = SnakeFactory()
 
 def test_index(client):
     user = user_factory.login_as(client)
-    snake_factory.basic(n=10, commit=True, user=user)
+    snake_factory.basic(n=8, commit=True, user=user)
     response = client.get('/snakes/')
     assert response.status_code == 200
 
