@@ -11,4 +11,8 @@ class GameStatusJob:
 
     def run(self):
         for game in Game.objects.filter(status__in=self.active_statuses):
-            game.update_from_engine()
+            try:
+                game.update_from_engine()
+            except:
+                # Something wrong with this game, don't care
+                pass

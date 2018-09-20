@@ -71,6 +71,7 @@ class GameForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.snakes = kwargs.pop('snakes', None)
+        self.team = kwargs.pop('team', None)
         super().__init__(*args, **kwargs)
 
     def clean(self):
@@ -94,6 +95,7 @@ class GameForm(forms.Form):
             'height': self.cleaned_data['height'],
             'food': self.cleaned_data['food'],
             'snakes': self.snakes,
+            'team': self.team,
         }
 
     def submit(self):

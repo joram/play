@@ -1,6 +1,7 @@
 from django.db import models, transaction
 from util.fields import ShortUUIDField
 from util.models import BaseModel
+from apps.tournament.models import Team
 from apps.game import engine
 from apps.snake.models import Snake
 
@@ -20,6 +21,7 @@ class Game(BaseModel):
         COMPLETE = 'complete'
 
     id = ShortUUIDField(prefix='gam', max_length=128, primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
     engine_id = models.CharField(null=True, max_length=128)
     status = models.CharField(default=Status.PENDING, max_length=30)
     turn = models.IntegerField(default=0)
