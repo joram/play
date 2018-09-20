@@ -13,6 +13,7 @@ class GameStatusJob:
         for game in Game.objects.filter(status__in=self.active_statuses):
             try:
                 game.update_from_engine()
-            except:
+            except Exception as e:
                 # Something wrong with this game, don't care
+                print(f'Unable to update game {game.id}')
                 pass
