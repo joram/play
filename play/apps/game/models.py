@@ -36,14 +36,6 @@ class Game(BaseModel):
             del kwargs["snakes"]
         super().__init__(*args, **kwargs)
 
-    # def save(self, *args, **kwargs):
-    #     with transaction.atomic():
-    #         # For all loaded snakes ensure that they exist.
-    #         for s in self.snakes:
-    #             snake = Snake.objects.get(id=s['id'])
-    #             GameSnake.objects.create(snake=snake, game=self)
-    #         return super().save(*args, **kwargs)
-
     def config(self):
         """ Fetch the engine configuration. """
         config = {
