@@ -54,8 +54,12 @@ class Game(BaseModel):
 
     def create(self):
         with transaction.atomic():
-            # Note: Saving the game here ensures there is an ID to use when
-            #       creating GameSnake objects
+            # Note: Creating GameSnake
+            # objects used to happen in the overridden save model function.
+            # Saving the game here ensures there is an ID to use when
+            # creating GameSnake objects. This is a bit of a hack because
+            # of the way Game was implemented initially and then adapted to
+            # support multiple of the same Snake in a Game.
             self.save()
 
             for s in self.snakes:
