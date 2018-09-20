@@ -35,6 +35,14 @@ class Game(BaseModel):
             del kwargs['snakes']
         super().__init__(*args, **kwargs)
 
+    # def save(self, *args, **kwargs):
+    #     with transaction.atomic():
+    #         # For all loaded snakes ensure that they exist.
+    #         for s in self.snakes:
+    #             snake = Snake.objects.get(id=s['id'])
+    #             GameSnake.objects.create(snake=snake, game=self)
+    #         return super().save(*args, **kwargs)
+
     def config(self):
         """ Fetch the engine configuration. """
         config = {
@@ -51,10 +59,20 @@ class Game(BaseModel):
             })
         return config
 
+    def create(self):
+        with transaction.atomic():
+            # Note: Saving the game here ensures there is an ID to use when
+            #       creating GameSnake objects
+            self.save()
+
+            for s in self.snakes:
+                snake = Snake.objects.get(id=s['id'])
+                GameSnake.objects.create(snake=snake, game=self)
+
     def run(self):
         """ Call the engine to start the game. Returns the game id. """
-        self.create_snakes()
-        self.engine_id = engine.run(self.config())
+        config = self.config()
+        self.engine_id = engine.run(config)
         self.save()
         return self.engine_id
 
@@ -72,12 +90,6 @@ class Game(BaseModel):
                 game_snake.save()
 
             self.save()
-
-    def create_snakes(self):
-        with transaction.atomic():
-            for s in self.snakes:
-                snake = Snake.objects.get(id=s['id'])
-                GameSnake.objects.create(snake=snake, game=self)
 
     def get_snakes(self):
         return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')

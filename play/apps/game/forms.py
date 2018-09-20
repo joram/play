@@ -100,5 +100,5 @@ class GameForm(forms.Form):
 
     def submit(self):
         game = Game(**self.cleaned_data)
-        game.save()
+        game.create()
         return game.run()
