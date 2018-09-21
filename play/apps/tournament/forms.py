@@ -1,11 +1,9 @@
 from django import forms
 from django.forms import ValidationError
-from django.utils.translation import gettext as _
 from apps.tournament.models import Team, TeamMember
 from apps.authentication.models import User
 from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
-
 
 
 class TeamForm(forms.ModelForm):
@@ -91,3 +89,7 @@ class AddTeamMemberForm(forms.Form):
             user=self.cleaned_data['user'],
             team=self.team,
         )
+
+
+class TournamentForm(forms.ModelForm):
+    name = forms.CharField(required=True)
