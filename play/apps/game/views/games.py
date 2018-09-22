@@ -11,9 +11,11 @@ from apps.utils.helpers import generate_game_url
 
 
 @login_required
+@with_current_team
 def index(request):
-    # TODO: filter these by the current team in a future update
-    games = Game.objects.all().order_by('-status', 'created')
+    games = Game.objects.filter(
+        team_id=request.team.id
+    ).order_by('-status', 'created')
 
     if games.count() == 0:
         return redirect('/games/new')
@@ -32,7 +34,7 @@ def new(request):
     if request.method == 'POST':
         # GameForm doesn't contain snake data so we have to get it off the request
         game_snakes = get_snakes_from_request(request.POST.dict())
-        game_form = GameForm(request.POST, snakes=game_snakes)
+        game_form = GameForm(request.POST, snakes=game_snakes, team=request.team)
         if game_form.is_valid():
             game_id = game_form.submit()
             return redirect(f'/games/{game_id}')

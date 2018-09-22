@@ -27,26 +27,20 @@ def test_new_with_snakes(client):
 
 
 @mock.patch('apps.game.engine.run')
-@mock.patch('apps.game.engine.status')
-def test_show(mock_engine_status, mock_engine_run, client):
+def test_show(mock_engine_run, client):
     engine_id = 'a879f127-55c2-4b0c-99c9-bce09c9fc0cf'
     url = "game=" + engine_id
 
     mock_engine_run.return_value = engine_id
-    mock_engine_status.return_value = {
-        'status': 'running',
-        'turn': 10,
-        'snakes': {'snk_1234': {'death': 'starvation'}}
-    }
 
     user_factory.login_as(client)
     game = game_factory.basic()
+    game.create()
     game.run()
 
     response = client.get(f'/games/{engine_id}/')
     assert response.status_code == 200
     assert url in response.content.decode('utf-8')
-    assert len(mock_engine_status.call_args_list) == 1
     assert len(mock_engine_run.call_args_list) == 1
 
 
