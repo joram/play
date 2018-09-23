@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from apps.tournament.forms import TournamentForm
+from apps.tournament.models import Tournament
+from apps.snake.models import Snake
 
 
 @login_required
@@ -18,9 +20,10 @@ def index(request):
 @login_required
 def edit(request):
     user = request.user
-    # tournament = request.tournament
+    t = Tournament()
+    tournament = TournamentForm(tournament=t, instance=t)
     return render(request, 'tournament/edit.html', {
-        # 'form': TournamentForm(request.user, instance=tournament),
+        'form': TournamentForm(request.user, instance=tournament),
         'user': user,
     })
 
