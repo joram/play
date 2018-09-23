@@ -1,0 +1,40 @@
+{% extends 'base.html' %} {% block content %}
+<main class="container-fluid">
+
+  <div class="card">
+    <div class="card-header">
+      Snakes
+      <a class="pull-right" href="/snakes/">Register Snakes</a>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for snake in snakes %}
+        <li class="list-group-item">
+          {{ snake.name }}
+          {% if snake.registered %}
+            <span class="pull-right">
+              <form action="/leaderboard/snakes/{{ snake.id }}/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-link">
+                  <i class="fa fa-toggle-on"></i>
+                </button>
+              </form>
+            </span>
+          {% else %}
+            <span class="pull-right">
+              <form action="/leaderboard/snakes/{{ snake.id }}/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="POST">
+                <button type="submit" class="btn btn-link">
+                  <i class="fa fa-toggle-off"></i>
+                </button>
+              </form>
+            </span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</main>
+{% endblock %}

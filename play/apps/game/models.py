@@ -1,6 +1,7 @@
 from django.db import models, transaction
 from util.fields import ShortUUIDField
 from util.models import BaseModel
+from apps.tournament.models import Team
 from apps.game import engine
 from apps.snake.models import Snake
 
@@ -12,14 +13,16 @@ class Game(BaseModel):
     Then, you can also call update_from_engine() at any point to refresh the
     game state from the engine onto this model.
     """
+
     class Status:
-        PENDING = 'pending'
-        RUNNING = 'running'
-        ERROR = 'error'
-        STOPPED = 'stopped'
-        COMPLETE = 'complete'
+        PENDING = "pending"
+        RUNNING = "running"
+        ERROR = "error"
+        STOPPED = "stopped"
+        COMPLETE = "complete"
 
     id = ShortUUIDField(prefix='gam', max_length=128, primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
     engine_id = models.CharField(null=True, max_length=128)
     status = models.CharField(default=Status.PENDING, max_length=30)
     turn = models.IntegerField(default=0)
@@ -28,35 +31,44 @@ class Game(BaseModel):
     food = models.IntegerField()
 
     def __init__(self, *args, **kwargs):
-        self.snakes = kwargs.get('snakes', [])
-        if 'snakes' in kwargs:
-            del kwargs['snakes']
+        self.snakes = kwargs.get("snakes", [])
+        if "snakes" in kwargs:
+            del kwargs["snakes"]
         super().__init__(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        with transaction.atomic():
-            # For all loaded snakes ensure that they exist.
-            for s in self.snakes:
-                snake = Snake.objects.get(id=s['id'])
-                GameSnake.objects.create(snake=snake, game=self)
-            return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     with transaction.atomic():
+    #         # For all loaded snakes ensure that they exist.
+    #         for s in self.snakes:
+    #             snake = Snake.objects.get(id=s['id'])
+    #             GameSnake.objects.create(snake=snake, game=self)
+    #         return super().save(*args, **kwargs)
 
     def config(self):
         """ Fetch the engine configuration. """
-        gsnakes = GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
         config = {
-            'width': self.width,
-            'height': self.height,
-            'food': self.food,
-            'snakes': [],
+            "width": self.width,
+            "height": self.height,
+            "food": self.food,
+            "snakes": [],
         }
-        for snake in gsnakes:
+        for snake in self.get_snakes():
             config['snakes'].append({
                 'name': snake.snake.name,
                 'url': snake.snake.url,
                 'id': snake.id,
             })
         return config
+
+    def create(self):
+        with transaction.atomic():
+            # Note: Saving the game here ensures there is an ID to use when
+            #       creating GameSnake objects
+            self.save()
+
+            for s in self.snakes:
+                snake = Snake.objects.get(id=s['id'])
+                GameSnake.objects.create(snake=snake, game=self)
 
     def run(self):
         """ Call the engine to start the game. Returns the game id. """
@@ -71,17 +83,19 @@ class Game(BaseModel):
             status = engine.status(self.engine_id)
             self.status = status['status']
             self.turn = status['turn']
-            for game_snake in GameSnake.objects.filter(game_id=self.id).prefetch_related('snake'):
+
+            for game_snake in self.get_snakes():
                 snake_status = status['snakes'][game_snake.id]
                 game_snake.death = snake_status['death']
                 game_snake.save()
+
             self.save()
 
     def get_snakes(self):
         return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
 
     class Meta:
-        app_label = 'game'
+        app_label = "game"
 
 
 class GameSnake(models.Model):
@@ -92,4 +106,5 @@ class GameSnake(models.Model):
     turns = models.IntegerField(default=0)
 
     class Meta:
-        app_label = 'game'
+        app_label = "game"
+        unique_together = (("snake", "game"),)
