@@ -25,7 +25,7 @@ def status(id):
     for s in gsnakes:
         id = s['ID']
         snakes[id] = {
-            'death': s['Death']['Cause'] if s['Death'] else ''
+            'death': s['Death']['Cause'] if s['Death'] else '',
             'turn': s['Death']['Turn'] if s['Death'] else turn
         }
 
