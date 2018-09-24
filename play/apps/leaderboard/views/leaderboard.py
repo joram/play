@@ -6,9 +6,9 @@ from apps.leaderboard.models import UserSnakeLeaderboard
 @login_required
 def index(request):
     ranked = [
-        {"name": snake.user_snake.snake.name, "rank": snake.rank()}
+        {'name': snake.user_snake.snake.name, 'rank': snake.rank()}
         for snake in UserSnakeLeaderboard.ranked()
     ]
     return render(
-        request, "leaderboard/index.html", {"ranked": ranked, "user": request.user}
+        request, 'leaderboard/index.html', {'ranked': ranked, 'user': request.user}
     )

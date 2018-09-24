@@ -11,7 +11,7 @@ user_factory = UserFactory()
 snake_factory = SnakeFactory()
 
 
-@mock.patch("apps.game.engine.run")
+@mock.patch('apps.game.engine.run')
 def test_game_status_job(run_mock):
     user = user_factory.basic()
     run_mock.return_value = lambda: uuid.uuid4()
