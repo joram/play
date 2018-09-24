@@ -12,6 +12,12 @@ class Game(BaseModel):
     can initialize a game through this model and call run() to start the game.
     Then, you can also call update_from_engine() at any point to refresh the
     game state from the engine onto this model.
+
+    Creating a game looks like:
+
+        game = Game(...) # instance created with config, ready to go
+        game.create()    # game snakes created, and any other future pre-game things
+        game.run()       # sent to engine, and now it's running!
     """
 
     class Status:
@@ -36,14 +42,6 @@ class Game(BaseModel):
             del kwargs['snakes']
         super().__init__(*args, **kwargs)
 
-    # def save(self, *args, **kwargs):
-    #     with transaction.atomic():
-    #         # For all loaded snakes ensure that they exist.
-    #         for s in self.snakes:
-    #             snake = Snake.objects.get(id=s['id'])
-    #             GameSnake.objects.create(snake=snake, game=self)
-    #         return super().save(*args, **kwargs)
-
     def config(self):
         """ Fetch the engine configuration. """
         config = {
@@ -62,8 +60,12 @@ class Game(BaseModel):
 
     def create(self):
         with transaction.atomic():
-            # Note: Saving the game here ensures there is an ID to use when
-            #       creating GameSnake objects
+            # Note: Creating GameSnake
+            # objects used to happen in the overridden save model function.
+            # Saving the game here ensures there is an ID to use when
+            # creating GameSnake objects. This is a bit of a hack because
+            # of the way Game was implemented initially and then adapted to
+            # support multiple of the same Snake in a Game.
             self.save()
 
             for s in self.snakes:

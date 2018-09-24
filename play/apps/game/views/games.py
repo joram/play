@@ -34,6 +34,7 @@ def new(request):
     if request.method == 'POST':
         # GameForm doesn't contain snake data so we have to get it off the request
         game_snakes = get_snakes_from_request(request.POST.dict())
+        print(game_snakes)
         game_form = GameForm(request.POST, snakes=game_snakes, team=request.team)
         if game_form.is_valid():
             game_id = game_form.submit()
@@ -54,7 +55,7 @@ def new(request):
     SnakeFormSet = formset_factory(
         SnakeForm,
         extra=0,
-        min_num=1,
+        min_num=8,
         max_num=8,
         validate_min=True,
         validate_max=True,

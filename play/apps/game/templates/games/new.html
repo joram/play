@@ -51,9 +51,13 @@
       <hr />
 
       <div id="snake_form_rows">
-        <div class="form-group d-flex justify-content-end js-snake-add"></div>
-
-        {{ snake_formset.management_form }}
+        <div class="form-group d-flex justify-content-end">
+          <button type="button"
+            class="btn btn-secondary js-clear-form"
+            role="button">
+            Clear form
+          </button>
+        </div>
 
         {% for form in snake_formset %}
           <div class="card form-group js-snake-formset">
@@ -90,7 +94,6 @@
                     {% endfor %}
                   </div>
                 </div>
-                <div class="js-snake-remove"></div>
               </div>
             </div>
           </div>
@@ -109,14 +112,27 @@
 {% endblock %}
 
 {% block js_dom_ready %}
-$('.js-snake-formset').formset({
-  prefix: 'snake',
-  addText: 'Add Snake',
-  deleteText: 'Remove',
-  addCssClass: 'btn btn-secondary btn-small',
-  deleteCssClass: 'btn btn-danger btn-small',
-  addContainerClass: 'js-snake-add',
-  deleteContainerClass: 'js-snake-remove',
+if (localStorage.getItem('formFlag')) {
+  var data = $('form').serializeArray();
+
+  $.each(data, function (i, obj) {
+    if (obj.name.indexOf('snake') != -1) {
+      var $input = $("[name='"+obj.name+"']")
+      var lsItem = localStorage.getItem(obj.name)
+      $input.val(lsItem)
+      var className = obj.name.split('-')[2]
+      $formRow = $input.closest('.js-snake-formset')
+      $formRow.find('.js-snake-'+className).text(lsItem)
+    }
+  })
+}
+
+$(document).on('click', '.js-clear-form', function (event) {
+  event.preventDefault()
+  localStorage.clear()
+  $('.js-snake-formset').each(function (i, el) {
+    $(el).find('[class*="js-snake"]').text('')
+  })
 })
 
 $(document).on('click', '.js-choose-snake', function (event) {
@@ -133,5 +149,14 @@ $(document).on('click', '.js-choose-snake', function (event) {
 
   $formRow.find('.js-snake-name').text(name)
   $formRow.find('.js-snake-url').text(url)
+
+  localStorage.setItem('formFlag', 'true')
+
+  var data = $('form').serializeArray()
+  $.each(data, function (i, obj) {
+    if (obj.name.indexOf('snake') != -1) {
+      localStorage.setItem(obj.name, obj.value)
+    }
+  })
 })
 {% endblock %}
