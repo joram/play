@@ -3,20 +3,20 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from apps.tournament.forms import TournamentForm
-from apps.tournament.models import Tournament
-from apps.snake.models import Snake
+from apps.tournament.models import Tournament, Heat
+from apps.authentication.decorators import admin_required
 
-
+@admin_required
 @login_required
 def index(request):
     user = request.user
-    # tournament = request.tournament
     return render(request, 'tournament/list.html', {
         'tournaments': Tournament.objects.all(),
         'user': user,
     })
 
 
+@admin_required
 @login_required
 @transaction.atomic
 def new(request):
@@ -24,6 +24,8 @@ def new(request):
         'form': TournamentForm(),
     })
 
+
+@admin_required
 @login_required
 @transaction.atomic
 def create(request):
@@ -37,6 +39,7 @@ def create(request):
     }, status=400)
 
 
+@admin_required
 @login_required
 def edit(request, id):
     t = Tournament.objects.get(id=id)
@@ -51,10 +54,19 @@ def edit(request, id):
     })
 
 
+@admin_required
 @login_required
 def show(request, id):
     t = Tournament.objects.get(id=id)
     return render(request, 'tournament/show.html', {
         'tournament': t,
     })
+
+
+@admin_required
+@login_required
+def create_game(request, id, heat_id):
+    heat = Heat.objects.get(id=heat_id)
+    heat.create_next_game()
+    return redirect('/tournament/%s/' % id)
 

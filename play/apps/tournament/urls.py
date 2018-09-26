@@ -39,5 +39,8 @@ urlpatterns = [
     url(r'^tournament/(?P<id>\w+)/$', method_dispatch(
         GET=tournament_views.tournament.show,
     )),
+    url(r'^tournament/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$', method_dispatch(
+        GET=tournament_views.tournament.create_game,
+    )),
 
 ]

@@ -10,17 +10,40 @@
     </span>
   </div>
   <div class="card-body container">
+    <ul class="rounds">
     {% for round in tournament.rounds %}
-      {{ round.name }}
-      {% for heat in round.heats %}
-        {{ heat.name }}
-        <ul>
-          {% for snake in heat.snakes %}
-          <li>{{ snake.name }}</li>
-          {% endfor %}
+      <li class="round">
+        Round: {{ round.number }}
+
+        <ul class="heat">
+        {% for heat in round.heats %}
+          <li>
+            Heat: {{ heat.number }}
+
+            <div class="heat-snakes">
+              <ul class="snakes">
+              {% for snake in heat.snakes %}
+                <li class="snake">{{ snake.name }}</li>
+              {% endfor %}
+              </ul>
+            </div>
+
+            <div class="heat-games">
+              <a href="/tournament/{{ tournament.id }}/heat/{{ heat.id }}/create_game/">Create Next Game</a>
+              <ul class="games">
+                {% for heat_game in heat.games %}
+                  <li class="heat_game">
+                    Game {{ heat_game.number }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
+        {% endfor %}
         </ul>
-      {% endfor %}
+      </li>
     {% endfor %}
+    </ul>
   </div>
 </div>
 {% endblock %}

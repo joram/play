@@ -30,6 +30,15 @@ class Tournament(models.Model):
     name = models.CharField(max_length=256)
 
     def build_structure(self):
+        numSnakes = Snake.objects.all().count()
+        while numSnakes < 40:
+            snake = random.choice(list(Snake.objects.all()))
+            snake.id = None
+            import names
+            snake.name = names.get_full_name()
+            snake.save()
+            numSnakes += 1
+
         for snake in Snake.objects.all():  # update later
             print("adding %s to tournament %s" % (snake.name, self.name))
             SnakeTournament.objects.create(snake=snake, tournament=self)
@@ -39,6 +48,7 @@ class Tournament(models.Model):
     @property
     def rounds(self):
         rounds = Round.objects.filter(tournament=self)
+        print("rounds: %s" % rounds)
         return list(rounds)
 
     @property
@@ -80,13 +90,18 @@ class Round(models.Model):
     def winners(self):
         return self.snakes  # TODO: actually do
 
+    @property
+    def heats(self):
+        return Heat.objects.filter(round=self)
+
     def create_heats(self, max_snakes_per=8):
         num_snakes = int(math.ceil(len(self.snakes)/max_snakes_per))
         heats = [Heat.objects.create(number=i+1, round=self) for i in range(0, num_snakes)]
         i = 0
-        for st in self.snakes:
+        for snake in self.snakes:
             heat = heats[i % len(heats)]
-            SnakeHeat.objects.create(snake=st.snake, heat=heat)
+            snakeTournament = SnakeTournament.objects.get(snake=snake, tournament=self.tournament)
+            SnakeHeat.objects.create(snake=snakeTournament, heat=heat)
             i += 1
 
     class Meta:
@@ -100,10 +115,16 @@ class Heat(models.Model):
 
     @property
     def snakes(self):
-        snakes = []
-        for snake_heat in SnakeHeat.objects.get(heat=self):
-            snakes.append(snake_heat.snake)
-        return snakes
+        snakeHeats = SnakeHeat.objects.filter(heat=self)
+        return [sh.snake.snake for sh in snakeHeats]
+
+    @property
+    def games(self):
+        return HeatGame.objects.filter(heat=self)
+
+    def create_next_game(self):
+        n = self.games.count() + 1
+        HeatGame.objects.create(heat=self, number=n)
 
     class Meta:
         app_label = 'tournament'

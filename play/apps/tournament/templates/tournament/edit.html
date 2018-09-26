@@ -10,11 +10,11 @@
       {% include '_form.html' with form=form %}
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <div id="snakes">
+    <ul id="snakes">
       {% for snake in tournament.snakes %}
-        {{snake.name}}
+      <li>{{snake.name}}</li>
       {% endfor %}
-    </div>
+    </ul>
   </div>
 </div>
 {% endblock %}
