@@ -48,7 +48,9 @@ def get_snakes_from_request(request_data):
                 snakes[i]['name'] = request_data.get(f'snake-{i}-name')
             if 'url' in k and v:
                 snakes[i]['url'] = request_data.get(f'snake-{i}-url')
-    return snakes
+
+    # Filter out the empty snakes
+    return [snake for snake in snakes if snake]
 
 
 class SnakeForm(forms.Form):

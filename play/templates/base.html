@@ -16,7 +16,6 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/domready/1.0.8/ready.min.js" integrity="sha256-z7v8HmIeZylwLaPn0X0Ym8dFyV0vkFVe4BkVW/iuwmQ=" crossorigin="anonymous"></script>
-  <script src="{% static 'jquery.formset.js' %}"></script>
   {% block extra_js %}{% endblock %}
 
 </head>
@@ -25,9 +24,6 @@
     <a class="navbar-brand" href="/">Battlesnake 2019</a>
     {% block navbar %}
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/team">Tournament</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="/leaderboard">Leaderboard</a>
         </li>

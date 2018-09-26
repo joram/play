@@ -12,14 +12,20 @@ class Game(BaseModel):
     can initialize a game through this model and call run() to start the game.
     Then, you can also call update_from_engine() at any point to refresh the
     game state from the engine onto this model.
+
+    Creating a game looks like:
+
+        game = Game(...) # instance created with config, ready to go
+        game.create()    # game snakes created, and any other future pre-game things
+        game.run()       # sent to engine, and now it's running!
     """
 
     class Status:
-        PENDING = "pending"
-        RUNNING = "running"
-        ERROR = "error"
-        STOPPED = "stopped"
-        COMPLETE = "complete"
+        PENDING = 'pending'
+        RUNNING = 'running'
+        ERROR = 'error'
+        STOPPED = 'stopped'
+        COMPLETE = 'complete'
 
     id = ShortUUIDField(prefix='gam', max_length=128, primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
@@ -31,26 +37,18 @@ class Game(BaseModel):
     food = models.IntegerField()
 
     def __init__(self, *args, **kwargs):
-        self.snakes = kwargs.get("snakes", [])
-        if "snakes" in kwargs:
-            del kwargs["snakes"]
+        self.snakes = kwargs.get('snakes', [])
+        if 'snakes' in kwargs:
+            del kwargs['snakes']
         super().__init__(*args, **kwargs)
-
-    # def save(self, *args, **kwargs):
-    #     with transaction.atomic():
-    #         # For all loaded snakes ensure that they exist.
-    #         for s in self.snakes:
-    #             snake = Snake.objects.get(id=s['id'])
-    #             GameSnake.objects.create(snake=snake, game=self)
-    #         return super().save(*args, **kwargs)
 
     def config(self):
         """ Fetch the engine configuration. """
         config = {
-            "width": self.width,
-            "height": self.height,
-            "food": self.food,
-            "snakes": [],
+            'width': self.width,
+            'height': self.height,
+            'food': self.food,
+            'snakes': [],
         }
         for snake in self.get_snakes():
             config['snakes'].append({
@@ -62,8 +60,12 @@ class Game(BaseModel):
 
     def create(self):
         with transaction.atomic():
-            # Note: Saving the game here ensures there is an ID to use when
-            #       creating GameSnake objects
+            # Note: Creating GameSnake
+            # objects used to happen in the overridden save model function.
+            # Saving the game here ensures there is an ID to use when
+            # creating GameSnake objects. This is a bit of a hack because
+            # of the way Game was implemented initially and then adapted to
+            # support multiple of the same Snake in a Game.
             self.save()
 
             for s in self.snakes:
@@ -95,7 +97,7 @@ class Game(BaseModel):
         return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
 
     class Meta:
-        app_label = "game"
+        app_label = 'game'
 
 
 class GameSnake(models.Model):
@@ -106,5 +108,5 @@ class GameSnake(models.Model):
     turns = models.IntegerField(default=0)
 
     class Meta:
-        app_label = "game"
-        unique_together = (("snake", "game"),)
+        app_label = 'game'
+        unique_together = (('snake', 'game'),)

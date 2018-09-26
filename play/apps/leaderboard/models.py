@@ -47,4 +47,4 @@ WHERE game_gamesnake.snake_id = %s
         return self._rank
 
     class Meta:
-        app_label = "leaderboard"
+        app_label = 'leaderboard'

@@ -3,17 +3,17 @@ from django.conf import settings
 
 
 def run(config):
-    res = requests.post(f"{settings.ENGINE_URL}/games", json=config)
+    res = requests.post(f'{settings.ENGINE_URL}/games', json=config)
     res.raise_for_status()
-    game_id = res.json()["ID"]
+    game_id = res.json()['ID']
 
-    res = requests.post(f"{settings.ENGINE_URL}/games/{game_id}/start")
+    res = requests.post(f'{settings.ENGINE_URL}/games/{game_id}/start')
     res.raise_for_status()
     return game_id
 
 
 def status(id):
-    res = requests.get(f"{settings.ENGINE_URL}/games/{id}")
+    res = requests.get(f'{settings.ENGINE_URL}/games/{id}')
     res.raise_for_status()
     data = res.json()
 
@@ -26,7 +26,7 @@ def status(id):
         id = s['ID']
         snakes[id] = {
             'death': s['Death']['Cause'] if s['Death'] else '',
-            "turn": s["Death"]["Turn"] if s["Death"] else turn
+            'turn': s['Death']['Turn'] if s['Death'] else turn
         }
 
     return {
@@ -34,4 +34,4 @@ def status(id):
         'turn': turn,
         'snakes': snakes,
     }
-    return {"status": status, "turn": turn, "snakes": snakes}
+    return {'status': status, 'turn': turn, 'snakes': snakes}
