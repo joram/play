@@ -29,11 +29,17 @@ class TeamMember(models.Model):
 class Tournament(models.Model):
     name = models.CharField(max_length=256)
 
-    def create(self):
-        tournament = Tournament.objects.create()
+    def build_structure(self):
         for snake in Snake.objects.all():  # update later
-            SnakeTournament.objects.create(snake=snake, tournament=tournament)
-        return tournament
+            print("adding %s to tournament %s" % (snake.name, self.name))
+            SnakeTournament.objects.create(snake=snake, tournament=self)
+        round = Round.objects.create(number=1, tournament=self)
+        round.create_heats()
+
+    @property
+    def rounds(self):
+        rounds = Round.objects.filter(tournament=self)
+        return list(rounds)
 
     @property
     def snakes(self):
@@ -41,17 +47,14 @@ class Tournament(models.Model):
         snakes = []
         for st in snake_tournaments:
             snakes.append(st.snake)
-
-    def create_round(self, round_num=1):
-        round = Round.objects.create(number=round_num, tournament=self)
-        round.create_heats()
+        return snakes
 
     class Meta:
         app_label = 'tournament'
 
 
 class SnakeTournament(models.Model):
-    snake = models.ForeignKey(Snake, on_delete=models.CASCADE, unique=True)
+    snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
     class Meta:
@@ -81,9 +84,9 @@ class Round(models.Model):
         num_snakes = int(math.ceil(len(self.snakes)/max_snakes_per))
         heats = [Heat.objects.create(number=i+1, round=self) for i in range(0, num_snakes)]
         i = 0
-        for snake in self.snakes:
+        for st in self.snakes:
             heat = heats[i % len(heats)]
-            SnakeHeat.objects.create(snake=snake, heat=heat)
+            SnakeHeat.objects.create(snake=st.snake, heat=heat)
             i += 1
 
     class Meta:

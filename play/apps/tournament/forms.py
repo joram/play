@@ -94,11 +94,9 @@ class AddTeamMemberForm(forms.Form):
 class TournamentForm(forms.Form):
     name = forms.CharField(required=True)
 
-    def __init__(self, tournament, *args, **kwargs):
-        self.tournament = tournament
-        super().__init__(*args, **kwargs)
-
     def save(self, *args, **kwargs):
-        return Tournament.objects.create(
+        tournament = Tournament.objects.create(
             name=self.cleaned_data['name'],
         )
+        tournament.build_structure()
+        return tournament

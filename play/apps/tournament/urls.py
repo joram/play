@@ -25,16 +25,19 @@ urlpatterns = [
         DELETE=tournament_views.members.delete,
     )),
 
-    url(r'^tournament/$', method_dispatch(
+    url(r'^tournaments/$', method_dispatch(
         GET=tournament_views.tournament.index,
-        PUT=tournament_views.tournament.update,
     )),
     url(r'^tournament/new/$', method_dispatch(
         GET=tournament_views.tournament.new,
-        POST=tournament_views.tournament.new,
+        POST=tournament_views.tournament.create,
     )),
-    url(r'^tournament/edit/$', method_dispatch(
+    url(r'^tournament/(?P<id>\w+)/edit/$', method_dispatch(
         GET=tournament_views.tournament.edit,
+        POST=tournament_views.tournament.edit,
+    )),
+    url(r'^tournament/(?P<id>\w+)/$', method_dispatch(
+        GET=tournament_views.tournament.show,
     )),
 
 ]
