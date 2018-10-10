@@ -1,4 +1,14 @@
 {% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+.popover {
+  width: 400px;
+  max-width: 100%;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="card">
   <div class="card-header">
@@ -10,6 +20,13 @@
       <div style="max-width: 80%;">
         <h5>
           {{ snake.name }}
+          <button type="button"
+            class="btn btn-sm btn-light js-show-snake-status"
+            data-toggle="popover"
+            data-snake-url="{{ snake.url }}"
+            >
+              <i class="fa fa-info"></i>
+          </button>
         </h5>
         <p>
           <code>{{ snake.url }}</code>
@@ -79,6 +96,83 @@ $('#delete_snake_modal').on('show.bs.modal', function (event) {
   var $modal = $(this)
   $modal.find('.modal-text').text('Are you sure you want to delete ' + name + '?')
   $modal.find('form').attr('action', '/snakes/' + id + '/')
+})
+
+$(document).on('click', '.popover .close', function () {
+  $(this).parents('.popover').popover('dispose')
+})
+
+$('.js-show-snake-status').on('click', function (event) {
+  event.preventDefault()
+  var $elem = $(this)
+  var snakeUrl = $elem.data('snake-url')
+
+  $('.popover').popover('dispose')
+  $elem.prop('disabled', true)
+  $elem.addClass('disabled')
+
+  var engineUrl = window.__battlesnake.settings.ENGINE_URL
+
+  $.ajax({
+    async: true,
+    dataType: 'json',
+    url: engineUrl + '/validateSnake?url=' + snakeUrl,
+    success: function (data) {
+      var html = ''
+      var hasErrors = false
+
+      var scoreTotal = 0
+      var scorePassedTotal = 0
+
+      for (var key of Object.keys(data)) {
+        var item = data[key]
+        scoreTotal += (item.score.checksPassed + item.score.checksFailed)
+        scorePassedTotal += item.score.checksPassed
+
+        html += '<h3>' + key + '</h3>' +
+          '<p>' +
+          'Status: <span class="badge badge-sm ' + (item.statusCode !== 200 ? 'badge-danger' : 'badge-success') + '">' + item.statusCode + '</span><br />' +
+          'Checks: <span class="badge badge-success badge-sm">' + item.score.checksPassed + ' passed</span>' + (item.score.checksFailed !== 0 ? ' / <span class="badge badge-danger badge-sm">' + item.score.checksFailed + ' failed</span>' : '') + '<br />' +
+          'Message: ' + item.Message +
+          '</p>'
+
+
+        if (item.Errors.length) {
+          hasErrors = true
+        }
+
+        html += hasErrors ? '<p class="text-danger">' : ''
+        for (var errIndex in item.Errors) {
+          html += 'Error: ' + item.Errors[errIndex]
+        }
+        html += hasErrors ? '</p>' : ''
+      }
+
+      if (!hasErrors) {
+        html = '<div class="alert alert-success text-center">No errors!</div>' + html
+      }
+
+      if (scorePassedTotal < scoreTotal) {
+        $elem.removeClass('btn-light')
+        $elem.addClass('btn-danger')
+      } else {
+        $elem.removeClass('btn-light')
+        $elem.addClass('btn-success')
+      }
+
+      $elem.popover({
+        placement: 'right',
+        trigger: 'click',
+        title: 'Snake API Validation <button type="button" class="close" aria-label="Close" style="line-height: .6;"><span aria-hidden="true">&times;</span></button>',
+        html: true,
+        content: html,
+      })
+      $elem.popover('show')
+
+      $elem.prop('disabled', false)
+      $elem.removeClass('disabled')
+    },
+  })
 })
 {% endblock %}
 
