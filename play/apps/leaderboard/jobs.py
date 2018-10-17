@@ -17,21 +17,26 @@ class MatchStarter:
         matches = []
         i = 0
         while i < len(snake_ids):
-            matches.append(tuple(snake_ids[i : i + n]))
+            matches.append(tuple(snake_ids[i: i + n]))
             i = i + n
         return matches
 
     def start_game(self, snake_ids):
         """ Start a game given a tuple of snake id's. Returning a game id. """
-        snakes = Snake.objects.filter(id__in=snake_ids)
+        if len(snake_ids) == 1:
+            return
+
+        snakes = [vars(s) for s in Snake.objects.filter(id__in=snake_ids)]
         game = Game(width=10, height=10, food=5, snakes=snakes)
-        game.save()
+        game.create()
+        game.is_leaderboard_game = True
         game.run()
         GameLeaderboard(game=game).save()
 
     def run(self):
         n = 0
         matches = self.matches()
+        print("matches found", len(matches))
         for match in matches:
             self.start_game(match)
             n += 1
