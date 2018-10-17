@@ -10,9 +10,4 @@ class Migration(migrations.Migration):
         ('game', '0004_add_team_to_game'),
     ]
 
-    operations = [
-        migrations.AlterUniqueTogether(
-            name='gamesnake',
-            unique_together={('snake', 'game')},
-        ),
-    ]
+    operations = []

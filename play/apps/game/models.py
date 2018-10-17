@@ -111,4 +111,3 @@ class GameSnake(models.Model):
 
     class Meta:
         app_label = 'game'
-        unique_together = (('snake', 'game'),)
