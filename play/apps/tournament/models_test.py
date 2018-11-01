@@ -123,6 +123,7 @@ def test_build_structure_second_round():
     game12 = t.rounds[0].heats[0].create_next_game().game
     game21 = t.rounds[0].heats[1].create_next_game().game
     game22 = t.rounds[0].heats[1].create_next_game().game
+    # Todo: start a second round
 
     rows = t.get_csv()
 
