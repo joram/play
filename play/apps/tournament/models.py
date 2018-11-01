@@ -28,27 +28,15 @@ class TeamMember(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(max_length=256)
+    header_row = ["Round", "Heat", "Snake Name", "Snake Id", "Game 1 URL", "Game 2 URL"]
 
     def build_structure(self):
-        numSnakes = Snake.objects.all().count()
-        while numSnakes < 40:
-            snake = random.choice(list(Snake.objects.all()))
-            snake.id = None
-            import names
-            snake.name = names.get_full_name()
-            snake.save()
-            numSnakes += 1
-
-        for snake in Snake.objects.all():  # update later
-            print("adding %s to tournament %s" % (snake.name, self.name))
-            SnakeTournament.objects.create(snake=snake, tournament=self)
         round = Round.objects.create(number=1, tournament=self)
         round.create_heats()
 
     @property
     def rounds(self):
         rounds = Round.objects.filter(tournament=self)
-        print("rounds: %s" % rounds)
         return list(rounds)
 
     @property
@@ -58,6 +46,22 @@ class Tournament(models.Model):
         for st in snake_tournaments:
             snakes.append(st.snake)
         return snakes
+
+    def get_csv(self):
+        rows = [self.header_row]
+        for round in self.rounds:
+            for heat in round.heats:
+                for snake in heat.snakes:
+                    row = [
+                        "Round {}".format(round.number),
+                        "Heat {}".format(heat.number),
+                        snake.name,
+                        snake.id,
+                    ]
+                    for heat_game in heat.games:
+                        row.append("https://play.battlesnake.io/game/{}".format(heat_game.game.id))
+                    rows.append(row)
+        return rows
 
     class Meta:
         app_label = 'tournament'
@@ -124,15 +128,28 @@ class Heat(models.Model):
 
     def create_next_game(self):
         n = self.games.count() + 1
-        HeatGame.objects.create(heat=self, number=n)
+        return HeatGame.objects.create(heat=self, number=n)
 
     class Meta:
         app_label = 'tournament'
 
 
+class HeatGameManager(models.Manager):
+
+    def create(self, *args, **kwargs):
+        from apps.game.models import Game
+        snake_ids = []
+        game = Game(width=20, height=20, food=10, snakes=snake_ids)
+        game.create()
+        game.save()
+        return super(HeatGameManager, self).create(*args, **kwargs, game=game)
+
+
 class HeatGame(models.Model):
     number = models.IntegerField(default=1)
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
+    game = models.ForeignKey('game.Game', on_delete=models.DO_NOTHING)
+    objects = HeatGameManager()
 
     @property
     def snakes(self):
