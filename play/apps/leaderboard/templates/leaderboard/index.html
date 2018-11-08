@@ -9,7 +9,18 @@
 
     <ol class="list-group">
       {% for snake in ranked %}
-      <li class="list-group-item">{{ snake.name }}: {{ snake.rank }}</li>
+      <li class="list-group-item">
+        {{ snake.name }}: {{ snake.rank }}
+
+        <h6>Most Recent Games</h6>
+        <ol class="list-group">
+          {% for game in snake.games %}
+          <li class="list-group-item">
+            <a href="/games/{{ game.engine_id }}">{{ game.engine_id }}</a>
+          </li>
+          {% endfor %}
+        </ol>
+      </li>
       {% endfor %}
     </ol>
   </div>
