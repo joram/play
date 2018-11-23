@@ -59,7 +59,7 @@ class Tournament(models.Model):
             snakes.append(st.snake)
         return snakes
 
-    def get_csv(self):
+    def export(self):
         rows = [self.header_row]
         for round in self.rounds:
             for heat in round.heats:

@@ -35,7 +35,7 @@ def test_create_next_round_partial_single_heat():
     t = _arrange_tournament("single heat", 5)
     t.create_next_round()
 
-    rows = t.get_csv()
+    rows = t.export()
 
     expected_rows = [
         ['Round', 'Heat', 'Snake Name', 'Snake Id', "Game 1 URL", "Game 2 URL", "Game 3 URL"],
@@ -53,7 +53,7 @@ def test_create_next_round_partial_two_heats():
     t = _arrange_tournament("single heat", 10)
     t.create_next_round()
 
-    rows = t.get_csv()
+    rows = t.export()
 
     expected_rows = [
         ['Round', 'Heat', 'Snake Name', 'Snake Id'],
@@ -78,7 +78,7 @@ def test_create_next_round_partial_two_heats():
     hg1 = t.rounds[0].heats[1].create_next_game()
     game = hg1.game
 
-    rows = t.get_csv()
+    rows = t.export()
 
     heat_2_game_url = "https://play.battlesnake.io/game/{}".format(game.id)
     expected_rows = [
@@ -109,7 +109,7 @@ def test_create_next_round_partial_two_heats():
     _mark_winner(game21)
     game22 = t.rounds[0].heats[1].create_next_game().game
 
-    rows = t.get_csv()
+    rows = t.export()
 
     heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(game11.id)
     heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(game12.id)
@@ -146,7 +146,7 @@ def test_create_next_round_second_round():
     _mark_winner(game22)
     t.create_next_round()
 
-    rows = t.get_csv()
+    rows = t.export()
 
     heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(game11.id)
     heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(game12.id)
@@ -202,7 +202,7 @@ def test_complete_tournament():
     round3_game1 = round3.heats[0].create_next_game().game
     _mark_winner(round3_game1)
 
-    rows = t.get_csv()
+    rows = t.export()
 
     heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(game11.id)
     heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(game12.id)

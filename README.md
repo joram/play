@@ -25,8 +25,8 @@ This is the module that users of all types use to interact with the [game engine
     - Using pyenv? Use `pip` supplied by your virtualenv instead of `pip3`
     - optionally install via pyenv
 ```
-pyenv install 3.6.6
-pyenv virtualenv 3.6.6 play
+pyenv install 3.7
+pyenv virtualenv 3.7 play
 pyenv activate play
 ```
 
@@ -75,7 +75,6 @@ POSTGRES_PORT=5432
 POSTGRES_DB=battlesnakeio_play
 POSTGRES_USER=battlesnakeio
 POSTGRES_PASSWORD=battlesnakeio
-ENV=local
 ```
 
 *NOTE:* Don't use the defaults, it is highly encouraged you customize these values
