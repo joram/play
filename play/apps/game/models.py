@@ -96,6 +96,15 @@ class Game(BaseModel):
     def get_snakes(self):
         return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
 
+    def alive_game_snakes(self):
+        return self.get_snakes().filter(death="pending")
+
+    def winner(self):
+        if self.status == self.Status.COMPLETE:
+            living_snakes = self.alive_game_snakes()
+            if len(living_snakes) == 1:
+                return self.alive_game_snakes()[0]
+
     class Meta:
         app_label = 'game'
 
