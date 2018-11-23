@@ -23,6 +23,13 @@ This is the module that users of all types use to interact with the [game engine
     pip3 install -r requirements.txt
     ```
     - Using pyenv? Use `pip` supplied by your virtualenv instead of `pip3`
+    - optionally install via pyenv
+```
+pyenv install 3.7
+pyenv virtualenv 3.7 play
+pyenv activate play
+```
+
 4. From inside the project `play` folder, run the migrations: `django-admin migrate`
 5. Start the server with:
     ```shell
@@ -33,13 +40,14 @@ This is the module that users of all types use to interact with the [game engine
 6. Setup databases
 7. Visit the app running at <http://localhost:8000>
 
+
 ### Tests
 
 To run tests:
 
 ```shell
 cd play
-pytest
+ENV=local pytest
 ```
 
 ### Github OAuth App Configuration
