@@ -18,6 +18,10 @@ class Snake(models.Model):
     class Meta:
         app_label = 'snake'
 
+    def get_leaderboard_games(self):
+        from apps.game.models import Game
+        return Game.objects.filter(gamesnake__snake_id=self.id, is_leaderboard_game=True).order_by("-modified")[:5]
+
 
 class UserSnake(models.Model):
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE, primary_key=True)

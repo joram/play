@@ -19,11 +19,13 @@ class UserSnakeLeaderboard(models.Model):
     user_snake = models.ForeignKey(
         UserSnake, primary_key=True, on_delete=models.CASCADE
     )
+    mu = models.FloatField(null=True)
+    sigma = models.FloatField(null=True)
 
     @classmethod
     def ranked(cls):
         snakes = list(UserSnakeLeaderboard.objects.all())
-        return sorted(snakes, key=lambda s: s.rank())
+        return sorted(snakes, key=lambda s: s.mu or 25)
 
     def rank(self):
         """

@@ -35,6 +35,7 @@ class Game(BaseModel):
     width = models.IntegerField()
     height = models.IntegerField()
     food = models.IntegerField()
+    is_leaderboard_game = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         self.snakes = kwargs.get('snakes', [])
@@ -92,6 +93,7 @@ class Game(BaseModel):
                 game_snake.save()
 
             self.save()
+            return status
 
     def get_snakes(self):
         return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
@@ -118,4 +120,3 @@ class GameSnake(models.Model):
 
     class Meta:
         app_label = 'game'
-        unique_together = (('snake', 'game'),)
