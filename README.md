@@ -14,31 +14,35 @@ This is the module that users of all types use to interact with the [game engine
 ### Setup
 
 1. Clone the repo to your machine: `git clone git@github.com:battlesnakeio:play`
-2. Install python3.x
+1. Install python3.x
     - on a Mac: `brew install python3`
       - Alternatively, use [`pyenv`](https://github.com/pyenv/pyenv) and [`pyenv-virtualenv`](https://github.com/pyenv/pyenv-virtualenv) to manage your python installations
     - on Linux: `apt-get install python3`
-3. Install the project dependencies:
+1. Install the project dependencies:
     ```shell
     pip3 install -r requirements.txt
     ```
     - Using pyenv? Use `pip` supplied by your virtualenv instead of `pip3`
     - optionally install via pyenv
-```
-pyenv install 3.7
-pyenv virtualenv 3.7 play
-pyenv activate play
-```
+        ```
+        pyenv install 3.7
+        pyenv virtualenv 3.7 play
+        pyenv activate play
+        ```
 
-4. From inside the project `play` folder, run the migrations: `django-admin migrate`
-5. Start the server with:
+1. From inside the project `play` folder, run the migrations: 
+    ```shell
+    ENV=local \
+    PYTHONPATH=~/path/to/play/play \
+    ./manage.py migrate
+    ```
+1. Start the server with:
     ```shell
     ENV=local \
     PYTHONPATH=~/path/to/play/play \
     ./manage.py runserver
     ```
-6. Setup databases
-7. Visit the app running at <http://localhost:8000>
+1. Visit the app running at <http://localhost:8000>
 
 
 ### Tests
