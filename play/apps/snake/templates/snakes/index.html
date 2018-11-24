@@ -141,11 +141,11 @@ $('.js-show-snake-status').on('click', function (event) {
           hasErrors = true
         }
 
-        html += hasErrors ? '<p class="text-danger">' : ''
+        html += hasErrors ? '<p><ul>' : ''
         for (var errIndex in item.Errors) {
-          html += 'Error: ' + item.Errors[errIndex]
+          html += '<li class="text-danger">Error: ' + item.Errors[errIndex] + '</li>'
         }
-        html += hasErrors ? '</p>' : ''
+        html += hasErrors ? '</ul></p>' : ''
       }
 
       if (!hasErrors) {
