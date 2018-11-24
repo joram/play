@@ -102,28 +102,45 @@ $(document).on('click', '.popover .close', function () {
   $(this).parents('.popover').popover('dispose')
 })
 
+function validateSnake(snakeUrl, callback){
+  var engineUrl = window.__battlesnake.settings.ENGINE_URL
+  $.ajax({
+    async: true,
+    dataType: 'json',
+    url: engineUrl + '/validateSnake?url=' + snakeUrl,
+    success: callback
+  });
+}
+
+var snakeStatuses = []
+
 $('.js-show-snake-status').on('click', function (event) {
   event.preventDefault()
   var $elem = $(this)
   var snakeUrl = $elem.data('snake-url')
 
   $('.popover').popover('dispose')
-  $elem.prop('disabled', true)
-  $elem.addClass('disabled')
 
-  var engineUrl = window.__battlesnake.settings.ENGINE_URL
+  $elem.popover({
+    placement: 'right',
+    trigger: 'click',
+    title: 'Snake API Validation <button type="button" class="close" aria-label="Close" style="line-height: .6;"><span aria-hidden="true">&times;</span></button>',
+    html: true,
+    content: snakeStatuses[snakeUrl],
+  })
+  $elem.popover('show')
+})
 
-  $.ajax({
-    async: true,
-    dataType: 'json',
-    url: engineUrl + '/validateSnake?url=' + snakeUrl,
-    success: function (data) {
-      var html = ''
+function updateAllSnakeStatusLabels() {
+  $('.js-show-snake-status').each(function(index,currentSnake){
+    var $elem = $(this)
+    var snakeUrl = $elem.data('snake-url')
+    validateSnake(snakeUrl, function(data){
       var hasErrors = false
 
       var scoreTotal = 0
       var scorePassedTotal = 0
-
+      var html = '';
       for (var key of Object.keys(data)) {
         var item = data[key]
         scoreTotal += (item.score.checksPassed + item.score.checksFailed)
@@ -134,8 +151,7 @@ $('.js-show-snake-status').on('click', function (event) {
           'Status: <span class="badge badge-sm ' + (item.statusCode !== 200 ? 'badge-danger' : 'badge-success') + '">' + item.statusCode + '</span><br />' +
           'Checks: <span class="badge badge-success badge-sm">' + item.score.checksPassed + ' passed</span>' + (item.score.checksFailed !== 0 ? ' / <span class="badge badge-danger badge-sm">' + item.score.checksFailed + ' failed</span>' : '') + '<br />' +
           'Message: ' + item.Message +
-          '</p>'
-
+          '</p>' 
 
         if (item.Errors.length) {
           hasErrors = true
@@ -153,26 +169,21 @@ $('.js-show-snake-status').on('click', function (event) {
       }
 
       if (scorePassedTotal < scoreTotal) {
+        $elem.removeClass('btn-success')
         $elem.removeClass('btn-light')
         $elem.addClass('btn-danger')
       } else {
         $elem.removeClass('btn-light')
+        $elem.removeClass('btn-danger')
         $elem.addClass('btn-success')
       }
 
-      $elem.popover({
-        placement: 'right',
-        trigger: 'click',
-        title: 'Snake API Validation <button type="button" class="close" aria-label="Close" style="line-height: .6;"><span aria-hidden="true">&times;</span></button>',
-        html: true,
-        content: html,
-      })
-      $elem.popover('show')
-
-      $elem.prop('disabled', false)
-      $elem.removeClass('disabled')
-    },
+      snakeStatuses[snakeUrl] = html
+    });
   })
-})
+}
+updateAllSnakeStatusLabels();
+setInterval(updateAllSnakeStatusLabels, 5000);
+
 {% endblock %}
 
