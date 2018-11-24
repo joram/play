@@ -98,5 +98,4 @@ class TournamentForm(forms.Form):
         tournament = Tournament.objects.create(
             name=self.cleaned_data['name'],
         )
-        tournament.build_structure()
         return tournament
