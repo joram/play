@@ -29,9 +29,6 @@ This is the module that users of all types use to interact with the [game engine
         pyenv virtualenv 3.7 play
         pyenv activate play
         ```
-1. Install the database
-    - on a Mac: `brew install postgresql`
-    - on Linux: `apt-get install postgresql`
 
 1. From inside the project `play` folder, run the migrations: 
     ```shell
