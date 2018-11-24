@@ -24,6 +24,10 @@ class User(AbstractBaseUser):
     class Meta:
         app_label = 'authentication'
 
+    @property
+    def is_admin(self):
+        return self.username.lower() in ["dlsteuer", "joram", "brandonb927", "coldog", "matthieudolci"]
+
     def assigned_to_team(self):
         from apps.tournament.models import TeamMember
         try:

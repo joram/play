@@ -24,4 +24,23 @@ urlpatterns = [
     url(r'^team/members/(?P<id>\w+)/$', method_dispatch(
         DELETE=tournament_views.members.delete,
     )),
+
+    url(r'^tournaments/$', method_dispatch(
+        GET=tournament_views.tournament.index,
+    )),
+    url(r'^tournament/new/$', method_dispatch(
+        GET=tournament_views.tournament.new,
+        POST=tournament_views.tournament.create,
+    )),
+    url(r'^tournament/(?P<id>\w+)/edit/$', method_dispatch(
+        GET=tournament_views.tournament.edit,
+        POST=tournament_views.tournament.edit,
+    )),
+    url(r'^tournament/(?P<id>\w+)/$', method_dispatch(
+        GET=tournament_views.tournament.show,
+    )),
+    url(r'^tournament/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$', method_dispatch(
+        GET=tournament_views.tournament.create_game,
+    )),
+
 ]
