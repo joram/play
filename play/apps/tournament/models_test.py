@@ -1,8 +1,10 @@
-from apps.tournament.models import Tournament, SnakeTournament, Snake
+import datetime
+from apps.tournament.models import TournamentGroup, Tournament, SnakeTournament, Snake
 
 
 def _arrange_tournament(name, num_snakes=8):
-    t = Tournament.objects.create(name=name)
+    tg = TournamentGroup.objects.create(name="test tournament", date=datetime.datetime.now())
+    t = Tournament.objects.create(name=name, tournament_group=tg)
     snakes = []
     for i in range(1, num_snakes+1):
         snake = Snake.objects.create(

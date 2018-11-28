@@ -26,8 +26,15 @@ class TeamMember(models.Model):
         unique_together = (('team', 'user'))
 
 
+class TournamentGroup(models.Model):
+    name = models.CharField(max_length=256)
+    date = models.DateField()
+
+
 class Tournament(models.Model):
     name = models.CharField(max_length=256)
+    tournament_group = models.ForeignKey(TournamentGroup, on_delete=models.CASCADE)
+
     header_row = ["Round", "Heat", "Snake Name", "Snake Id", "Game 1 URL", "Game 2 URL", "Game 3 URL"]
 
     def create_next_round(self):
