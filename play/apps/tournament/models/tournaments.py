@@ -1,29 +1,15 @@
 import math
-import random
 from django.db import models
+from django.core.exceptions import ValidationError
 
-from util.fields import ShortUUIDField
-from apps.authentication.models import User
-from apps.snake.models import Snake
-
-
-class Team(models.Model):
-    id = ShortUUIDField(prefix="tem", max_length=128, primary_key=True)
-    name = models.CharField(max_length=128)
-    description = models.TextField()
-    snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
-
-    class Meta:
-        app_label = 'tournament'
+from apps.snake.models import Snake, UserSnake
+from apps.tournament.models.teams import TeamMember
 
 
-class TeamMember(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+class SingleSnakePerTeamPerTournamentValidationError(ValidationError):
 
-    class Meta:
-        app_label = 'tournament'
-        unique_together = (('team', 'user'))
+    def __init__(self):
+        super().__init__(message='Only one snake per event per team')
 
 
 class TournamentGroup(models.Model):
@@ -39,11 +25,9 @@ class Tournament(models.Model):
 
     def create_next_round(self):
         if self.latest_round is not None and self.latest_round.status != "complete":
-            print("can't create next round")
             raise Exception("can't create next round")
 
         num = max([r.number for r in self.rounds]+[0])+1
-        print(num)
         return Round.objects.create(number=num, tournament=self)
 
     @property
@@ -92,7 +76,28 @@ class SnakeTournament(models.Model):
 
     class Meta:
         app_label = 'tournament'
-        unique_together = (('snake', 'tournament'))
+        unique_together = (
+            ('snake', 'tournament'),
+        )
+
+    def validate_unique(self, exclude=None):
+        user_snake = UserSnake.objects.get(snake=self.snake)
+        team_member = TeamMember.objects.get(user=user_snake.user)
+        team = team_member.team
+
+        tournaments = Tournament.objects.filter(tournament_group=self.tournament.tournament_group)
+        qs = SnakeTournament.objects.filter(snake__in=team.snakes, tournament__in=tournaments)
+
+        if qs.count() > 1:
+            raise SingleSnakePerTeamPerTournamentValidationError()
+        if qs.count() == 1 and qs[0] != self:
+            raise SingleSnakePerTeamPerTournamentValidationError()
+
+        models.Model.validate_unique(self, exclude=exclude)
+
+    def save(self, *args, **kwargs):
+        self.validate_unique()
+        super(SnakeTournament, self).save(*args, **kwargs)
 
 
 class RoundManager(models.Manager):
