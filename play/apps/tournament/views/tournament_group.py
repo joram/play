@@ -11,37 +11,32 @@ from apps.authentication.decorators import admin_required
 @login_required
 @transaction.atomic
 def new(request):
-    return render(request, 'tournament_group/new.html', {
-        'form': TournamentGroupForm(),
-    })
+    if request.method == 'POST':
+        form = TournamentGroupForm(request.POST)
 
+        if form.is_valid():
+            tournament_group = form.save()
+            messages.success(request, 'Tournament group successfully created')
+            return redirect('/tournaments/')
 
-@admin_required
-@login_required
-@transaction.atomic
-def create(request):
-    form = TournamentGroupForm(request.POST)
-    if form.is_valid():
-        tournament_group = form.save()
-        messages.success(request, 'Tournament successfully created')
-        return redirect('/tournament_group/%d/edit/' % tournament_group.id)
-    return render(request, 'tournament_group/new.html', {
-        'form': form,
-    }, status=400)
+    else:
+        form = TournamentGroupForm()
 
+    return render(request, 'tournament_group/new.html', { 'form': form })
 
 @admin_required
 @login_required
 def edit(request, id):
-    tg = TournamentGroup.objects.get(id=id)
-    form = TournamentGroupForm()
-    form.name = tg.name
-    form.date = tg.date
-    if form.is_valid():
-        tg.name = form.name
-        tg.date = form.date
-        tg.save()
-    return render(request, 'tournament_group/edit.html', {
-        'form': form,
-        'tournament_group': tg,
-    })
+    tournament_group = TournamentGroup.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = TournamentGroupForm(request.POST, instance=tournament_group)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Tournament group "{tournament_group.name}" updated')
+            return redirect('/tournaments/')
+    else:
+        form = TournamentGroupForm(instance=tournament_group)
+
+    return render(request, 'tournament_group/edit.html', { 'form': form })

@@ -16,6 +16,9 @@ class TournamentGroup(models.Model):
     name = models.CharField(max_length=256)
     date = models.DateField()
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Tournament(models.Model):
     name = models.CharField(max_length=256)
