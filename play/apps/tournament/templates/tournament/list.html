@@ -12,7 +12,7 @@
   <div class="card-body container">
     <ul>
       {% for t in tournaments %}
-      <li><a href="/tournament/{{ t.id }}/">{{ t.name }} ({{ t.tournament_group.name }})</a> <a href="/tournament/{{ t.id }}/edit">Edit</a></li>
+      <li><a href="/tournament/{{ t.id }}/">{{ t.name }}</a> ({{ t.tournament_group.name }}) <a href="/tournament/{{ t.id }}/edit">Edit</a></li>
       {% endfor %}
     </ul>
   </div>
@@ -32,7 +32,7 @@
   <div class="card-body container">
     <ul>
       {% for tg in tournament_groups %}
-      <li>{{ tg.name }} <span class="badge badge-secondary">{{tg.date}}</span> <a href="/tournament_group/{{ tg.id }}/edit">Edit</a></li>
+      <li>{{ tg.name }} ({{tg.date}}) <a href="/tournament_group/{{ tg.id }}/edit">Edit</a></li>
       {% endfor %}
     </ul>
   </div>
