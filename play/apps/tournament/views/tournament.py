@@ -3,14 +3,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from apps.tournament.forms import TournamentForm
-from apps.tournament.models import Tournament, Heat
+from apps.tournament.models import TournamentGroup, Tournament, Heat
 from apps.authentication.decorators import admin_required
+
 
 @admin_required
 @login_required
 def index(request):
     user = request.user
     return render(request, 'tournament/list.html', {
+        'tournament_groups': TournamentGroup.objects.all(),
         'tournaments': Tournament.objects.all(),
         'user': user,
     })

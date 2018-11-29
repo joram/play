@@ -35,6 +35,15 @@ urlpatterns = [
     url(r'^tournament/(?P<id>\w+)/edit/$', method_dispatch(
         GET=tournament_views.tournament.edit,
         POST=tournament_views.tournament.edit,
+        PUT=tournament_views.tournament.edit,
+    )),
+    url(r'^tournament_group/new/$', method_dispatch(
+        GET=tournament_views.tournament_group.new,
+        POST=tournament_views.tournament_group.create,
+    )),
+    url(r'^tournament_group/(?P<id>\w+)/edit/$', method_dispatch(
+        GET=tournament_views.tournament_group.edit,
+        POST=tournament_views.tournament_group.edit,
     )),
     url(r'^tournament/(?P<id>\w+)/$', method_dispatch(
         GET=tournament_views.tournament.show,

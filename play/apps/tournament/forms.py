@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from apps.tournament.models import Team, TeamMember, Tournament
+from apps.tournament.models import Team, TeamMember, Tournament, TournamentGroup
 from apps.authentication.models import User
 from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
@@ -93,9 +93,23 @@ class AddTeamMemberForm(forms.Form):
 
 class TournamentForm(forms.Form):
     name = forms.CharField(required=True)
+    group = forms.ModelChoiceField(TournamentGroup.objects, required=True)
 
     def save(self, *args, **kwargs):
         tournament = Tournament.objects.create(
             name=self.cleaned_data['name'],
+            tournament_group=self.cleaned_data['group']
+        )
+        return tournament
+
+
+class TournamentGroupForm(forms.Form):
+    name = forms.CharField(required=True)
+    date = forms.DateField(required=True)
+
+    def save(self, *args, **kwargs):
+        tournament = TournamentGroup.objects.create(
+            name=self.cleaned_data['name'],
+            date=self.cleaned_data['date'],
         )
         return tournament
