@@ -2,10 +2,9 @@
 {% block content %}
 <div class="mb-md-3 text-center">
   <h1>Create Tournament</h1>
-  <button type="button" class="btn btn-primary js-show-form-btn">Create a tournament</button>
 </div>
 
-<div class="form-group card js-form-to-show" style="display: none;">
+<div class="form-group card">
   <div class="card-body">
     <form method="post" novalidate action="/tournament/new/">
       {% csrf_token %}
@@ -14,10 +13,4 @@
     </form>
   </div>
 </div>
-{% endblock %}
-
-{% block js_dom_ready %}
-$('.js-show-form-btn').on('click', function () {
-  $('.js-form-to-show').fadeIn()
-})
 {% endblock %}

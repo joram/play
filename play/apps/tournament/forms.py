@@ -91,25 +91,16 @@ class AddTeamMemberForm(forms.Form):
         )
 
 
-class TournamentForm(forms.Form):
-    name = forms.CharField(required=True)
-    group = forms.ModelChoiceField(TournamentGroup.objects, required=True)
+class TournamentForm(forms.ModelForm):
 
-    def save(self, *args, **kwargs):
-        tournament = Tournament.objects.create(
-            name=self.cleaned_data['name'],
-            tournament_group=self.cleaned_data['group']
-        )
-        return tournament
+    class Meta:
+        model = Tournament
+        fields = ['name', 'tournament_group',]
 
 
-class TournamentGroupForm(forms.Form):
-    name = forms.CharField(required=True)
-    date = forms.DateField(required=True)
+class TournamentGroupForm(forms.ModelForm):
 
-    def save(self, *args, **kwargs):
-        tournament = TournamentGroup.objects.create(
-            name=self.cleaned_data['name'],
-            date=self.cleaned_data['date'],
-        )
-        return tournament
+    class Meta:
+        model = TournamentGroup
+        fields = ['name', 'date',]
+

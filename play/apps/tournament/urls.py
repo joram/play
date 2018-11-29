@@ -24,26 +24,17 @@ urlpatterns = [
     url(r'^team/members/(?P<id>\w+)/$', method_dispatch(
         DELETE=tournament_views.members.delete,
     )),
-
     url(r'^tournaments/$', method_dispatch(
         GET=tournament_views.tournament.index,
     )),
     url(r'^tournament/new/$', method_dispatch(
         GET=tournament_views.tournament.new,
-        POST=tournament_views.tournament.create,
+        POST=tournament_views.tournament.new,
     )),
     url(r'^tournament/(?P<id>\w+)/edit/$', method_dispatch(
         GET=tournament_views.tournament.edit,
         POST=tournament_views.tournament.edit,
         PUT=tournament_views.tournament.edit,
-    )),
-    url(r'^tournament_group/new/$', method_dispatch(
-        GET=tournament_views.tournament_group.new,
-        POST=tournament_views.tournament_group.create,
-    )),
-    url(r'^tournament_group/(?P<id>\w+)/edit/$', method_dispatch(
-        GET=tournament_views.tournament_group.edit,
-        POST=tournament_views.tournament_group.edit,
     )),
     url(r'^tournament/(?P<id>\w+)/$', method_dispatch(
         GET=tournament_views.tournament.show,
@@ -51,5 +42,12 @@ urlpatterns = [
     url(r'^tournament/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$', method_dispatch(
         GET=tournament_views.tournament.create_game,
     )),
-
+    url(r'^tournament_group/new/$', method_dispatch(
+        GET=tournament_views.tournament_group.new,
+        POST=tournament_views.tournament_group.new,
+    )),
+    url(r'^tournament_group/(?P<id>\w+)/edit/$', method_dispatch(
+        GET=tournament_views.tournament_group.edit,
+        POST=tournament_views.tournament_group.edit,
+    )),
 ]

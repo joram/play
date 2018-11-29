@@ -1,29 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <div class="card">
   <div class="card-header">
-    All Tournament Groups
-    <span class="pull-right">
-      <a href="/tournament_group/new">
-        <i class="fa fa-edit"></i> New
-      </a>
-    </span>
-  </div>
-  <div class="card-body container">
-    <ul>
-      {% for tg in tournament_groups %}
-      <li><a href="/tournament_group/{{ tg.id }}/edit">{{ tg.name }} ({{tg.date}})</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
-
-<br/>
-
-<div class="card">
-  <div class="card-header">
-    All Tournaments
+    Tournaments
     <span class="pull-right">
       <a href="/tournament/new">
         <i class="fa fa-edit"></i> New
@@ -33,34 +12,29 @@
   <div class="card-body container">
     <ul>
       {% for t in tournaments %}
-      <li><a href="/tournament/{{ t.id }}/edit">{{ t.name }} ({{ t.tournament_group.name }})</a></li>
+      <li><a href="/tournament/{{ t.id }}/">{{ t.name }} ({{ t.tournament_group.name }})</a> <a href="/tournament/{{ t.id }}/edit">Edit</a></li>
       {% endfor %}
     </ul>
   </div>
 </div>
 
-<div class="modal fade" id="delete_user_modal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p class="modal-text"></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="_method" value="delete">
-            <button type="submit" class="btn btn-primary">Delete</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}
+<br/>
 
+<div class="card">
+  <div class="card-header">
+    Tournament Groups
+    <span class="pull-right">
+      <a href="/tournament_group/new">
+        <i class="fa fa-edit"></i> New
+      </a>
+    </span>
+  </div>
+  <div class="card-body container">
+    <ul>
+      {% for tg in tournament_groups %}
+      <li>{{ tg.name }} <span class="badge badge-secondary">{{tg.date}}</span> <a href="/tournament_group/{{ tg.id }}/edit">Edit</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

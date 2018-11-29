@@ -22,47 +22,42 @@ def index(request):
 @login_required
 @transaction.atomic
 def new(request):
-    return render(request, 'tournament/new.html', {
-        'form': TournamentForm(),
-    })
+    if request.method == 'POST':
+        form = TournamentForm(request.POST)
 
+        if form.is_valid():
+            tournament = form.save()
+            messages.success(request, f'Tournament "{tournament.name}" successfully created')
+            return redirect('/tournaments/')
+    else:
+        form = TournamentForm()
 
-@admin_required
-@login_required
-@transaction.atomic
-def create(request):
-    form = TournamentForm(request.POST)
-    if form.is_valid():
-        tournament = form.save()
-        messages.success(request, 'Tournament successfully created')
-        return redirect('/tournament/%d/edit/' % tournament.id)
-    return render(request, 'tournament/new.html', {
-        'form': form,
-    }, status=400)
+    return render(request, 'tournament/new.html', { 'form': form })
 
 
 @admin_required
 @login_required
 def edit(request, id):
-    t = Tournament.objects.get(id=id)
-    form = TournamentForm()
-    form.name = t.name
-    if form.is_valid():
-        t.name = form.name
-        t.save()
-    return render(request, 'tournament/edit.html', {
-        'form': form,
-        'tournament': t,
-    })
+    tournament = Tournament.objects.get(id=id)
+    if request.method == 'POST':
+        form = TournamentForm(request.POST, instance=tournament)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Tournament "{tournament.name}" updated')
+            return redirect('/tournaments/')
+    else:
+        form = TournamentForm(instance=tournament)
+
+
+    return render(request, 'tournament/edit.html', { 'form': form })
 
 
 @admin_required
 @login_required
 def show(request, id):
-    t = Tournament.objects.get(id=id)
-    return render(request, 'tournament/show.html', {
-        'tournament': t,
-    })
+    tournament = Tournament.objects.get(id=id)
+    return render(request, 'tournament/show.html', { 'tournament': tournament })
 
 
 @admin_required
@@ -70,5 +65,5 @@ def show(request, id):
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
     heat.create_next_game()
-    return redirect('/tournament/%s/' % id)
+    return redirect(f'/tournament/{id}/')
 

@@ -1,20 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="mb-4 text-center">Edit Tournament</h1>
+<h1 class="mb-4 text-center">Edit Tournament Group</h1>
 
 <div class="form-group card">
   <div class="card-body">
-    <form method="post">
-      <input type="hidden" name="_method" value="put">
+    <form method="post" novalidate>
       {% csrf_token %}
       {% include '_form.html' with form=form %}
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <ul id="snakes">
-      {% for snake in tournament.snakes %}
-      <li>{{snake.name}}</li>
-      {% endfor %}
-    </ul>
   </div>
 </div>
 {% endblock %}
