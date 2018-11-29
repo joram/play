@@ -19,7 +19,10 @@ class GameStatusJob:
                     game_snake_ids = [s[0] for s in sorted_snakes]
                     game_snakes = GameSnake.objects.filter(id__in=game_snake_ids)
                     snake_ids = [gs.snake_id for gs in game_snakes]
-                    snakes = UserSnake.objects.filter(snake_id__in=snake_ids)
+                    lookup = {}
+                    for us in UserSnake.objects.filter(snake_id__in=snake_ids):
+                        lookup[us.id] = us
+                    snakes = [lookup[i] for i in snake_ids]
                     lb = [UserSnakeLeaderboard.objects.get(user_snake=s) for s in snakes]
                     ratings = [(self.create_rating(l),) for l in lb]
                     new_rankings = trueskill.rate(ratings, ranks=list(range(0, len(ratings))))

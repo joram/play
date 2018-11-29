@@ -1,4 +1,7 @@
 import random
+
+from django.db.models import Q
+
 from apps.leaderboard.models import UserSnakeLeaderboard, GameLeaderboard
 from apps.game.models import Game
 from apps.snake.models import Snake
@@ -13,12 +16,36 @@ class MatchStarter:
         snake_ids = list(
             UserSnakeLeaderboard.objects.all().values_list("user_snake_id", flat=True)
         )
+
+        current_leaderboard_games = list(Game.objects.filter(Q(status=Game.Status.RUNNING) | Q(status=Game.Status.PENDING), is_leaderboard_game=True))
         random.shuffle(snake_ids)
         matches = []
-        i = 0
-        while i < len(snake_ids):
-            matches.append(tuple(snake_ids[i: i + n]))
-            i = i + n
+        current_match = []
+
+        for snake_id in snake_ids:
+            skip = False
+            for game in current_leaderboard_games:
+                for snake in game.get_snakes():
+                    if snake_id == snake.snake.id:
+                        skip = True
+                        break
+
+            if skip:
+                continue
+
+            current_match.append(snake_id)
+
+            if len(current_match) >= n:
+                matches.append(current_match)
+                current_match = []
+
+        if len(current_match) > 0:
+            matches.append(current_match)
+
+        for m in matches:
+            if len(m) <= 1:
+                matches.remove(m)
+
         return matches
 
     def start_game(self, snake_ids):
