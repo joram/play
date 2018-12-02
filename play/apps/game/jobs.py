@@ -21,7 +21,7 @@ class GameStatusJob:
                     snake_ids = [gs.snake_id for gs in game_snakes]
                     lookup = {}
                     for us in UserSnake.objects.filter(snake_id__in=snake_ids):
-                        lookup[us.id] = us
+                        lookup[us.snake_id] = us
                     snakes = [lookup[i] for i in snake_ids]
                     lb = [UserSnakeLeaderboard.objects.get(user_snake=s) for s in snakes]
                     ratings = [(self.create_rating(l),) for l in lb]
