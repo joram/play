@@ -1,0 +1,7 @@
+{
+  "baseUrl": "http://localhost:8000",
+  "env": {},
+  "numTestsKeptInMemory": 5,
+  "integrationFolder": "tests",
+  "supportFile": "cypress.support.js"
+}
