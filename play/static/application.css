@@ -17,7 +17,7 @@
 
 .fullscreen-board-frame {
   position: relative;
-  max-width: 90vw;
-  height: 60vh;
+  max-width: 1200px;
+  height: 800px;
   margin: 0 auto;
 }
