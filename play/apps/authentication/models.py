@@ -26,7 +26,7 @@ class User(AbstractBaseUser):
 
     @property
     def is_admin(self):
-        return self.username.lower() in ["dlsteuer", "joram", "brandonb927", "coldog", "matthieudolci"]
+        return self.username.lower() in ["dlsteuer", "joram", "brandonb927", "coldog", "matthieudolci", "codeallthethingz"]
 
     def assigned_to_team(self):
         from apps.tournament.models import TeamMember
