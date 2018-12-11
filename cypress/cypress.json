@@ -1,0 +1,10 @@
+{
+  "baseUrl": "http://localhost:8000",
+  "env": {},
+  "numTestsKeptInMemory": 5,
+  "integrationFolder": "tests",
+  "pluginsFile": "config/plugins.js",
+  "supportFile": "config/support.js",
+  "videosFolder": "output/videos",
+  "videoCompression": 0
+}
