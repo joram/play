@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from apps.tournament.models import Team, TeamMember, Tournament, TournamentGroup
+from apps.tournament.models import Team, TeamMember, TournamentBracket, Tournament, SnakeTournamentBracket
 from apps.authentication.models import User
 from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
@@ -91,16 +91,23 @@ class AddTeamMemberForm(forms.Form):
         )
 
 
+class SnakeTournamentBracketForm(forms.ModelForm):
+
+    class Meta:
+        model = SnakeTournamentBracket
+        fields = ['snake', 'tournament_bracket', ]
+
+
+class TournamentBracketForm(forms.ModelForm):
+
+    class Meta:
+        model = TournamentBracket
+        fields = ['name', 'tournament', ]
+
+
 class TournamentForm(forms.ModelForm):
 
     class Meta:
         model = Tournament
-        fields = ['name', 'tournament_group',]
-
-
-class TournamentGroupForm(forms.ModelForm):
-
-    class Meta:
-        model = TournamentGroup
         fields = ['name', 'date',]
 

@@ -3,8 +3,8 @@ from apps.tournament.models import *
 
 
 def _arrange_tournament(name, num_snakes=8):
-    tg = TournamentGroup.objects.create(name="test tournament", date=datetime.datetime.now())
-    t = Tournament.objects.create(name=name, tournament_group=tg)
+    tg = Tournament.objects.create(name="test tournament", date=datetime.datetime.now())
+    t = TournamentBracket.objects.create(name=name, tournament_group=tg)
     snakes = []
     for i in range(1, num_snakes+1):
         snake = Snake.objects.create(name="Snake {}".format(i), id="snk_{}".format(i))
@@ -12,7 +12,7 @@ def _arrange_tournament(name, num_snakes=8):
         user = User.objects.create(username="user_{}".format(i))
         TeamMember.objects.create(team=team, user=user)
         UserSnake.objects.create(snake=snake, user=user)
-        SnakeTournament.objects.create(snake=snake, tournament=t,)
+        SnakeTournamentBracket.objects.create(snake=snake, tournament=t, )
         snakes.append(snake)
     return t
 

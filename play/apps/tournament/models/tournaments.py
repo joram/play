@@ -12,17 +12,21 @@ class SingleSnakePerTeamPerTournamentValidationError(ValidationError):
         super().__init__(message='Only one snake per event per team')
 
 
-class TournamentGroup(models.Model):
+class Tournament(models.Model):
     name = models.CharField(max_length=256)
     date = models.DateField()
+
+    @property
+    def brackets(self):
+        return TournamentBracket.objects.filter(tournament=self)
 
     def __str__(self):
         return f'{self.name}'
 
 
-class Tournament(models.Model):
+class TournamentBracket(models.Model):
     name = models.CharField(max_length=256)
-    tournament_group = models.ForeignKey(TournamentGroup, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
     header_row = ["Round", "Heat", "Snake Name", "Snake Id", "Game 1 URL", "Game 2 URL", "Game 3 URL"]
 
@@ -31,11 +35,11 @@ class Tournament(models.Model):
             raise Exception("can't create next round")
 
         num = max([r.number for r in self.rounds]+[0])+1
-        return Round.objects.create(number=num, tournament=self)
+        return Round.objects.create(number=num, tournament_bracket=self)
 
     @property
     def rounds(self):
-        rounds = Round.objects.filter(tournament=self).order_by("number")
+        rounds = Round.objects.filter(tournament_bracket=self).order_by("number")
         return list(rounds)
 
     @property
@@ -47,11 +51,15 @@ class Tournament(models.Model):
 
     @property
     def snakes(self):
-        snake_tournaments = SnakeTournament.objects.filter(tournament=self)
+        snake_tournaments = SnakeTournamentBracket.objects.filter(tournament_bracket=self)
         snakes = []
         for st in snake_tournaments:
             snakes.append(st.snake)
         return snakes
+
+    @property
+    def snake_count(self):
+        return len(self.snakes)
 
     def export(self):
         rows = [self.header_row]
@@ -69,18 +77,21 @@ class Tournament(models.Model):
                     rows.append(row)
         return rows
 
+    def __str__(self):
+        return f'{self.name}'
+
     class Meta:
         app_label = 'tournament'
 
 
-class SnakeTournament(models.Model):
+class SnakeTournamentBracket(models.Model):
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament_bracket = models.ForeignKey(TournamentBracket, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'tournament'
         unique_together = (
-            ('snake', 'tournament'),
+            ('snake', 'tournament_bracket'),
         )
 
     def validate_unique(self, exclude=None):
@@ -88,8 +99,8 @@ class SnakeTournament(models.Model):
         team_member = TeamMember.objects.get(user=user_snake.user)
         team = team_member.team
 
-        tournaments = Tournament.objects.filter(tournament_group=self.tournament.tournament_group)
-        qs = SnakeTournament.objects.filter(snake__in=team.snakes, tournament__in=tournaments)
+        tournament_brackets = TournamentBracket.objects.filter(tournament=self.tournament_bracket.tournament)
+        qs = SnakeTournamentBracket.objects.filter(snake__in=team.snakes, tournament_bracket__in=tournament_brackets)
 
         if qs.count() > 1:
             raise SingleSnakePerTeamPerTournamentValidationError()
@@ -100,7 +111,7 @@ class SnakeTournament(models.Model):
 
     def save(self, *args, **kwargs):
         self.validate_unique()
-        super(SnakeTournament, self).save(*args, **kwargs)
+        super(SnakeTournamentBracket, self).save(*args, **kwargs)
 
 
 class RoundManager(models.Manager):
@@ -110,12 +121,12 @@ class RoundManager(models.Manager):
         max_snakes_per = 8
 
         # Finale
-        if len(round.snakes) == 3:
+        if len(round.snakes) <= 3:
             print("making finals")
             heat = Heat.objects.create(number=1, round=round, desired_games=1)
             print(round.snakes)
             for snake in round.snakes:
-                snakeTournament = SnakeTournament.objects.get(snake=snake, tournament=round.tournament)
+                snakeTournament = SnakeTournamentBracket.objects.get(snake=snake, tournament_bracket=round.tournament_bracket)
                 SnakeHeat.objects.create(snake=snakeTournament, heat=heat)
             return round
 
@@ -124,7 +135,7 @@ class RoundManager(models.Manager):
             print("making semi-finals")
             heat = Heat.objects.create(number=1, round=round, desired_games=3)
             for snake in round.snakes:
-                snakeTournament = SnakeTournament.objects.get(snake=snake, tournament=round.tournament)
+                snakeTournament = SnakeTournamentBracket.objects.get(snake=snake, tournament_bracket=round.tournament_bracket)
                 SnakeHeat.objects.create(snake=snakeTournament, heat=heat)
             return round
 
@@ -134,7 +145,7 @@ class RoundManager(models.Manager):
         i = 0
         for snake in round.snakes:
             heat = heats[i % len(heats)]
-            snakeTournament = SnakeTournament.objects.get(snake=snake, tournament=round.tournament)
+            snakeTournament = SnakeTournamentBracket.objects.get(snake=snake, tournament_bracket=round.tournament_bracket)
             SnakeHeat.objects.create(snake=snakeTournament, heat=heat)
             i += 1
         return round
@@ -142,17 +153,17 @@ class RoundManager(models.Manager):
 
 class Round(models.Model):
     number = models.IntegerField(default=1)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament_bracket = models.ForeignKey(TournamentBracket, on_delete=models.CASCADE)
     objects = RoundManager()
 
     @property
     def previous(self):
-        return Round.objects.get(number=self.number-1, tournament=self.tournament)
+        return Round.objects.get(number=self.number-1, tournament_bracket=self.tournament_bracket)
 
     @property
     def snakes(self):
         if self.number == 1:
-            return self.tournament.snakes
+            return self.tournament_bracket.snakes
         return [s.snake for s in self.previous.winners]
 
     @property
@@ -175,7 +186,7 @@ class Round(models.Model):
 
     class Meta:
         app_label = 'tournament'
-        unique_together = (('number', 'tournament'))
+        unique_together = (('number', 'tournament_bracket'))
 
 
 class Heat(models.Model):
@@ -186,11 +197,13 @@ class Heat(models.Model):
     @property
     def snakes(self):
         snakeHeats = SnakeHeat.objects.filter(heat=self)
-        return [sh.snake.snake for sh in snakeHeats]
+        snakes = [sh.snake.snake for sh in snakeHeats]
+        return snakes
 
     @property
     def games(self):
-        return HeatGame.objects.filter(heat=self)
+        qs = HeatGame.objects.filter(heat=self)
+        return qs
 
     @property
     def latest_game(self):
@@ -214,6 +227,8 @@ class Heat(models.Model):
 
     @property
     def status(self):
+        for hg in self.games:
+            hg.game.update_from_engine()
         if len(self.games) < self.desired_games:
             return "running"
         for game in self.games:
@@ -287,7 +302,7 @@ class HeatGame(models.Model):
 
 class SnakeHeat(models.Model):
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
-    snake = models.ForeignKey(SnakeTournament, on_delete=models.CASCADE)
+    snake = models.ForeignKey(SnakeTournamentBracket, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'tournament'

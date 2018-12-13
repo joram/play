@@ -2,16 +2,22 @@
 {% block content %}
 <div class="card">
   <div class="card-header">
-    {{ tournament.name }}
+    {{ tournament_bracket.name }}
     <span class="pull-right">
-      <a href="/tournament/{{ tournament.id }}/edit">
+      <a href="/tournament/bracket/{{ tournament_bracket.id }}/edit">
         <i class="fa fa-edit"></i> Edit
+      </a>
+      <a href="/tournament/bracket/{{ tournament_bracket.id }}/add/snake">
+        <i class="fa fa-edit"></i> Add Snake
+      </a>
+      <a href="/tournament/bracket/{{ tournament_bracket.id }}/create/next/round">
+        <i class="fa fa-edit"></i> Create Next Round
       </a>
     </span>
   </div>
   <div class="card-body container">
     <ul class="rounds">
-    {% for round in tournament.rounds %}
+    {% for round in tournament_bracket.rounds %}
       <li class="round">
         Round: {{ round.number }}
 
@@ -29,11 +35,11 @@
             </div>
 
             <div class="heat-games">
-              <a href="/tournament/{{ tournament.id }}/heat/{{ heat.id }}/create_game/">Create Next Game</a>
+              <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">Create Next Game</a>
               <ul class="games">
                 {% for heat_game in heat.games %}
                   <li class="heat_game">
-                    Game {{ heat_game.number }}
+                    <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">Game {{ heat_game.number }}</a>
                   </li>
                 {% endfor %}
               </ul>

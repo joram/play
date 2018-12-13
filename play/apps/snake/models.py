@@ -15,6 +15,9 @@ class Snake(models.Model):
     name = models.CharField(max_length=128)
     url = models.CharField(max_length=128)
 
+    def __str__(self):
+        return f'{self.name}'
+
     class Meta:
         app_label = 'snake'
 

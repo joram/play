@@ -24,6 +24,33 @@ urlpatterns = [
     url(r'^team/members/(?P<id>\w+)/$', method_dispatch(
         DELETE=tournament_views.members.delete,
     )),
+    url(r'^tournament/bracket/new/$', method_dispatch(
+        GET=tournament_views.tournament_bracket.new,
+        POST=tournament_views.tournament_bracket.new,
+    )),
+    url(r'^tournament/bracket/(?P<id>\w+)/edit/$', method_dispatch(
+        GET=tournament_views.tournament_bracket.edit,
+        POST=tournament_views.tournament_bracket.edit,
+        PUT=tournament_views.tournament_bracket.edit,
+    )),
+    url(r'^tournament/bracket/(?P<id>\w+)/add/snake$', method_dispatch(
+        GET=tournament_views.tournament_bracket_snake.new,
+        POST=tournament_views.tournament_bracket_snake.new,
+        PUT=tournament_views.tournament_bracket_snake.new,
+    )),
+    url(r'^tournament/bracket/(?P<id>\w+)/$', method_dispatch(
+        GET=tournament_views.tournament_bracket.show,
+    )),
+    url(r'^tournament/bracket/(?P<id>\w+)/create/next/round$', method_dispatch(
+        GET=tournament_views.tournament_bracket.create_next_round,
+    )),
+    url(r'^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$', method_dispatch(
+        GET=tournament_views.tournament_bracket.create_game,
+        POST=tournament_views.tournament_bracket.create_game,
+    )),
+    url(r'^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/game/(?P<heat_game_number>\w+)/$', method_dispatch(
+        GET=tournament_views.tournament_bracket.run_game,
+    )),
     url(r'^tournaments/$', method_dispatch(
         GET=tournament_views.tournament.index,
     )),
@@ -34,20 +61,5 @@ urlpatterns = [
     url(r'^tournament/(?P<id>\w+)/edit/$', method_dispatch(
         GET=tournament_views.tournament.edit,
         POST=tournament_views.tournament.edit,
-        PUT=tournament_views.tournament.edit,
-    )),
-    url(r'^tournament/(?P<id>\w+)/$', method_dispatch(
-        GET=tournament_views.tournament.show,
-    )),
-    url(r'^tournament/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$', method_dispatch(
-        GET=tournament_views.tournament.create_game,
-    )),
-    url(r'^tournament_group/new/$', method_dispatch(
-        GET=tournament_views.tournament_group.new,
-        POST=tournament_views.tournament_group.new,
-    )),
-    url(r'^tournament_group/(?P<id>\w+)/edit/$', method_dispatch(
-        GET=tournament_views.tournament_group.edit,
-        POST=tournament_views.tournament_group.edit,
     )),
 ]
