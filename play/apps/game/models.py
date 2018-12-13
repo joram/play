@@ -111,7 +111,7 @@ class Game(BaseModel):
         app_label = 'game'
 
 
-class GameSnake(models.Model):
+class GameSnake(BaseModel):
     id = ShortUUIDField(prefix='gs', max_length=128, primary_key=True)
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

@@ -1,15 +1,16 @@
 from django.db import models, connection
 from apps.snake.models import UserSnake
 from apps.game.models import Game
+from util.models import BaseModel
 
 
-class GameLeaderboard(models.Model):
+class GameLeaderboard(BaseModel):
     """ Tracks a game from the leaderboard perspective. """
 
     game = models.ForeignKey(Game, primary_key=True, on_delete=models.CASCADE)
 
 
-class UserSnakeLeaderboard(models.Model):
+class UserSnakeLeaderboard(BaseModel):
     """ Tracks a snakes involvement in the leaderboard. """
 
     def __init__(self, *args, **kwargs):
