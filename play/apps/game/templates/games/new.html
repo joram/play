@@ -130,9 +130,7 @@ if (localStorage.getItem('formFlag')) {
 $(document).on('click', '.js-clear-form', function (event) {
   event.preventDefault()
   localStorage.clear()
-  $('.js-snake-formset').each(function (i, el) {
-    $(el).find('[class*="js-snake"]').text('')
-  })
+  window.location.reload()
 })
 
 $(document).on('click', '.js-choose-snake', function (event) {
