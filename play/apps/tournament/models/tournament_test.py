@@ -1,6 +1,6 @@
 import pytest
 import datetime
-from apps.tournament.models import Tournament, TournamentBracket, SnakeTournamentBracket, Snake, Team, TeamMember, User, UserSnake, SingleSnakePerTeamPerTournamentValidationError
+from apps.tournament.models import Tournament, TournamentBracket, Snake, Team, TeamMember, User, UserSnake, SingleSnakePerTeamPerTournamentValidationError
 
 
 def _arrange(num_snakes=10):
@@ -23,29 +23,3 @@ def _arrange(num_snakes=10):
         UserSnake.objects.create(snake=snake, user=user)
         snakes.append(snake)
     return snakes, tournaments
-
-
-def test_cant_add_two_snakes_to_the_same_tournament():
-    snakes, tournaments = _arrange()
-    snake1 = snakes[0]
-    snake2 = snakes[1]
-    SnakeTournamentBracket.objects.create(tournament_bracket=tournaments[0], snake=snake1)
-    with pytest.raises(SingleSnakePerTeamPerTournamentValidationError):
-        SnakeTournamentBracket.objects.create(tournament_bracket=tournaments[0], snake=snake2)
-
-
-def test_cant_add_two_snakes_to_different_tournaments():
-    snakes, tournaments = _arrange()
-    snake1 = snakes[0]
-    snake2 = snakes[1]
-    SnakeTournamentBracket.objects.create(tournament_bracket=tournaments[0], snake=snake1)
-    with pytest.raises(SingleSnakePerTeamPerTournamentValidationError):
-        SnakeTournamentBracket.objects.create(tournament_bracket=tournaments[1], snake=snake2)
-
-
-def test_cant_add_same_snake_to_different_tournaments():
-    snakes, tournaments = _arrange()
-    snake1 = snakes[0]
-    SnakeTournamentBracket.objects.create(tournament_bracket=tournaments[0], snake=snake1)
-    with pytest.raises(SingleSnakePerTeamPerTournamentValidationError):
-        SnakeTournamentBracket.objects.create(tournament_bracket=tournaments[1], snake=snake1)

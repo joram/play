@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from apps.tournament.forms import SnakeTournamentBracketForm
-from apps.tournament.models import TournamentBracket, SnakeTournamentBracket, Heat, Snake
+from apps.tournament.models import TournamentBracket, Heat, Snake
 from apps.authentication.decorators import admin_required
 
 
@@ -14,6 +13,7 @@ def new(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
     if request.method == 'POST':
         form = SnakeTournamentBracketForm(request.POST)
+
 
         if form.is_valid():
             form.save()
@@ -27,7 +27,8 @@ def new(request, id):
         form = SnakeTournamentBracketForm()
         form.tournament_bracket = tournament_bracket
 
+    # Need to review this with John
     return render(request, 'tournament_bracket_snake/new.html', {
-        'form': form,
+        # 'form': form,
         'tournament_bracket': tournament_bracket,
     })
