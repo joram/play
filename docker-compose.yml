@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:10.4
+    env_file: .env
+    volumes:
+      - ./.docker-data/pg:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  play:
+    build: .
+    env_file: .env
+    entrypoint:
+      [
+        "./wait-for",
+        "db:5432",
+        "--",
+        "python3",
+        "manage.py",
+        "runserver",
+        "0.0.0.0:8000",
+      ]
+    volumes:
+      - ./play:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

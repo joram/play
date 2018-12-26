@@ -12,6 +12,7 @@ db.sqlite3
 
 # env stuff
 venv*
+.docker-data
 
 # cypress video output
 cypress/output

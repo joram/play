@@ -34,13 +34,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # default to production if it doesn't exist
 ENV = get_env('ENV', 'production', True)
 
-def is_local_env():
-    return ENV == 'local'
-
 def is_production_env():
     return ENV == 'production'
 
-if is_local_env():
+if not is_production_env():
     # Read environment values from the .env file
     dot_env_path = os.path.join(BASE_DIR + "/.env")
     dotenv.read_dotenv(dot_env_path)
@@ -52,7 +49,7 @@ if is_local_env():
 SECRET_KEY = get_env("BATTLESNAKEIO_SECRET", "thisshouldbeset", True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if is_production_env() else True
+DEBUG = not is_production_env()
 
 ALLOWED_HOSTS = []
 
