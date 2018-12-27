@@ -35,7 +35,6 @@ class Game(BaseModel):
     width = models.IntegerField()
     height = models.IntegerField()
     food = models.IntegerField()
-    is_leaderboard_game = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         self.snakes = kwargs.get('snakes', [])
@@ -106,6 +105,14 @@ class Game(BaseModel):
             living_snakes = self.alive_game_snakes()
             if len(living_snakes) == 1:
                 return self.alive_game_snakes()[0]
+
+    @property
+    def leaderboard_game(self):
+        from apps.leaderboard.models import GameLeaderboard
+        try:
+            return self.gameleaderboard
+        except GameLeaderboard.DoesNotExist:
+            return None
 
     class Meta:
         app_label = 'game'

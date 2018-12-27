@@ -2,7 +2,7 @@ import trueskill
 
 from apps.game.models import Game, GameSnake
 from apps.snake.models import UserSnake
-from apps.leaderboard.models import UserSnakeLeaderboard
+from apps.leaderboard.models import UserSnakeLeaderboard, LeaderboardResult
 
 
 class GameStatusJob:
@@ -14,7 +14,7 @@ class GameStatusJob:
         for game in Game.objects.filter(status__in=self.active_statuses):
             try:
                 status = game.update_from_engine()
-                if game.is_leaderboard_game and game.status == Game.Status.COMPLETE:
+                if game.leaderboard_game and game.status == Game.Status.COMPLETE:
                     sorted_snakes = sorted(sorted(status['snakes'].items(), key=lambda s: s[1]['death']), key=lambda s: s[1]['turn'], reverse=True)
                     game_snake_ids = [s[0] for s in sorted_snakes]
                     game_snakes = GameSnake.objects.filter(id__in=game_snake_ids)
@@ -28,9 +28,12 @@ class GameStatusJob:
                     new_rankings = trueskill.rate(ratings, ranks=list(range(0, len(ratings))))
                     for x in range(0, len(ratings)):
                         r = new_rankings[x]
-                        lb[x].mu = r[0].mu
-                        lb[x].sigma = r[0].sigma
-                        lb[x].save()
+                        current = lb[x]
+                        current.mu = r[0].mu
+                        current.sigma = r[0].sigma
+                        current.save()
+                        result = LeaderboardResult(snake=current, mu_change=r[0].mu - current.mu, sigma_change=r[0].sigma - current.sigma)
+                        result.save()
 
             except Exception as e:
                 game.status = Game.Status.ERROR

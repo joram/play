@@ -1,10 +1,14 @@
 import datetime
+
+from mock import mock
+
+from apps.game.models import Game
 from apps.tournament.models import *
 
 
 def _arrange_tournament(name, num_snakes=8):
     tg = Tournament.objects.create(name="test tournament", date=datetime.datetime.now())
-    t = TournamentBracket.objects.create(name=name, tournament_group=tg)
+    t = TournamentBracket.objects.create(name=name, tournament=tg)
     snakes = []
     for i in range(1, num_snakes+1):
         snake = Snake.objects.create(name="Snake {}".format(i), id="snk_{}".format(i))
@@ -12,7 +16,7 @@ def _arrange_tournament(name, num_snakes=8):
         user = User.objects.create(username="user_{}".format(i))
         TeamMember.objects.create(team=team, user=user)
         UserSnake.objects.create(snake=snake, user=user)
-        SnakeTournamentBracket.objects.create(snake=snake, tournament=t, )
+        SnakeTournamentBracket.objects.create(snake=snake, tournament_bracket=t, )
         snakes.append(snake)
     return t
 
@@ -132,7 +136,8 @@ def test_create_next_round_partial_two_heats():
     assert rows == expected_rows
 
 
-def test_create_next_round_second_round():
+@mock.patch('apps.game.models.Game.update_from_engine')
+def test_create_next_round_second_round(update_mock):
     t = _arrange_tournament("single heat", 10)
     t.create_next_round()
 
@@ -173,7 +178,8 @@ def test_create_next_round_second_round():
     assert rows == expected_rows
 
 
-def test_complete_tournament():
+@mock.patch('apps.game.models.Game.update_from_engine')
+def test_complete_tournament(update_mock):
     t = _arrange_tournament("single heat", 24)
     t.create_next_round()
 

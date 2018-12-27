@@ -7,7 +7,7 @@ from util.models import BaseModel
 class GameLeaderboard(BaseModel):
     """ Tracks a game from the leaderboard perspective. """
 
-    game = models.ForeignKey(Game, primary_key=True, on_delete=models.CASCADE)
+    game = models.OneToOneField(Game, null=True, blank=True, on_delete=models.SET_NULL)
 
 
 class UserSnakeLeaderboard(BaseModel):
@@ -28,26 +28,11 @@ class UserSnakeLeaderboard(BaseModel):
         snakes = list(UserSnakeLeaderboard.objects.all())
         return sorted(snakes, key=lambda s: s.mu or 25)
 
-    def rank(self):
-        """
-        Given the snake ID for the leaderboard. Aggregate all of the turns this
-        snake has taken throughout the leaderboard.
-        """
-        if self._rank is not False:
-            return self._rank
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-SELECT SUM(game_gamesnake.turns) FROM game_gamesnake
-JOIN game_game on game_gamesnake.game_id = game_game.id
-JOIN leaderboard_gameleaderboard on leaderboard_gameleaderboard.game_id = game_game.id
-WHERE game_gamesnake.snake_id = %s
-            """,
-                [self.user_snake_id],
-            )
-            row = cursor.fetchone()
-        self._rank = row[0] or 0
-        return self._rank
-
     class Meta:
         app_label = 'leaderboard'
+
+
+class LeaderboardResult(models.Model):
+    snake = models.ForeignKey(UserSnakeLeaderboard, on_delete=models.CASCADE)
+    mu_change = models.FloatField()
+    sigma_change = models.FloatField()
