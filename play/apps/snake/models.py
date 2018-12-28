@@ -1,4 +1,5 @@
 from django.db import models
+
 from util.fields import ShortUUIDField
 from util.models import BaseModel
 from apps.authentication.models import User
@@ -21,10 +22,6 @@ class Snake(BaseModel):
 
     class Meta:
         app_label = 'snake'
-
-    def get_leaderboard_games(self):
-        from apps.game.models import Game
-        return Game.objects.filter(gamesnake__snake_id=self.id, is_leaderboard_game=True).order_by("-modified")[:5]
 
 
 class UserSnake(BaseModel):

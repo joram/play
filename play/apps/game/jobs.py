@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import trueskill
 
 from apps.game.models import Game, GameSnake
@@ -16,23 +18,38 @@ class GameStatusJob:
                 status = game.update_from_engine()
                 if game.leaderboard_game and game.status == Game.Status.COMPLETE:
                     sorted_snakes = sorted(sorted(status['snakes'].items(), key=lambda s: s[1]['death']), key=lambda s: s[1]['turn'], reverse=True)
-                    game_snake_ids = [s[0] for s in sorted_snakes]
-                    game_snakes = GameSnake.objects.filter(id__in=game_snake_ids)
-                    snake_ids = [gs.snake_id for gs in game_snakes]
-                    lookup = {}
+                    snake_lookup = OrderedDict()
+                    for s in sorted_snakes:
+                        snake_lookup[s[0]] = {}
+                    game_snakes = GameSnake.objects.filter(id__in=list(snake_lookup.keys()))
+                    for gs in game_snakes:
+                        snake_lookup[gs.id]['snake_id'] = gs.snake_id
+                    snake_ids = [snake_lookup[s]['snake_id'] for s in snake_lookup]
                     for us in UserSnake.objects.filter(snake_id__in=snake_ids):
-                        lookup[us.snake_id] = us
-                    snakes = [lookup[i] for i in snake_ids]
+                        for gs_id, data in snake_lookup.items():
+                            if data['snake_id'] == us.snake.id:
+                                snake_lookup[gs_id]['user_snake'] = us
+                    snakes = [snake_lookup[i]['user_snake'] for i in snake_lookup]
                     lb = [UserSnakeLeaderboard.objects.get(user_snake=s) for s in snakes]
-                    ratings = [(self.create_rating(l),) for l in lb]
+                    for l in lb:
+                        for gs_id, data in snake_lookup.items():
+                            if data['user_snake'].snake.id == l.user_snake.snake.id:
+                                data['rating'] = (self.create_rating(l),)
+                                data['leaderboard'] = l
+                    ratings = [snake_lookup[i]['rating'] for i in snake_lookup]
                     new_rankings = trueskill.rate(ratings, ranks=list(range(0, len(ratings))))
+                    items = list(snake_lookup.items())
                     for x in range(0, len(ratings)):
                         r = new_rankings[x]
-                        current = lb[x]
+                        current = items[x][1]['leaderboard']
                         current.mu = r[0].mu
                         current.sigma = r[0].sigma
                         current.save()
-                        result = LeaderboardResult(snake=current, mu_change=r[0].mu - current.mu, sigma_change=r[0].sigma - current.sigma)
+                        result = LeaderboardResult(
+                            snake=current,
+                            game=game,
+                            mu_change=current.mu - ratings[x][0].mu,
+                            sigma_change=current.sigma - ratings[x][0].sigma)
                         result.save()
 
             except Exception as e:

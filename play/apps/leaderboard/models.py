@@ -1,6 +1,7 @@
-from django.db import models, connection
-from apps.snake.models import UserSnake
+from django.db import models
+
 from apps.game.models import Game
+from apps.snake.models import UserSnake
 from util.models import BaseModel
 
 
@@ -28,11 +29,15 @@ class UserSnakeLeaderboard(BaseModel):
         snakes = list(UserSnakeLeaderboard.objects.all())
         return sorted(snakes, key=lambda s: s.mu or 25)
 
+    def __str__(self):
+        return f'{self.user_snake.snake.name}'
+
     class Meta:
         app_label = 'leaderboard'
 
 
-class LeaderboardResult(models.Model):
+class LeaderboardResult(BaseModel):
     snake = models.ForeignKey(UserSnakeLeaderboard, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     mu_change = models.FloatField()
     sigma_change = models.FloatField()

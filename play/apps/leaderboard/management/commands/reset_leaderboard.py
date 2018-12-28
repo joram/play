@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from apps.leaderboard.models import UserSnakeLeaderboard
+from apps.leaderboard.models import UserSnakeLeaderboard, LeaderboardResult
 
 
 class Command(BaseCommand):
@@ -12,3 +12,5 @@ class Command(BaseCommand):
             lb.sigma = None
             lb.mu = None
             lb.save()
+
+        LeaderboardResult.objects.all().delete()

@@ -10,13 +10,13 @@
     <ol class="list-group">
       {% for snake in ranked %}
       <li class="list-group-item">
-        {{ snake.name }}: {{ snake.rank }}
+        {{ snake.name }}: {{ snake.rank|floatformat:2 }}
 
         <h6>Most Recent Games</h6>
         <ol class="list-group">
-          {% for game in snake.games %}
+          {% for result in snake.results %}
           <li class="list-group-item">
-            <a href="/games/{{ game.engine_id }}">{{ game.engine_id }}</a>
+            <a href="/games/{{ result.game.engine_id }}">{{ result.game.engine_id }}</a> - Rating Change: {{ result.mu_change | floatformat:2 }}
           </li>
           {% endfor %}
         </ol>

@@ -1,7 +1,8 @@
 from django.db import models, transaction
+
+from apps.tournament.models import Team
 from util.fields import ShortUUIDField
 from util.models import BaseModel
-from apps.tournament.models import Team
 from apps.game import engine
 from apps.snake.models import Snake
 
