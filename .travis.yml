@@ -1,5 +1,15 @@
 language: python
-python:
-  - "3.6"
+env:
+  global:
+    - ENV=local
+    - DJANGO_SETTINGS_MODULE=settings.test
+cache: pip
+before_install:
+  - deactivate
+  - echo "export PYTHONPATH=/home/travis/build/battlesnakeio/play/play" >> ~/virtualenv/python3.6/bin/activate
+  - source ~/virtualenv/python3.6/bin/activate
+  - cd play
+install:
+  - pip install -r ../requirements.dev.txt
 script:
-  - ENV=local pytest
+  - pytest
