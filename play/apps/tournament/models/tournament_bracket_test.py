@@ -2,7 +2,6 @@ import datetime
 
 from mock import mock
 
-from apps.game.models import Game
 from apps.tournament.models import *
 
 

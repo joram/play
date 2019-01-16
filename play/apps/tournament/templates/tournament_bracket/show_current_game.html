@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+Showing Tournament Bracket {{ tournament_bracket.name }} Current Game
+<div id="game_id">?</div>
+<div id="game_state">?</div>
+<iframe id="game" style="width:100%; height:100%;"></iframe>
+<script>
+
+  function update_game_iframe(){
+    url = "/tournament/bracket/{{ tournament_bracket.id }}/current_game?details=yesplease";
+    $.get({
+      url: url,
+      success: update_game_iframe_success,
+      dataType: "json"
+    });
+
+    function view_game(game){
+      $("iframe#game").attr("src", "/games/"+game.id);
+      $("div#game_id").html(game.id);
+      $("div#game_state").html(game.state);
+    }
+
+    function update_game_iframe_success(data){
+      if(data.games.length === 0){
+        return
+      }
+
+      // watch the first running game
+      done = false;
+      data.games.forEach(function(game){
+        if(game.status === "running"){
+          view_game(game);
+          done = true;
+          return
+        }
+      });
+      if(done){return}
+
+      // otherwise watch any non-complete game
+      data.games.forEach(function(game){
+        if(game.status !== "complete"){
+          view_game(game);
+          return
+        }
+      });
+    }
+  }
+
+  update_game_iframe();
+
+</script>
+
+{% endblock %}
+
