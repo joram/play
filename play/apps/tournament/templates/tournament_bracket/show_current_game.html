@@ -28,6 +28,7 @@
     <div id="heat_game">?</div>
     <div id="game_id">?</div>
     <div id="game_status">?</div>
+    <button id="refresh">Update Game</button>
     <iframe id="game" style="width:100%; height:100%;"></iframe>
     <script>
 
@@ -75,6 +76,7 @@
       }
 
       update_game_iframe();
+      $("button#refresh").click(function(){ update_game_iframe() });
 
     </script>
 
