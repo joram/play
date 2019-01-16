@@ -50,6 +50,7 @@ def test_create_next_round_partial_single_heat():
         ['Round 1', 'Heat 1', 'Snake 5', 'snk_5'],
     ]
 
+    assert t.game_details() == []
     assert rows == expected_rows
 
 
@@ -72,6 +73,8 @@ def test_create_next_round_partial_two_heats():
         ['Round 1', 'Heat 2', 'Snake 8', 'snk_8'],
         ['Round 1', 'Heat 2', 'Snake 10', 'snk_10'],
     ]
+
+    assert t.game_details() == []
     assert rows == expected_rows
 
 
@@ -99,6 +102,11 @@ def test_create_next_round_partial_two_heats():
         ['Round 1', 'Heat 2', 'Snake 10', 'snk_10', heat_2_game_url],
     ]
 
+    expected_game_details = [
+        {'id': game.id, 'status': 'complete'},
+    ]
+
+    assert t.game_details() == expected_game_details
     assert rows == expected_rows
 
 
@@ -109,6 +117,7 @@ def test_create_next_round_partial_two_heats():
     game11 = t.rounds[0].heats[0].create_next_game().game
     _mark_winner(game11)
     game12 = t.rounds[0].heats[0].create_next_game().game
+    _mark_winner(game12)
     game21 = t.rounds[0].heats[1].create_next_game().game
     _mark_winner(game21)
     game22 = t.rounds[0].heats[1].create_next_game().game
@@ -133,6 +142,21 @@ def test_create_next_round_partial_two_heats():
         ['Round 1', 'Heat 2', 'Snake 10', 'snk_10', heat_2_game_1_url, heat_2_game_2_url],
     ]
 
+    expected_game_details = [
+        {'id': game11.id, 'status': 'complete'},
+        {'id': game12.id, 'status': 'complete'},
+        {'id': game21.id, 'status': 'complete'},
+        {'id': game22.id, 'status': 'complete'},
+        # {'id': game31.id, 'status': 'complete'},
+        # {'id': game32.id, 'status': 'complete'},
+        # {'id': round2_game1.id, 'status': 'complete'},
+        # {'id': round2_game2.id, 'status': 'complete'},
+        # {'id': round2_game3.id, 'status': 'complete'},
+        # {'id': round3_game1.id, 'status': 'complete'},
+    ]
+    import pprint
+    pprint.pprint(t.game_details())
+    pprint.pprint(expected_game_details)
     assert rows == expected_rows
 
 
@@ -175,6 +199,17 @@ def test_create_next_round_second_round(update_mock):
         ['Round 2', 'Heat 1', 'Snake 4', 'snk_4'],
     ]
 
+    expected_game_details = [
+        {'id': game11.id, 'status': 'complete'},
+        {'id': game12.id, 'status': 'complete'},
+        {'id': game21.id, 'status': 'complete'},
+        {'id': game22.id, 'status': 'complete'},
+    ]
+    import pprint
+    pprint.pprint(t.game_details())
+    pprint.pprint(expected_game_details)
+
+    assert t.game_details() == expected_game_details
     assert rows == expected_rows
 
 
@@ -261,7 +296,18 @@ def test_complete_tournament(update_mock):
         ['Round 3', 'Heat 1', 'Snake 2', 'snk_2', round_3_heat_1_game_1_url],
         ['Round 3', 'Heat 1', 'Snake 3', 'snk_3', round_3_heat_1_game_1_url],
     ]
+    expected_game_details = [
+        {'id': game11.id, 'status': 'complete'},
+        {'id': game12.id, 'status': 'complete'},
+        {'id': game21.id, 'status': 'complete'},
+        {'id': game22.id, 'status': 'complete'},
+        {'id': game31.id, 'status': 'complete'},
+        {'id': game32.id, 'status': 'complete'},
+        {'id': round2_game1.id, 'status': 'complete'},
+        {'id': round2_game2.id, 'status': 'complete'},
+        {'id': round2_game3.id, 'status': 'complete'},
+        {'id': round3_game1.id, 'status': 'complete'},
+    ]
 
-    import pprint
-    pprint.pprint(rows)
+    assert t.game_details() == expected_game_details
     assert rows == expected_rows
