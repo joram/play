@@ -3,6 +3,7 @@ import datetime
 from mock import mock
 
 from apps.tournament.models import *
+from apps.utils.helpers import generate_game_url
 
 
 def _arrange_tournament(name, num_snakes=8):
@@ -102,7 +103,7 @@ def test_create_next_round_partial_two_heats():
     ]
 
     expected_game_details = [
-        {'id': game.id, 'status': 'complete'},
+        {'id': game.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 1, "url": generate_game_url(game.id)},
     ]
 
     assert t.game_details() == expected_game_details
@@ -142,16 +143,10 @@ def test_create_next_round_partial_two_heats():
     ]
 
     expected_game_details = [
-        {'id': game11.id, 'status': 'complete'},
-        {'id': game12.id, 'status': 'complete'},
-        {'id': game21.id, 'status': 'complete'},
-        {'id': game22.id, 'status': 'complete'},
-        # {'id': game31.id, 'status': 'complete'},
-        # {'id': game32.id, 'status': 'complete'},
-        # {'id': round2_game1.id, 'status': 'complete'},
-        # {'id': round2_game2.id, 'status': 'complete'},
-        # {'id': round2_game3.id, 'status': 'complete'},
-        # {'id': round3_game1.id, 'status': 'complete'},
+        {'id': game11.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 1, "url": generate_game_url(game11.id)},
+        {'id': game12.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 2, "url": generate_game_url(game12.id)},
+        {'id': game21.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 1, "url": generate_game_url(game21.id)},
+        {'id': game22.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 2, "url": generate_game_url(game22.id)},
     ]
     import pprint
     pprint.pprint(t.game_details())
@@ -199,10 +194,10 @@ def test_create_next_round_second_round(update_mock):
     ]
 
     expected_game_details = [
-        {'id': game11.id, 'status': 'complete'},
-        {'id': game12.id, 'status': 'complete'},
-        {'id': game21.id, 'status': 'complete'},
-        {'id': game22.id, 'status': 'complete'},
+        {'id': game11.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 1, "url": generate_game_url(game11.id)},
+        {'id': game12.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 2, "url": generate_game_url(game12.id)},
+        {'id': game21.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 1, "url": generate_game_url(game21.id)},
+        {'id': game22.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 2, "url": generate_game_url(game22.id)},
     ]
     import pprint
     pprint.pprint(t.game_details())
@@ -296,16 +291,16 @@ def test_complete_tournament(update_mock):
         ['Round 3', 'Heat 1', 'Snake 3', 'snk_3', round_3_heat_1_game_1_url],
     ]
     expected_game_details = [
-        {'id': game11.id, 'status': 'complete'},
-        {'id': game12.id, 'status': 'complete'},
-        {'id': game21.id, 'status': 'complete'},
-        {'id': game22.id, 'status': 'complete'},
-        {'id': game31.id, 'status': 'complete'},
-        {'id': game32.id, 'status': 'complete'},
-        {'id': round2_game1.id, 'status': 'complete'},
-        {'id': round2_game2.id, 'status': 'complete'},
-        {'id': round2_game3.id, 'status': 'complete'},
-        {'id': round3_game1.id, 'status': 'complete'},
+        {'id': game11.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 1, "url": generate_game_url(game11.id)},
+        {'id': game12.id, 'status': 'complete', "round": 1, "heat": 1, "heat_game": 2, "url": generate_game_url(game12.id)},
+        {'id': game21.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 1, "url": generate_game_url(game21.id)},
+        {'id': game22.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 2, "url": generate_game_url(game22.id)},
+        {'id': game31.id, 'status': 'complete', "round": 1, "heat": 3, "heat_game": 1, "url": generate_game_url(game31.id)},
+        {'id': game32.id, 'status': 'complete', "round": 1, "heat": 3, "heat_game": 2, "url": generate_game_url(game32.id)},
+        {'id': round2_game1.id, 'status': 'complete', "round": 2, "heat": 1, "heat_game": 1, "url": generate_game_url(round2_game1.id)},
+        {'id': round2_game2.id, 'status': 'complete', "round": 2, "heat": 1, "heat_game": 2, "url": generate_game_url(round2_game2.id)},
+        {'id': round2_game3.id, 'status': 'complete', "round": 2, "heat": 1, "heat_game": 3, "url": generate_game_url(round2_game3.id)},
+        {'id': round3_game1.id, 'status': 'complete', "round": 3, "heat": 1, "heat_game": 1, "url": generate_game_url(round3_game1.id)},
     ]
 
     assert t.game_details() == expected_game_details

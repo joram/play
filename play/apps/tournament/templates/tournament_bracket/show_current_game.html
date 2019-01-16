@@ -1,55 +1,82 @@
-{% extends 'base.html' %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en" style="height:100%;">
+  <head>
+    <meta charset="UTF-8">
+    <title>Battlesnake</title>
 
-Showing Tournament Bracket {{ tournament_bracket.name }} Current Game
-<div id="game_id">?</div>
-<div id="game_state">?</div>
-<iframe id="game" style="width:100%; height:100%;"></iframe>
-<script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'application.css' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    {% block extra_css %}{% endblock %}
 
-  function update_game_iframe(){
-    url = "/tournament/bracket/{{ tournament_bracket.id }}/current_game?details=yesplease";
-    $.get({
-      url: url,
-      success: update_game_iframe_success,
-      dataType: "json"
-    });
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/domready/1.0.8/ready.min.js" integrity="sha256-z7v8HmIeZylwLaPn0X0Ym8dFyV0vkFVe4BkVW/iuwmQ=" crossorigin="anonymous"></script>
+    {% block extra_js %}{% endblock %}
 
-    function view_game(game){
-      $("iframe#game").attr("src", "/games/"+game.id);
-      $("div#game_id").html(game.id);
-      $("div#game_state").html(game.state);
-    }
+  </head>
+  <body style="height:100%;">
 
-    function update_game_iframe_success(data){
-      if(data.games.length === 0){
-        return
+    <div>{{ tournament_bracket.tournament.name }}</div>
+    <div>{{ tournament_bracket.name }}</div>
+    <div id="round">?</div>
+    <div id="heat">?</div>
+    <div id="heat_game">?</div>
+    <div id="game_id">?</div>
+    <div id="game_status">?</div>
+    <iframe id="game" style="width:100%; height:100%;"></iframe>
+    <script>
+
+      function update_game_iframe(){
+        url = "/tournament/bracket/{{ tournament_bracket.id }}/current_game?details=yesplease";
+        $.get({
+          url: url,
+          success: update_game_iframe_success,
+          dataType: "json"
+        });
+
+        function view_game(game){
+          $("iframe#game").attr("src", game.url);
+          $("div#game_id").html(game.id);
+          $("div#game_status").html(game.status);
+          $("div#round").html("round: "+game.round);
+          $("div#heat").html("heat: "+game.heat);
+          $("div#heat_game").html("heat game: "+game.heat_game);
+        }
+
+        function update_game_iframe_success(data){
+          if(data.games.length === 0){
+            return
+          }
+
+          // watch the first running game
+          done = false;
+          data.games.forEach(function(game){
+            if(game.status === "running"){
+              view_game(game);
+              done = true;
+              return
+            }
+          });
+          if(done){return}
+
+          // otherwise watch any non-complete game
+          data.games.forEach(function(game){
+            if(game.status !== "complete"){
+              view_game(game);
+              return
+            }
+          });
+        }
       }
 
-      // watch the first running game
-      done = false;
-      data.games.forEach(function(game){
-        if(game.status === "running"){
-          view_game(game);
-          done = true;
-          return
-        }
-      });
-      if(done){return}
+      update_game_iframe();
 
-      // otherwise watch any non-complete game
-      data.games.forEach(function(game){
-        if(game.status !== "complete"){
-          view_game(game);
-          return
-        }
-      });
-    }
-  }
+    </script>
 
-  update_game_iframe();
-
-</script>
-
-{% endblock %}
-
+  </body>
+</html>
