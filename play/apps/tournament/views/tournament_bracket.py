@@ -49,7 +49,7 @@ def edit(request, id):
 def show_current_game(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
 
-    if request.GET.get("details") is not None:
+    if request.GET.get("json") == 'true':
         details = tournament_bracket.game_details()
         return JsonResponse({"games": details})
 
@@ -71,12 +71,9 @@ def show(request, id):
 def show_csv(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
     # Create the HttpResponse object with the appropriate CSV header.
-    filename = "{}_{}.csv".format(
-        tournament_bracket.tournament.name,
-        tournament_bracket.name,
-    )
+    filename = f'{tournament_bracket.tournament.name}_{tournament_bracket.name}.csv'
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="{filename}"'.format(filename=filename)
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     writer = csv.writer(response)
     for row in tournament_bracket.export():
@@ -89,7 +86,11 @@ def show_csv(request, id):
 @login_required
 def create_next_round(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    tournament_bracket.create_next_round()
+    try:
+        tournament_bracket.create_next_round()
+    except:
+        messages.error(request, f"Failed to create a new tournament round")
+
     return redirect(f'/tournament/bracket/{id}')
 
 
@@ -97,7 +98,10 @@ def create_next_round(request, id):
 @login_required
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
-    heat.create_next_game()
+    try:
+        heat.create_next_game()
+    except:
+        messages.error(request, f"Failed to add a new bracket heat")
     return redirect(f'/tournament/bracket/{id}/')
 
 

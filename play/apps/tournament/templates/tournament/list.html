@@ -3,20 +3,33 @@
 <div class="card">
   <div class="card-header">
     Tournaments
-    <span class="pull-right">
-      <a href="/tournament/new"><i class="fa fa-edit"></i> New Tournament</a>
-      <a href="/tournament/bracket/new"><i class="fa fa-edit"></i> Create Bracket</a>
+    <div class="dropdown pull-right">
+      <button type="button"
+        id="tournamentDropdownMenuButton"
+        class="btn btn-secondary dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false">
+        Menu
+      </button>
+      <div class="dropdown-menu" aria-labelledby="tournamentDropdownMenuButton">
+        <a class="dropdown-item" href="/tournament/new">New Tournament</a>
+        <a class="dropdown-item" href="/tournament/bracket/new">Create Tournament Bracket</a>
+      </div>
+    </div>
     </span>
   </div>
   <div class="card-body container">
     <ul>
       {% for t in tournaments %}
-      <li>{{ t.name }} ({{t.date}}) <a href="/tournament/{{ t.id }}/edit">Edit</a></li>
-        <ul>
-         {% for b in t.brackets %}
-          <li><a href="/tournament/bracket/{{ b.id }}/">{{ b.name }}</a> ({{b.snake_count}} snakes) <a href="/tournament/bracket/{{ b.id }}/edit">Edit</a></li>
-         {% endfor %}
-        </ul>
+      <li>
+        {{ t.name }} ({{t.date}}) <a href="/tournament/{{ t.id }}/edit">Edit</a>
+      </li>
+      <ul>
+        {% for b in t.brackets %}
+        <li><a href="/tournament/bracket/{{ b.id }}/">{{ b.name }}</a> ({{b.snake_count}} snakes) <a href="/tournament/bracket/{{ b.id }}/edit">Edit</a></li>
+        {% endfor %}
+      </ul>
       {% endfor %}
     </ul>
   </div>
