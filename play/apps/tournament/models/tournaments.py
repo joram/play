@@ -70,7 +70,7 @@ class TournamentBracket(models.Model):
                     status = hg.game.status if hg.game is not None else None
                     games.append({
                         "id": hg.game.id,
-                        "url": generate_game_url(hg.game.id),
+                        "url": generate_game_url(hg.game.engine_id),
                         "status": status,
                         "round": round.number,
                         "heat": heat.number,
