@@ -41,6 +41,9 @@ urlpatterns = [
     url(r'^tournament/bracket/(?P<id>\w+)/$', method_dispatch(
         GET=tournament_views.tournament_bracket.show,
     )),
+    url(r'^tournament/bracket/(?P<id>\w+)/current_game$', method_dispatch(
+        GET=tournament_views.tournament_bracket.show_current_game,
+    )),
     url(r'^tournament/bracket/(?P<id>\w+)/create/next/round$', method_dispatch(
         GET=tournament_views.tournament_bracket.create_next_round,
     )),

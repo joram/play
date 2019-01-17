@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.http import JsonResponse
 from apps.tournament.forms import TournamentBracketForm
 from apps.tournament.models import Tournament, TournamentBracket, Heat, HeatGame
 from apps.authentication.decorators import admin_required
@@ -40,6 +41,19 @@ def edit(request, id):
 
     return render(request, 'tournament_bracket/edit.html', {'form': form})
 
+
+@admin_required
+@login_required
+def show_current_game(request, id):
+    tournament_bracket = TournamentBracket.objects.get(id=id)
+
+    if request.GET.get("details") is not None:
+        details = tournament_bracket.game_details()
+        return JsonResponse({"games": details})
+
+    return render(request, 'tournament_bracket/show_current_game.html', {
+        'tournament_bracket': tournament_bracket,
+    })
 
 @admin_required
 @login_required

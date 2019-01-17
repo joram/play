@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 
 from apps.snake.models import Snake, UserSnake
 from apps.tournament.models.teams import TeamMember
+from apps.utils.helpers import generate_game_url
 
 
 class SingleSnakePerTeamPerTournamentValidationError(ValidationError):
@@ -60,6 +61,22 @@ class TournamentBracket(models.Model):
     @property
     def snake_count(self):
         return len(self.snakes)
+
+    def game_details(self):
+        games = []
+        for round in self.rounds:
+            for heat in round.heats:
+                for hg in heat.games:
+                    status = hg.game.status if hg.game is not None else None
+                    games.append({
+                        "id": hg.game.id,
+                        "url": generate_game_url(hg.game.id),
+                        "status": status,
+                        "round": round.number,
+                        "heat": heat.number,
+                        "heat_game": hg.number,
+                    })
+        return games
 
     def export(self):
         rows = [self.header_row]
