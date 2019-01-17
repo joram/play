@@ -49,7 +49,7 @@ def edit(request, id):
 def show_current_game(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
 
-    if request.GET.get("details") is not None:
+    if request.GET.get("json") == 'true':
         details = tournament_bracket.game_details()
         return JsonResponse({"games": details})
 

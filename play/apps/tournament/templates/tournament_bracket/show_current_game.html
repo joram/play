@@ -17,68 +17,79 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/domready/1.0.8/ready.min.js" integrity="sha256-z7v8HmIeZylwLaPn0X0Ym8dFyV0vkFVe4BkVW/iuwmQ=" crossorigin="anonymous"></script>
     {% block extra_js %}{% endblock %}
-
   </head>
   <body style="height:100%;">
-
-    <div>{{ tournament_bracket.tournament.name }}</div>
-    <div>{{ tournament_bracket.name }}</div>
-    <div id="round">?</div>
-    <div id="heat">?</div>
-    <div id="heat_game">?</div>
-    <div id="game_id">?</div>
-    <div id="game_status">?</div>
-    <button id="refresh">Update Game</button>
-    <iframe id="game" style="width:100%; height:100%;"></iframe>
+    <div id="game_details" style="display: none;">
+      <div>{{ tournament_bracket.tournament.name }}</div>
+      <div>{{ tournament_bracket.name }}</div>
+      <div id="round">?</div>
+      <div id="heat">?</div>
+      <div id="heat_game">?</div>
+      <div id="game_id">?</div>
+      <div id="game_status">?</div>
+      <button id="refresh">Update Game</button>
+    </div>
+    <iframe
+      id="game"
+      frameborder="0"
+      scrolling="no"
+      marginheight="0"
+      marginwidth="0"
+      style="margin-top: 20px; height: 100%; width: 100%;"></iframe>
     <script>
+      domready(function () {
+        var urlParams = new URLSearchParams(window.location.search)
+        var showGameDetails = urlParams.get('details') === 'true' ? true : false
 
-      function update_game_iframe(){
-        url = "/tournament/bracket/{{ tournament_bracket.id }}/current_game?details=yesplease";
-        $.get({
-          url: url,
-          success: update_game_iframe_success,
-          dataType: "json"
-        });
+        function updateGameIframe () {
+          $.get({
+            url: '/tournament/bracket/{{ tournament_bracket.id }}/current_game?json=true',
+            success: onSuccessUpdateGame,
+            dataType: 'json',
+          })
 
-        function view_game(game){
-          $("iframe#game").attr("src", game.url);
-          $("div#game_id").html(game.id);
-          $("div#game_status").html(game.status);
-          $("div#round").html("round: "+game.round);
-          $("div#heat").html("heat: "+game.heat);
-          $("div#heat_game").html("heat game: "+game.heat_game);
-        }
-
-        function update_game_iframe_success(data){
-          if(data.games.length === 0){
-            return
+          function viewGame (game) {
+            $('#game').attr('src', game.url)
+            if (showGameDetails) {
+              $('#game_id').html(game.id)
+              $('#game_status').html(game.status)
+              $('#round').html("round: " + game.round)
+              $('#heat').html("heat: " + game.heat)
+              $('#heat_game').html("heat game: " + game.heat_game)
+              $('#game_details').show()
+            }
           }
 
-          // watch the first running game
-          done = false;
-          data.games.forEach(function(game){
-            if(game.status === "running"){
-              view_game(game);
-              done = true;
+          function onSuccessUpdateGame (data) {
+            if (data.games.length === 0) {
               return
             }
-          });
-          if(done){return}
 
-          // otherwise watch any non-complete game
-          data.games.forEach(function(game){
-            if(game.status !== "complete"){
-              view_game(game);
-              return
-            }
-          });
+            // watch the first running game
+            done = false;
+            data.games.forEach(function (game) {
+              if (game.status === "running") {
+                viewGame(game)
+                done = true
+                return
+              }
+            })
+
+            if (done) { return }
+
+            // otherwise watch any non-complete game
+            data.games.forEach(function (game) {
+              if (game.status !== "complete") {
+                viewGame(game)
+                return
+              }
+            })
+          }
         }
-      }
 
-      update_game_iframe();
-      $("button#refresh").click(function(){ update_game_iframe() });
-
+        updateGameIframe()
+        $("button#refresh").on('click', updateGameIframe)
+      })
     </script>
-
   </body>
 </html>
