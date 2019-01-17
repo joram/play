@@ -27,7 +27,7 @@ def new(request):
 
         if form.is_valid():
             tournament = form.save()
-            messages.success(request, 'Tournament group successfully created')
+            messages.success(request, f'Tournament "{tournament.name}" successfully created')
             return redirect('/tournaments/')
 
     else:
@@ -46,7 +46,7 @@ def edit(request, id):
 
         if form.is_valid():
             form.save()
-            messages.success(request, f'Tournament group "{tournament.name}" updated')
+            messages.success(request, f'Tournament "{tournament.name}" successfully updated')
             return redirect('/tournaments/')
     else:
         form = TournamentForm(instance=tournament)

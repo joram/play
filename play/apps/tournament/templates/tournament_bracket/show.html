@@ -2,56 +2,54 @@
 {% block content %}
 <div class="card">
   <div class="card-header">
-    <nav class="navbar navbar-light light-blue lighten-4">
-      <a class="navbar-brand" href="#">{{ tournament_bracket.name }}</a>
+    {{ tournament_bracket.name }}
 
+    <a href="/tournament/bracket/{{ tournament_bracket.id }}/edit">
+      Edit
+    </a>
 
-      <div class="dropdown">
-        <button type="button"
-          id="bracket{{ tournament_bracket.id }}DropdownMenuButton"
-          class="btn btn-secondary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false">
-          Menu
-        </button>
-        <div class="dropdown-menu" aria-labelledby="bracket{{ tournament_bracket.id }}DropdownMenuButton">
-          <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/csv">
-            CSV Export
-          </a>
-          <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/current_game">
-            View Current Game
-          </a>
-          <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/edit">
-            Edit
-          </a>
-          <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/add/snake">
-            Add Snake
-          </a>
-          <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/create/next/round">
-            Create Next Round
-          </a>
-        </div>
+    <div class="dropdown pull-right">
+      <button type="button"
+        id="bracket{{ tournament_bracket.id }}DropdownMenuButton"
+        class="btn btn-secondary dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false">
+        Menu
+      </button>
+      <div class="dropdown-menu" aria-labelledby="bracket{{ tournament_bracket.id }}DropdownMenuButton">
+        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/add/snake">
+          Add Snake to Bracket
+        </a>
+        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/create/next/round">
+          Create Next Round
+        </a>
+        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/csv">
+          Export as CSV
+        </a>
+        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/current_game">
+          View Current Game
+        </a>
       </div>
-    </nav>
+    </div>
   </div>
 
   <div class="card-body container">
     <ul class="rounds">
-    {% for round in tournament_bracket.rounds %}
+      {% for round in tournament_bracket.rounds %}
       <li class="round">
         Round: {{ round.number }}
 
         <ul class="heat">
-        {% for heat in round.heats %}
+          {% for heat in round.heats %}
           <li>
             Heat: {{ heat.number }}
 
             <div class="heat-snakes">
               <ul class="snakes">
-              {% for snake in heat.snakes %}
+                {% for snake in heat.snakes %}
                 <li class="snake">{{ snake.name }}</li>
-              {% endfor %}
+                {% endfor %}
               </ul>
             </div>
 
@@ -61,19 +59,19 @@
               </a>
               <ul class="games">
                 {% for heat_game in heat.games %}
-                  <li class="heat_game">
-                    <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                      Game {{ heat_game.number }}
-                    </a>
-                  </li>
+                <li class="heat_game">
+                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
+                    Game {{ heat_game.number }}
+                  </a>
+                </li>
                 {% endfor %}
               </ul>
             </div>
           </li>
-        {% endfor %}
+          {% endfor %}
         </ul>
       </li>
-    {% endfor %}
+      {% endfor %}
     </ul>
   </div>
 </div>

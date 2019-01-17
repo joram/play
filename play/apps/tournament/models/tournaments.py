@@ -132,7 +132,6 @@ class SnakeTournamentBracket(models.Model):
 
 
 class RoundManager(models.Manager):
-
     def create(self, *args, **kwargs):
         round = super(RoundManager, self).create(*args, **kwargs)
         max_snakes_per = 8
@@ -267,7 +266,6 @@ class Heat(models.Model):
 
 
 class HeatGameManager(models.Manager):
-
     def create(self, *args, **kwargs):
         heat = kwargs.get("heat")
         previous_game = heat.latest_game
