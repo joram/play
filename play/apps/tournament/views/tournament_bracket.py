@@ -1,10 +1,12 @@
+import csv
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from apps.tournament.forms import TournamentBracketForm
-from apps.tournament.models import Tournament, TournamentBracket, Heat, HeatGame
+from apps.tournament.models import TournamentBracket, Heat, HeatGame
 from apps.authentication.decorators import admin_required
 
 
@@ -62,6 +64,25 @@ def show(request, id):
     return render(request, 'tournament_bracket/show.html', {
         'tournament_bracket': tournament_bracket,
     })
+
+
+@admin_required
+@login_required
+def show_csv(request, id):
+    tournament_bracket = TournamentBracket.objects.get(id=id)
+    # Create the HttpResponse object with the appropriate CSV header.
+    filename = "{}_{}.csv".format(
+        tournament_bracket.tournament.name,
+        tournament_bracket.name,
+    )
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="{filename}"'.format(filename=filename)
+
+    writer = csv.writer(response)
+    for row in tournament_bracket.export():
+        writer.writerow(row)
+
+    return response
 
 
 @admin_required
