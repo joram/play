@@ -10,6 +10,7 @@ This is the module that users of all types use to interact with the [game engine
 
 - On a mac? If you haven't already, install [brew](https://brew.sh/)
 - A [Github OAuth App](#github-oauth-app-configuration)
+- Postgres 10.4
 
 ### Setup
 
