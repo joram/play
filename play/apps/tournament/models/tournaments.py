@@ -127,7 +127,7 @@ class SnakeTournamentBracket(models.Model):
         models.Model.validate_unique(self, exclude=exclude)
 
     def save(self, *args, **kwargs):
-        # self.validate_unique()
+        self.validate_unique()
         super(SnakeTournamentBracket, self).save(*args, **kwargs)
 
 
