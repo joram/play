@@ -127,7 +127,7 @@ class SnakeTournamentBracket(models.Model):
         models.Model.validate_unique(self, exclude=exclude)
 
     def save(self, *args, **kwargs):
-        self.validate_unique()
+        # self.validate_unique()
         super(SnakeTournamentBracket, self).save(*args, **kwargs)
 
 
@@ -183,6 +183,10 @@ class Round(models.Model):
         return [s.snake for s in self.previous.winners]
 
     @property
+    def snake_count(self):
+        return len(self.snakes)
+
+    @property
     def winners(self):
         winners = []
         for heat in self.heats:
@@ -213,7 +217,13 @@ class Heat(models.Model):
     @property
     def snakes(self):
         snakeHeats = SnakeHeat.objects.filter(heat=self)
-        snakes = [sh.snake.snake for sh in snakeHeats]
+        snakes = []
+        winner_ids = [w.id for w in self.winners]
+        for sh in snakeHeats:
+            snake = sh.snake.snake
+            snake.winner = snake.id in winner_ids
+            snakes.append(snake)
+
         return snakes
 
     @property
@@ -232,13 +242,8 @@ class Heat(models.Model):
     def winners(self):
         winners = []
         for game in self.games:
-            print("heat {}, game {} has winnner {}".format(
-                self.number,
-                game.number,
-                game.winner.snake.id,
-            ))
-            winners.append(game.winner)
-
+            if game.winner is not None:
+                winners.append(game.winner)
         return winners
 
     @property
