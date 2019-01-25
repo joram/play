@@ -10,9 +10,9 @@ def _arrange_tournament(name, num_snakes=8):
     tg = Tournament.objects.create(name="test tournament", date=datetime.datetime.now(), status=Tournament.REGISTRATION)
     t = TournamentBracket.objects.create(name=name, tournament=tg)
     for i in range(1, num_snakes+1):
-        snake = Snake.objects.create(name="Snake {}".format(i), id="snk_{}".format(i))
+        snake = Snake.objects.create(name=f'Snake {i}', id=f'snk_{i}')
         team = Team.objects.create(name="test team", snake=snake)
-        user = User.objects.create(username="user_{}".format(i))
+        user = User.objects.create(username=f'user_{i}')
         TeamMember.objects.create(team=team, user=user)
         UserSnake.objects.create(snake=snake, user=user)
         ts = TournamentSnake.objects.create(tournament=tg, bracket=t, snake=snake)
@@ -86,7 +86,7 @@ def test_create_next_round_partial_two_heats_uhoh():
 
     rows = bracket.export()
 
-    heat_2_game_url = "https://play.battlesnake.io/game/{}".format(game.id)
+    heat_2_game_url = f'https://play.battlesnake.io/game/{game.id}'
     expected_rows = [
         ['Round', 'Heat', 'Snake Name', 'Snake Id', "Game 1 URL", "Game 2 URL", "Game 3 URL"],
         ['Round 1', 'Heat 1', 'Snake 1', 'snk_1'],
@@ -121,10 +121,10 @@ def test_create_next_round_partial_two_heats():
 
     rows = bracket.export()
 
-    heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(game11.id)
-    heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(game12.id)
-    heat_2_game_1_url = "https://play.battlesnake.io/game/{}".format(game21.id)
-    heat_2_game_2_url = "https://play.battlesnake.io/game/{}".format(game22.id)
+    heat_1_game_1_url = f'https://play.battlesnake.io/game/{game11.id}'
+    heat_1_game_2_url = f'https://play.battlesnake.io/game/{game12.id}'
+    heat_2_game_1_url = f'https://play.battlesnake.io/game/{game21.id}'
+    heat_2_game_2_url = f'https://play.battlesnake.io/game/{game22.id}'
     expected_rows = [
         ['Round', 'Heat', 'Snake Name', 'Snake Id', "Game 1 URL", "Game 2 URL", "Game 3 URL"],
         ['Round 1', 'Heat 1', 'Snake 1', 'snk_1', heat_1_game_1_url, heat_1_game_2_url],
@@ -145,7 +145,7 @@ def test_create_next_round_partial_two_heats():
         {'id': game21.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 1, "url": generate_game_url(game21.engine_id)},
         {'id': game22.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 2, "url": generate_game_url(game22.engine_id)},
     ]
-    
+
     assert rows == expected_rows
 
 
@@ -166,10 +166,10 @@ def test_create_next_round_second_round(update_mock):
 
     rows = bracket.export()
 
-    heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(game11.id)
-    heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(game12.id)
-    heat_2_game_1_url = "https://play.battlesnake.io/game/{}".format(game21.id)
-    heat_2_game_2_url = "https://play.battlesnake.io/game/{}".format(game22.id)
+    heat_1_game_1_url = f'https://play.battlesnake.io/game/{game11.id}'
+    heat_1_game_2_url = f'https://play.battlesnake.io/game/{game12.id}'
+    heat_2_game_1_url = f'https://play.battlesnake.io/game/{game21.id}'
+    heat_2_game_2_url = f'https://play.battlesnake.io/game/{game22.id}'
     expected_rows = [
         ['Round', 'Heat', 'Snake Name', 'Snake Id', "Game 1 URL", "Game 2 URL", "Game 3 URL"],
         ['Round 1', 'Heat 1', 'Snake 1', 'snk_1', heat_1_game_1_url, heat_1_game_2_url],
@@ -194,7 +194,7 @@ def test_create_next_round_second_round(update_mock):
         {'id': game21.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 1, "url": generate_game_url(game21.engine_id)},
         {'id': game22.id, 'status': 'complete', "round": 1, "heat": 2, "heat_game": 2, "url": generate_game_url(game22.engine_id)},
     ]
-    
+
     assert rows == expected_rows
     assert bracket.game_details() == expected_game_details
 
@@ -231,16 +231,16 @@ def test_complete_tournament(update_mock):
 
     rows = bracket.export()
 
-    heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(game11.id)
-    heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(game12.id)
-    heat_2_game_1_url = "https://play.battlesnake.io/game/{}".format(game21.id)
-    heat_2_game_2_url = "https://play.battlesnake.io/game/{}".format(game22.id)
-    heat_3_game_1_url = "https://play.battlesnake.io/game/{}".format(game31.id)
-    heat_3_game_2_url = "https://play.battlesnake.io/game/{}".format(game32.id)
-    round_2_heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(round2_game1.id)
-    round_2_heat_1_game_2_url = "https://play.battlesnake.io/game/{}".format(round2_game2.id)
-    round_2_heat_1_game_3_url = "https://play.battlesnake.io/game/{}".format(round2_game3.id)
-    round_3_heat_1_game_1_url = "https://play.battlesnake.io/game/{}".format(round3_game1.id)
+    heat_1_game_1_url = f'https://play.battlesnake.io/game/{game11.id}'
+    heat_1_game_2_url = f'https://play.battlesnake.io/game/{game12.id}'
+    heat_2_game_1_url = f'https://play.battlesnake.io/game/{game21.id}'
+    heat_2_game_2_url = f'https://play.battlesnake.io/game/{game22.id}'
+    heat_3_game_1_url = f'https://play.battlesnake.io/game/{game31.id}'
+    heat_3_game_2_url = f'https://play.battlesnake.io/game/{game32.id}'
+    round_2_heat_1_game_1_url = f'https://play.battlesnake.io/game/{round2_game1.id}'
+    round_2_heat_1_game_2_url = f'https://play.battlesnake.io/game/{round2_game2.id}'
+    round_2_heat_1_game_3_url = f'https://play.battlesnake.io/game/{round2_game3.id}'
+    round_3_heat_1_game_1_url = f'https://play.battlesnake.io/game/{round3_game1.id}'
     expected_rows = [
         ['Round', 'Heat', 'Snake Name', 'Snake Id', "Game 1 URL", "Game 2 URL", "Game 3 URL"],
 

@@ -102,13 +102,13 @@ class TournamentBracket(models.Model):
             for heat in round.heats:
                 for snake in heat.snakes:
                     row = [
-                        "Round {}".format(round.number),
-                        "Heat {}".format(heat.number),
+                        f'Round {round.number}',
+                        f'Heat {heat.number}',
                         snake.name,
                         snake.id,
                     ]
                     for heat_game in heat.games:
-                        row.append("https://play.battlesnake.io/game/{}".format(heat_game.game.id))
+                        row.append(f'https://play.battlesnake.io/game/{heat_game.game.id}')
                     rows.append(row)
         return rows
 

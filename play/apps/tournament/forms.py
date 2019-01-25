@@ -76,9 +76,9 @@ class AddTeamMemberForm(forms.Form):
             # If this lookup raises an exception, then we can continue
             team_name = TeamMember.objects.get(
                 user_id=cleaned_data['user'].id,
-                team_id=self.team.id
+                team_id=self.team.id,
             ).team.name
-            raise ValidationError(f'{username} already belongs to {team_name}')
+            raise ValidationError(f'{username} already belongs to team {team_name}')
         except TeamMember.DoesNotExist:
             pass
 
@@ -95,12 +95,21 @@ class TournamentBracketForm(forms.ModelForm):
 
     class Meta:
         model = TournamentBracket
-        fields = ['name', 'snakes',]
+        fields = [
+            'name',
+            'snakes',
+        ]
 
 
 class TournamentForm(forms.ModelForm):
 
     class Meta:
         model = Tournament
-        fields = ['name', 'date', 'snakes', 'status', 'single_snake_per_team']
+        fields = [
+            'name',
+            'date',
+            'snakes',
+            'status',
+            'single_snake_per_team',
+        ]
 

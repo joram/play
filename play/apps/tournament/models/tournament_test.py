@@ -11,7 +11,10 @@ def _arrange(num_snakes=10):
     )
     tournament_brackets = []
     for i in range(0, 3):
-        t = TournamentBracket.objects.create(name="test tournament {}".format(i), tournament=tournament)
+        t = TournamentBracket.objects.create(
+            name=f'test tournament {i}',
+            tournament=tournament,
+        )
         tournament_brackets.append(t)
     snake = Snake.objects.create(name="Snake", id="snk_-1")
     team = Team.objects.create(name="test team", snake=snake)
@@ -19,10 +22,10 @@ def _arrange(num_snakes=10):
     snakes = []
     for i in range(1, num_snakes+1):
         snake = Snake.objects.create(
-            name="Snake {}".format(i),
-            id="snk_{}".format(i)
+            name=f'Snake {i}',
+            id=f'snk_{i}',
         )
-        user = User.objects.create(username="user_{}".format(i))
+        user = User.objects.create(username=f'user_{i}')
         TeamMember.objects.create(team=team, user=user)
         UserSnake.objects.create(snake=snake, user=user)
         snakes.append(snake)
