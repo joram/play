@@ -14,11 +14,10 @@ def new(request, id):
     if request.method == 'POST':
         form = SnakeTournamentBracketForm(request.POST)
 
-
         if form.is_valid():
             form.save()
-            snake_id = form.data["snake"]
-            bracket_id = form.data["tournament_bracket"]
+            snake_id = form.data['snake']
+            bracket_id = form.data['tournament_bracket']
             snake = Snake.objects.get(id=snake_id)
             bracket = TournamentBracket.objects.get(id=bracket_id)
             messages.success(request, f'Successfully added "{snake.name}" to tournament bracket "{bracket}"')
@@ -27,7 +26,7 @@ def new(request, id):
         form = SnakeTournamentBracketForm()
         form.tournament_bracket = tournament_bracket
 
-    # Need to review this with John
+    # TODO Left by @tristan-swu: Need to review this with John
     return render(request, 'tournament_bracket_snake/new.html', {
         # 'form': form,
         'tournament_bracket': tournament_bracket,
