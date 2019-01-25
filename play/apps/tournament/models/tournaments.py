@@ -21,7 +21,7 @@ class TournamentClosedValidationError(ValidationError):
 
 class Tournament(models.Model):
     LOCKED = 'LO'  # Not started, but nobody can register
-    HIDDEN = 'HI'  # Able to add snakes manually
+    HIDDEN = 'HI'  # Able to add snakes manually (invite-only)
     REGISTRATION = 'RE'  # Publicly viewable and opt-in-able
     IN_PROGRESS = 'PR'
     COMPLETE = 'JR'
