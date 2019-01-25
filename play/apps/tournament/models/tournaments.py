@@ -206,7 +206,7 @@ class Round(models.Model):
 
     @property
     def previous(self):
-        return Round.objects.get(number=self.number - 1, tournament_bracket=self.tournament_bracket)
+        return Round.objects.get(number=self.number-1, tournament_bracket=self.tournament_bracket)
 
     @property
     def snakes(self):
@@ -264,11 +264,11 @@ class Heat(models.Model):
     def winners(self):
         winners = []
         for game in self.games:
-            print(
-                "heat {}, game {} has winnner {}".format(
-                    self.number, game.number, game.winner.snake.id
-                )
-            )
+            print("heat {}, game {} has winnner {}".format(
+                self.number,
+                game.number,
+                game.winner.snake.id,
+            ))
             winners.append(game.winner)
 
         return winners

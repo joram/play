@@ -51,11 +51,11 @@ def edit(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, f'Tournament Bracket "{tournament_bracket.name}" updated')
-            return redirect("/tournaments/")
+            return redirect('/tournaments/')
     else:
         form = TournamentBracketForm(instance=tournament_bracket)
 
-    return render(request, "tournament_bracket/edit.html", {"form": form})
+    return render(request, 'tournament_bracket/edit.html', {'form': form})
 
 
 @admin_required
@@ -76,9 +76,9 @@ def show_current_game(request, id):
 @login_required
 def show(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    return render(request, 'tournament_bracket/show.html',
-        {'tournament_bracket': tournament_bracket},
-    )
+    return render(request, 'tournament_bracket/show.html', {
+        'tournament_bracket': tournament_bracket,
+    })
 
 
 @admin_required
@@ -102,7 +102,7 @@ def show_csv(request, id):
 def create_next_round(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
     tournament_bracket.create_next_round()
-    return redirect(f"/tournament/bracket/{id}")
+    return redirect(f'/tournament/bracket/{id}')
 
 
 @admin_required
@@ -110,7 +110,7 @@ def create_next_round(request, id):
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
     heat.create_next_game()
-    return redirect(f"/tournament/bracket/{id}/")
+    return redirect(f'/tournament/bracket/{id}/')
 
 
 @admin_required
@@ -120,4 +120,4 @@ def run_game(request, id, heat_id, heat_game_number):
     if heat_game.game is None or heat_game.game.engine_id is None:
         heat_game.game.create()
         heat_game.game.run()
-    return redirect(f"/games/{heat_game.game.engine_id}")
+    return redirect(f'/games/{heat_game.game.engine_id}')
