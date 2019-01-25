@@ -4,7 +4,11 @@ from apps.tournament.models import Tournament, TournamentBracket, SnakeTournamen
 
 
 def _arrange(num_snakes=10):
-    tournament = Tournament.objects.create(name="test tournament", date=datetime.datetime.now())
+    tournament = Tournament.objects.create(
+        name="test tournament",
+        date=datetime.datetime.now(),
+        status=Tournament.REGISTRATION,
+    )
     tournament_brackets = []
     for i in range(0, 3):
         t = TournamentBracket.objects.create(name="test tournament {}".format(i), tournament=tournament)

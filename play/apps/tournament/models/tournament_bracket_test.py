@@ -7,7 +7,7 @@ from apps.utils.helpers import generate_game_url
 
 
 def _arrange_tournament(name, num_snakes=8):
-    tg = Tournament.objects.create(name="test tournament", date=datetime.datetime.now())
+    tg = Tournament.objects.create(name="test tournament", date=datetime.datetime.now(), status=Tournament.REGISTRATION)
     t = TournamentBracket.objects.create(name=name, tournament=tg)
     snakes = []
     for i in range(1, num_snakes+1):
