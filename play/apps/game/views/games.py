@@ -70,7 +70,12 @@ def new(request):
 
 @login_required
 def show(request, id):
+    game_board_url = generate_game_url(id)
+
+    if 'autoplay' in request.META['QUERY_STRING']:
+        game_board_url = f'{game_board_url}&autoplay=true'
+
     return render(request, 'games/show.html', {
         'id': id,
-        'url': generate_game_url(id)
+        'url': game_board_url
     })
