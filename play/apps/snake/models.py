@@ -1,3 +1,5 @@
+import os
+import requests
 from django.db import models
 
 from util.fields import ShortUUIDField
@@ -16,6 +18,11 @@ class Snake(BaseModel):
     id = ShortUUIDField(prefix="snk", max_length=128, primary_key=True)
     name = models.CharField(max_length=128)
     url = models.CharField(max_length=128)
+
+    def ping(self):
+        ping_url = os.path.join(self.url, "/ping")
+        response = requests.get(ping_url)
+        return response.status_code
 
     def __str__(self):
         return f'{self.name}'
