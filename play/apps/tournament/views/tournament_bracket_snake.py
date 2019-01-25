@@ -17,12 +17,7 @@ def new(request, id):
 
         if form.is_valid():
             form.save()
-            TournamentSnake.objects.get_or_create(
-                tournament=form.tournament,
-                bracket=form.bracket,
-                snake=form.snake,
-            )
-            messages.success(request, f'Successfully added "{form.snake.name}" to tournament bracket "{form.bracket}"')
+            messages.success(request, f'Successfully added "{form.cleaned_data["snake"].name}" to tournament bracket "{form.cleaned_data["bracket"].name}"')
             return redirect('/tournaments/')
     else:
         form = TournamentSnakeForm()

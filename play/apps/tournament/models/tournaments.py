@@ -19,6 +19,12 @@ class TournamentClosedValidationError(ValidationError):
         super().__init__(message='Tournament over')
 
 
+class PreviousGameNotCompleteValidationError(ValidationError):
+
+    def __init__(self):
+        super().__init__(message='The previous game is not complete')
+
+
 class Tournament(models.Model):
     LOCKED = 'LO'  # Not started, but nobody can register
     HIDDEN = 'HI'  # Able to add snakes manually (invite-only)
@@ -286,11 +292,11 @@ class Heat(models.Model):
 
     def create_next_game(self):
         if len(self.games) >= self.desired_games:
-            raise Exception("shouldn't create any more games")
+            raise PreviousGameNotCompleteValidationError()
 
         n = self.games.count() + 1
         if self.latest_game is not None and self.latest_game.status != "complete":
-            raise Exception("can't create next game")
+            raise PreviousGameNotCompleteValidationError()
         return HeatGame.objects.create(heat=self, number=n)
 
     class Meta:

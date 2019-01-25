@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from apps.tournament.forms import TournamentBracketForm
-from apps.tournament.models import Tournament, TournamentBracket, TournamentSnake, Heat, HeatGame
+from apps.tournament.models import Tournament, TournamentBracket, TournamentSnake, Heat, HeatGame, PreviousGameNotCompleteValidationError
 from apps.authentication.decorators import admin_required
 
 
@@ -28,7 +28,7 @@ def new(request, tournament_id):
             for snake in form.cleaned_data["snakes"]:
                 # There has to be a tournament / snake relation, or its an error 
                 # (ie: can't add snake from outside the tournament)
-                ts = TournamentSnake.objects.get(tournament=tournament, snake=snake)
+                ts, created = TournamentSnake.objects.get_or_create(tournament=tournament, bracket=bracket, snake=snake)
                 ts.bracket = bracket
                 ts.save()
 
@@ -109,7 +109,11 @@ def create_next_round(request, id):
 @login_required
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
-    heat.create_next_game()
+    try:
+        heat.create_next_game()
+    except PreviousGameNotCompleteValidationError:
+        messages.error(request, f'Cannot create next game')
+
     return redirect(f'/tournament/bracket/{id}/')
 
 
