@@ -109,5 +109,5 @@ class TournamentForm(forms.ModelForm):
 
     class Meta:
         model = Tournament
-        fields = ['name', 'date',]
+        fields = ['name', 'date', 'status', 'single_snake_per_team']
 
