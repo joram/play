@@ -12,13 +12,10 @@ from datetime import datetime
 @login_required
 def index(request):
     user = request.user
-    return render(
-        request,
-        "tournament/list.html",
-        {
-            "tournaments": Tournament.objects.all(),
-            "tournament_brackets": TournamentBracket.objects.all(),
-            "user": user,
+    return render(request, 'tournament/list.html', {
+            'tournaments': Tournament.objects.all(),
+            'tournament_brackets': TournamentBracket.objects.all(),
+            'user': user,
         },
     )
 
@@ -27,7 +24,7 @@ def index(request):
 @login_required
 @transaction.atomic
 def new(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = TournamentForm(request.POST)
 
         if form.is_valid():
@@ -75,4 +72,4 @@ def edit(request, id):
     else:
         form = TournamentForm(instance=tournament)
 
-    return render(request, "tournament/edit.html", {"form": form})
+    return render(request, 'tournament/edit.html', {'form': form})

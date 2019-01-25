@@ -1,4 +1,5 @@
-from django import forms
+import csv
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -15,7 +16,7 @@ from apps.authentication.decorators import admin_required
 def new(request, tournament_id):
     tournament = Tournament.objects.get(id=tournament_id)
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = TournamentBracketForm(request.POST)
 
         if form.is_valid():
@@ -37,21 +38,19 @@ def new(request, tournament_id):
             return redirect("/tournaments/")
     else:
         form = TournamentBracketForm()
-    return render(request, "tournament_bracket/new.html",  {"form": form, 'tournament':tournament})
+    return render(request, 'tournament_bracket/new.html',  {'form': form, 'tournament':tournament})
 
 
 @admin_required
 @login_required
 def edit(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    if request.method == "POST":
+    if request.method == 'POST':
         form = TournamentBracketForm(request.POST, instance=tournament_bracket)
 
         if form.is_valid():
             form.save()
-            messages.success(
-                request, f'Tournament Bracket "{tournament_bracket.name}" updated'
-            )
+            messages.success(request, f'Tournament Bracket "{tournament_bracket.name}" updated')
             return redirect("/tournaments/")
     else:
         form = TournamentBracketForm(instance=tournament_bracket)
@@ -72,14 +71,13 @@ def show_current_game(request, id):
         'tournament_bracket': tournament_bracket,
     })
 
+
 @admin_required
 @login_required
 def show(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    return render(
-        request,
-        "tournament_bracket/show.html",
-        {"tournament_bracket": tournament_bracket},
+    return render(request, 'tournament_bracket/show.html',
+        {'tournament_bracket': tournament_bracket},
     )
 
 

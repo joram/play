@@ -49,7 +49,10 @@ class TeamForm(forms.ModelForm):
         team.snake = self.snake
         team.save()
 
-        TeamMember.objects.get_or_create(user=self.user, team=team)
+        TeamMember.objects.get_or_create(
+            user=self.user,
+            team=team,
+        )
         return team
 
 
@@ -82,7 +85,10 @@ class AddTeamMemberForm(forms.Form):
         return cleaned_data
 
     def save(self, *args, **kwargs):
-        return TeamMember.objects.create(user=self.cleaned_data['user'], team=self.team)
+        return TeamMember.objects.create(
+            user=self.cleaned_data['user'],
+            team=self.team,
+        )
 
 
 class TournamentBracketForm(forms.ModelForm):
