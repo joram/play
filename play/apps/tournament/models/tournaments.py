@@ -13,7 +13,25 @@ class SingleSnakePerTeamPerTournamentValidationError(ValidationError):
         super().__init__(message='Only one snake per event per team')
 
 
+class TournamentClosedValidationError(ValidationError):
+
+    def __init__(self):
+        super().__init__(message='Tournament over')
+
+
 class Tournament(models.Model):
+    LOCKED = 'LO'
+    REGISTRATION = 'RE'
+    IN_PROGRESS = 'PR'
+    COMPLETE = 'JR'
+    STATUSES = (
+        (LOCKED, 'Locked'),
+        (REGISTRATION, 'Registration'),
+        (IN_PROGRESS, 'In Progress'),
+        (COMPLETE, 'Complete'),
+    )
+    status = models.CharField(max_length=2, choices=STATUSES, default=LOCKED)
+    single_snake_per_team = models.BooleanField(default=True)
     name = models.CharField(max_length=256)
     date = models.DateField()
 
@@ -115,14 +133,18 @@ class SnakeTournamentBracket(models.Model):
         user_snake = UserSnake.objects.get(snake=self.snake)
         team_member = TeamMember.objects.get(user=user_snake.user)
         team = team_member.team
+        tournament = self.tournament_bracket.tournament
+
+        if tournament.status in [Tournament.IN_PROGRESS, Tournament.COMPLETE]:
+            raise TournamentClosedValidationError()
 
         tournament_brackets = TournamentBracket.objects.filter(tournament=self.tournament_bracket.tournament)
         qs = SnakeTournamentBracket.objects.filter(snake__in=team.snakes, tournament_bracket__in=tournament_brackets)
-
-        if qs.count() > 1:
-            raise SingleSnakePerTeamPerTournamentValidationError()
-        if qs.count() == 1 and qs[0] != self:
-            raise SingleSnakePerTeamPerTournamentValidationError()
+        if tournament.single_snake_per_team:
+            if qs.count() > 1:
+                raise SingleSnakePerTeamPerTournamentValidationError()
+            if qs.count() == 1 and qs[0] != self:
+                raise SingleSnakePerTeamPerTournamentValidationError()
 
         models.Model.validate_unique(self, exclude=exclude)
 
