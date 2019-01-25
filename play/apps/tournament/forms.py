@@ -1,11 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from apps.tournament.models import (
-    Team,
-    TeamMember,
-    TournamentBracket,
-    Tournament,
-)
+from apps.tournament.models import Team, TeamMember, TournamentBracket, Tournament
 from apps.authentication.models import User
 from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
@@ -18,7 +13,7 @@ class TeamForm(forms.ModelForm):
         help_text='Be sure to add a <strong>valid</strong> Snake URL here before \
                     the tournament starts, otherwise you may not be able to compete!',
         required=False,
-        widget=forms.URLInput(),
+        widget=forms.URLInput()
     )
 
     class Meta:
@@ -33,9 +28,7 @@ class TeamForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        if cleaned_data.get('snake_url') and not is_valid_url(
-            cleaned_data.get('snake_url')
-        ):
+        if cleaned_data.get('snake_url') and not is_valid_url(cleaned_data.get('snake_url')):
             raise ValidationError('Snake requires a valid URL')
 
         return cleaned_data
@@ -79,7 +72,8 @@ class AddTeamMemberForm(forms.Form):
         try:
             # If this lookup raises an exception, then we can continue
             team_name = TeamMember.objects.get(
-                user_id=cleaned_data['user'].id, team_id=self.team.id
+                user_id=cleaned_data['user'].id,
+                team_id=self.team.id
             ).team.name
             raise ValidationError(f'{username} already belongs to {team_name}')
         except TeamMember.DoesNotExist:
@@ -92,12 +86,14 @@ class AddTeamMemberForm(forms.Form):
 
 
 class TournamentBracketForm(forms.ModelForm):
+
     class Meta:
         model = TournamentBracket
         fields = ['name', 'snakes']
 
 
 class TournamentForm(forms.ModelForm):
+
     class Meta:
         model = Tournament
         fields = ['name', 'date', 'status', 'single_snake_per_team']
