@@ -14,16 +14,16 @@ from apps.utils.url import is_valid_url
 class TeamForm(forms.ModelForm):
     snake_url = forms.CharField(
         max_length=255,
-        label="URL",
-        help_text="Be sure to add a <strong>valid</strong> Snake URL here before \
-                    the tournament starts, otherwise you may not be able to compete!",
+        label='URL',
+        help_text='Be sure to add a <strong>valid</strong> Snake URL here before \
+                    the tournament starts, otherwise you may not be able to compete!',
         required=False,
         widget=forms.URLInput(),
     )
 
     class Meta:
         model = Team
-        fields = ["name", "description"]
+        fields = ['name', 'description']
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -33,23 +33,23 @@ class TeamForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        if cleaned_data.get("snake_url") and not is_valid_url(
-            cleaned_data.get("snake_url")
+        if cleaned_data.get('snake_url') and not is_valid_url(
+            cleaned_data.get('snake_url')
         ):
-            raise ValidationError("Snake requires a valid URL")
+            raise ValidationError('Snake requires a valid URL')
 
         return cleaned_data
 
     def load_snake_data(self):
         if self.instance and self.instance.snake_id:
             self.snake = self.instance.snake
-            self.initial["snake_url"] = self.instance.snake.url
+            self.initial['snake_url'] = self.instance.snake.url
         else:
             self.snake = Snake()
 
     def save(self, *args, **kwargs):
-        self.snake.url = self.cleaned_data["snake_url"]
-        self.snake.name = self.cleaned_data["name"]
+        self.snake.url = self.cleaned_data['snake_url']
+        self.snake.name = self.cleaned_data['name']
         self.snake.save()
 
         team = super().save(commit=False)
@@ -70,32 +70,31 @@ class AddTeamMemberForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        username = cleaned_data.get("username")
+        username = cleaned_data.get('username')
         try:
-            cleaned_data["user"] = User.objects.get(username=username)
+            cleaned_data['user'] = User.objects.get(username=username)
         except User.DoesNotExist:
-            raise ValidationError(
-                f"Hmm, {username} can't be found. Have they logged in yet?"
-            )
+            raise ValidationError(f"Hmm, {username} can't be found. Have they logged in yet?")
 
         try:
             # If this lookup raises an exception, then we can continue
             team_name = TeamMember.objects.get(
-                user_id=cleaned_data["user"].id, team_id=self.team.id
+                user_id=cleaned_data['user'].id, team_id=self.team.id
             ).team.name
-            raise ValidationError(f"{username} already belongs to {team_name}")
+            raise ValidationError(f'{username} already belongs to {team_name}')
         except TeamMember.DoesNotExist:
             pass
 
         return cleaned_data
 
     def save(self, *args, **kwargs):
-        return TeamMember.objects.create(user=self.cleaned_data["user"], team=self.team)
+        return TeamMember.objects.create(user=self.cleaned_data['user'], team=self.team)
+
 
 class TournamentBracketForm(forms.ModelForm):
     class Meta:
         model = TournamentBracket
-        fields = ["name", "snakes"]
+        fields = ['name', 'snakes']
 
 
 class TournamentForm(forms.ModelForm):

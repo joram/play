@@ -9,7 +9,7 @@ from apps.utils.helpers import generate_game_url
 
 class SingleSnakePerTeamPerTournamentValidationError(ValidationError):
     def __init__(self):
-        super().__init__(message="Only one snake per event per team")
+        super().__init__(message='Only one snake per event per team')
 
 
 class TournamentClosedValidationError(ValidationError):
@@ -44,7 +44,7 @@ class Tournament(models.Model):
         return TournamentBracket.objects.filter(tournament=self)
 
     def __str__(self):
-        return f"{self.name}"
+        return f'{self.name}'
 
 
 class TournamentBracket(models.Model):
