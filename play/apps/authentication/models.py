@@ -4,16 +4,6 @@ from django.contrib.auth.models import (
     AbstractBaseUser, UserManager as DjangoUserManager
 )
 
-ADMIN_USERS = [
-    "dlsteuer",
-    "joram",
-    "brandonb927",
-    "coldog",
-    "matthieudolci",
-    "codeallthethingz",
-    "tristan-swu",
-]
-
 
 class UserManager(DjangoUserManager):
 
@@ -36,7 +26,7 @@ class User(AbstractBaseUser):
 
     @property
     def is_admin(self):
-        return self.username.lower() in ADMIN_USERS
+        return self.username.lower() in ["tristan-swu","dlsteuer", "joram", "brandonb927", "coldog", "matthieudolci", "codeallthethingz"]
 
     def assigned_to_team(self):
         from apps.tournament.models import TeamMember
