@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="card">
   <div class="card-header">
     {{ tournament_bracket.name }}
@@ -71,9 +70,10 @@
           {% endfor %}
         </ul>
       </li>
+      {% empty %}
+      <h4>There are no rounds</h4>
       {% endfor %}
     </ul>
   </div>
 </div>
 {% endblock %}
-
