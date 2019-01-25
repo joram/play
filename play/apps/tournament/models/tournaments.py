@@ -20,12 +20,14 @@ class TournamentClosedValidationError(ValidationError):
 
 
 class Tournament(models.Model):
-    LOCKED = 'LO'
-    REGISTRATION = 'RE'
+    LOCKED = 'LO'  # Not started, but nobody can register
+    HIDDEN = 'HI'  # Able to add snakes manually
+    REGISTRATION = 'RE'  # Publicly viewable and opt-in-able
     IN_PROGRESS = 'PR'
     COMPLETE = 'JR'
     STATUSES = (
         (LOCKED, 'Locked'),
+        (HIDDEN, 'Hidden'),
         (REGISTRATION, 'Registration'),
         (IN_PROGRESS, 'In Progress'),
         (COMPLETE, 'Complete'),
@@ -135,7 +137,7 @@ class SnakeTournamentBracket(models.Model):
         team = team_member.team
         tournament = self.tournament_bracket.tournament
 
-        if tournament.status in [Tournament.IN_PROGRESS, Tournament.COMPLETE]:
+        if tournament.status in [Tournament.LOCKED, Tournament.IN_PROGRESS, Tournament.COMPLETE]:
             raise TournamentClosedValidationError()
 
         tournament_brackets = TournamentBracket.objects.filter(tournament=self.tournament_bracket.tournament)
