@@ -61,7 +61,10 @@
                 {% for heat_game in heat.games %}
                 <li class="heat_game">
                   <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                    Game {{ heat_game.number }}
+                    Play Game {{ heat_game.number }}
+                  </a> |
+                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
+                    AutoPlay Game {{ heat_game.number }}
                   </a>
                 </li>
                 {% endfor %}

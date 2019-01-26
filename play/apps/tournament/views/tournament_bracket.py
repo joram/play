@@ -99,11 +99,7 @@ def show_csv(request, id):
 @login_required
 def create_next_round(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    try:
-        tournament_bracket.create_next_round()
-    except:
-        messages.error(request, f"Failed to create a new tournament round")
-
+    tournament_bracket.create_next_round()
     return redirect(f'/tournament/bracket/{id}')
 
 
@@ -111,10 +107,7 @@ def create_next_round(request, id):
 @login_required
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
-    try:
-        heat.create_next_game()
-    except:
-        messages.error(request, f"Failed to add a new bracket heat")
+    heat.create_next_game()
     return redirect(f'/tournament/bracket/{id}/')
 
 
@@ -125,4 +118,8 @@ def run_game(request, id, heat_id, heat_game_number):
     if heat_game.game is None or heat_game.game.engine_id is None:
         heat_game.game.create()
         heat_game.game.run()
+
+    if 'autoplay' in request.META['QUERY_STRING']:
+        return redirect(f'/games/{heat_game.game.engine_id}?autoplay=true')
+
     return redirect(f'/games/{heat_game.game.engine_id}')

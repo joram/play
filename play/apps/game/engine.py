@@ -1,4 +1,5 @@
 import requests
+
 from django.conf import settings
 
 
@@ -13,11 +14,14 @@ def run(config):
 
 
 def status(id):
+    # Import here to prevent circular import issue
+    from apps.game.models import Game
+
     res = requests.get(f'{settings.ENGINE_URL}/games/{id}')
     res.raise_for_status()
     data = res.json()
 
-    status = data['Game'].get('Status', 'pending')
+    status = data['Game'].get('Status', Game.Status.PENDING)
     turn = data['LastFrame'].get('Turn', 0)
     gsnakes = data['LastFrame'].get('Snakes', [])
 
@@ -25,7 +29,7 @@ def status(id):
     for s in gsnakes:
         id = s['ID']
         snakes[id] = {
-            'death': s['Death']['Cause'] if s['Death'] else '',
+            'death': s['Death']['Cause'] if s['Death'] else Game.Status.PENDING,
             'turn': s['Death']['Turn'] if s['Death'] else turn
         }
 
