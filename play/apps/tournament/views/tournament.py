@@ -1,11 +1,13 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+
 from apps.tournament.forms import TournamentForm
 from apps.tournament.models import Tournament, TournamentBracket, Snake, TournamentSnake
 from apps.authentication.decorators import admin_required
-from datetime import datetime
 
 
 @admin_required
