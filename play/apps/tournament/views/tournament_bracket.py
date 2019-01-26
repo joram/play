@@ -29,7 +29,7 @@ def new(request, tournament_id):
             for snake in form.cleaned_data["snakes"]:
                 # There has to be a tournament / snake relation, or its an error
                 # (ie: can't add snake from outside the tournament)
-                ts = TournamentSnake.objects.get(tournament=tournament, snake=snake)
+                ts, _ = TournamentSnake.objects.get_or_create(tournament=tournament, snake=snake)
                 ts.bracket = bracket
                 ts.save()
 
@@ -42,13 +42,23 @@ def new(request, tournament_id):
 
 @admin_required
 @login_required
-def edit(request, id):
-    tournament_bracket = TournamentBracket.objects.get(id=id)
+def edit(request, tournament_id):
+    tournament_bracket = TournamentBracket.objects.get(id=tournament_id)
     if request.method == 'POST':
         form = TournamentBracketForm(request.POST, instance=tournament_bracket)
 
         if form.is_valid():
-            form.save()
+            bracket = form.save(commit=False)
+            bracket.save()
+
+            # Save related sneks
+            for snake in form.cleaned_data["snakes"]:
+                # There has to be a tournament / snake relation, or its an error
+                # (ie: can't add snake from outside the tournament)
+                ts, _ = TournamentSnake.objects.get_or_create(tournament=tournament_bracket.tournament, snake=snake)
+                ts.bracket = bracket
+                ts.save()
+
             messages.success(request, f'Tournament Bracket "{tournament_bracket.name}" updated')
             return redirect('/tournaments/')
     else:
