@@ -74,9 +74,6 @@ Your `.env` file should contain the following:
 ```bash
 ENV=local
 
-ENGINE_URL=https://engine.battlesnake.io
-BOARD_URL=https://board.battlesnake.io
-
 BATTLESNAKEIO_SECRET=battlesnakeio
 BATTLESNAKEIO_GITHUB_CLIENT_ID=...
 BATTLESNAKEIO_GITHUB_CLIENT_SECRET=...
