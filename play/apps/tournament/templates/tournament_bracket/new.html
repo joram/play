@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="mb-md-3 text-center">
-  <h1>Create Tournament Bracket</h1>
+  <h1>Create Bracket for "{{ tournament.name }}"</h1>
 </div>
 
 <div class="form-group card">
   <div class="card-body">
-    <form method="post" novalidate action="/tournament/bracket/new/">
+    <form method="post" novalidate>
       {% csrf_token %}
-      {% include '_form.html' with form=form %}
+      {% include '_form.html' with form=form %} 
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>

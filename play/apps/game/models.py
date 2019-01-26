@@ -99,13 +99,13 @@ class Game(BaseModel):
         return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
 
     def alive_game_snakes(self):
-        return self.get_snakes().filter(death="pending")
+        return self.get_snakes().filter(death='pending')
 
     def winner(self):
         if self.status == self.Status.COMPLETE:
             living_snakes = self.alive_game_snakes()
-            if len(living_snakes) == 1:
-                return self.alive_game_snakes()[0]
+            if living_snakes.count() == 1:
+                return living_snakes.first()
 
     @property
     def leaderboard_game(self):
