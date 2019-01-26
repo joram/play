@@ -1,8 +1,8 @@
 # play
 
-`"where I go to do battlesnake" ~Brad`
+> "Where I go to do battlesnake." - @bvanvugt
 
-This is the module that users of all types use to interact with the [game engine](https://github.com/battlesnakeio/engine) and other pieces.
+This is the platform that allows users to sign up, register snakes, and run games.
 
 ## Getting Started
 
@@ -31,7 +31,7 @@ This is the module that users of all types use to interact with the [game engine
         pyenv activate play
         ```
 
-1. From inside the project `play` folder, run the migrations: 
+1. From inside the project `play` folder, run the migrations:
     ```shell
     ENV=local \
     PYTHONPATH=~/path/to/play/play \
@@ -72,17 +72,22 @@ Copy the generated secrets in to your `.env` (described below)
 Your `.env` file should contain the following:
 
 ```bash
+ENV=local
+
 BATTLESNAKEIO_SECRET=battlesnakeio
 BATTLESNAKEIO_GITHUB_CLIENT_ID=...
 BATTLESNAKEIO_GITHUB_CLIENT_SECRET=...
-POSTGRES_HOST=...
-POSTGRES_PORT=5432
-POSTGRES_DB=battlesnakeio_play
-POSTGRES_USER=battlesnakeio
-POSTGRES_PASSWORD=battlesnakeio
 ```
 
-*NOTE:* Don't use the defaults, it is highly encouraged you customize these values
+If using postgres locally (instead of SQLite), you'll also need:
+
+```bash
+POSTGRES_HOST=...
+POSTGRES_PORT=...
+POSTGRES_DB=...
+POSTGRES_USER=...
+POSTGRES_PASSWORD=...
+```
 
 ## Docker
 

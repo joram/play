@@ -13,7 +13,7 @@ class UserManager(DjangoUserManager):
 
 class User(AbstractBaseUser):
     id = ShortUUIDField(prefix="usr", max_length=128, primary_key=True)
-    username = models.CharField(max_length=39, unique=True)
+    username = models.CharField(max_length=39, unique=True)  # 39 is max GitHub username length
     email = models.CharField(max_length=512)
 
     USERNAME_FIELD = 'username'
@@ -26,14 +26,17 @@ class User(AbstractBaseUser):
 
     @property
     def is_admin(self):
-        return self.username.lower() in ["tristan-swu","dlsteuer", "joram", "brandonb927", "coldog", "matthieudolci", "codeallthethingz"]
+        return self.username.lower() in [
+            "brandonb927",
+            "bvanvugt",
+            "codeallthethingz"
+            "coldog",
+            "dlsteuer",
+            "joram",
+            "matthieudolci",
+            "tristan-swu",
+        ]
 
     def assigned_to_team(self):
         from apps.tournament.models import TeamMember
-        try:
-            team = TeamMember.objects.get(user_id=self.id).team
-            return True
-        except TeamMember.DoesNotExist:
-            pass
-
-        return False
+        return TeamMember.objects.filter(user_id=self.id).exists()
