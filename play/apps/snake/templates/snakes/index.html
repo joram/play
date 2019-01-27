@@ -108,8 +108,13 @@ function validateSnake(snakeUrl, callback){
     async: true,
     dataType: 'json',
     url: engineUrl + '/validateSnake?url=' + snakeUrl,
-    success: callback
-  });
+  })
+  .done(callback)
+  .fail(function(xhr, message, error) {
+    console.error(`Snake validation resposne failed: ${message} ${error}`)
+    changeInfoButtonState('btn-danger')
+    snakeStatuses[snakeUrl] = status('Could not contact engine to validate snake', 'danger')
+  })
 }
 
 var snakeStatuses = []
@@ -126,10 +131,22 @@ $('.js-show-snake-status').on('click', function (event) {
     trigger: 'click',
     title: 'Snake API Validation <button type="button" class="close" aria-label="Close" style="line-height: .6;"><span aria-hidden="true">&times;</span></button>',
     html: true,
-    content: snakeStatuses[snakeUrl],
+    content: snakeStatuses[snakeUrl] || status('Snake is currently being validated ...', 'info')
   })
   $elem.popover('show')
 })
+
+function status(message, type) {
+  return `<div class="alert alert-${type} text-center">${message}</div>`
+}
+
+function changeInfoButtonState(state) {
+  const $elem = $('.js-show-snake-status')
+  $elem.removeClass('btn-success')
+  $elem.removeClass('btn-light')
+  $elem.removeClass('btn-danger')
+  $elem.addClass(state)
+}
 
 function updateAllSnakeStatusLabels() {
   $('.js-show-snake-status').each(function(index,currentSnake){
@@ -165,17 +182,13 @@ function updateAllSnakeStatusLabels() {
       }
 
       if (!hasErrors) {
-        html = '<div class="alert alert-success text-center">No errors!</div>' + html
+        html = status('No errors!', 'success') + html
       }
 
       if (scorePassedTotal < scoreTotal) {
-        $elem.removeClass('btn-success')
-        $elem.removeClass('btn-light')
-        $elem.addClass('btn-danger')
+        changeInfoButtonState('btn-danger')
       } else {
-        $elem.removeClass('btn-light')
-        $elem.removeClass('btn-danger')
-        $elem.addClass('btn-success')
+        changeInfoButtonState('btn-success')
       }
 
       snakeStatuses[snakeUrl] = html
@@ -186,4 +199,3 @@ updateAllSnakeStatusLabels();
 setInterval(updateAllSnakeStatusLabels, 5000);
 
 {% endblock %}
-
