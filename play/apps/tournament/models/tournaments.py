@@ -207,6 +207,10 @@ class Round(models.Model):
         return [s.snake for s in self.previous.winners]
 
     @property
+    def snake_count(self):
+        return len(self.snakes)
+
+    @property
     def winners(self):
         winners = []
         for heat in self.heats:
@@ -237,7 +241,12 @@ class Heat(models.Model):
     @property
     def snakes(self):
         snake_heats = SnakeHeat.objects.filter(heat=self)
-        snakes = [sh.snake for sh in snake_heats]
+        snakes = []
+        winner_ids = [w.id for w in self.winners]
+        for sh in snake_heats:
+            snake = sh.snake
+            snake.winner = snake.id in winner_ids
+            snakes.append(snake)
         return snakes
 
     @property
@@ -256,8 +265,8 @@ class Heat(models.Model):
     def winners(self):
         winners = []
         for game in self.games:
-            print(f'heat {self.number}, game {game.number} has winnner {game.winner.snake.id}')
-            winners.append(game.winner)
+            if game.winner is not None:
+                winners.append(game.winner)
         return winners
 
     @property

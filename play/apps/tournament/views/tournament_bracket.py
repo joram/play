@@ -84,8 +84,41 @@ def show_current_game(request, id):
 @login_required
 def show(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
+
+    progression_details = []
+    round = 1
+    total_snakes = tournament_bracket.snakes.count()
+
+    import math
+    game_count = math.ceil(total_snakes/8)
+    snakes_per_game = total_snakes/game_count
+    min_snakes_per_game = math.floor(snakes_per_game)
+    max_snakes_per_game = math.ceil(snakes_per_game)
+    snakes_advancing = game_count*2
+
+    snakes_per_game_msg = f"{min_snakes_per_game}-{max_snakes_per_game}" if min_snakes_per_game != max_snakes_per_game else f"{min_snakes_per_game}"
+    while total_snakes > 8:
+        print(round, game_count, (min_snakes_per_game, max_snakes_per_game), snakes_advancing)
+        progression_details.append({
+            "round": round,
+            "num_games": game_count,
+            "snakes_per_game": snakes_per_game_msg,
+            "advancing": snakes_advancing,
+        })
+        round += 1
+        total_snakes = snakes_advancing
+
+    progression_details.append({
+        "round": round,
+        "num_games": game_count,
+        "snakes_per_game": snakes_per_game_msg,
+        "advancing": snakes_advancing,
+    })
+    print(round, game_count, (min_snakes_per_game, max_snakes_per_game), snakes_advancing)
+
     return render(request, 'tournament_bracket/show.html', {
         'tournament_bracket': tournament_bracket,
+        "progression": progression_details,
     })
 
 
