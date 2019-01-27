@@ -244,7 +244,7 @@ class Heat(models.Model):
         snakes = []
         winner_ids = [w.id for w in self.winners]
         for sh in snake_heats:
-            snake = sh.snake.snake
+            snake = sh.snake
             snake.winner = snake.id in winner_ids
             snakes.append(snake)
         return snakes
