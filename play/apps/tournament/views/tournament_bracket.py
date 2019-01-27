@@ -1,41 +1,64 @@
 import csv
 
+from django import forms
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from apps.tournament.forms import TournamentBracketForm
-from apps.tournament.models import TournamentBracket, Heat, HeatGame
+from apps.tournament.models import Tournament, TournamentBracket, TournamentSnake, Heat, HeatGame
 from apps.authentication.decorators import admin_required
 
 
 @admin_required
 @login_required
 @transaction.atomic
-def new(request):
+def new(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+
     if request.method == 'POST':
         form = TournamentBracketForm(request.POST)
 
         if form.is_valid():
-            tournament = form.save()
+            bracket = form.save(commit=False)
+            bracket.tournament=tournament
+            bracket.save()
+
+            # Save related sneks
+            for snake in form.cleaned_data["snakes"]:
+                # There has to be a tournament / snake relation, or its an error
+                # (ie: can't add snake from outside the tournament)
+                ts, _ = TournamentSnake.objects.get_or_create(tournament=tournament, snake=snake)
+                ts.bracket = bracket
+                ts.save()
+
             messages.success(request, f'Tournament "{tournament.name}" successfully created')
             return redirect('/tournaments/')
     else:
         form = TournamentBracketForm()
-
-    return render(request, 'tournament_bracket/new.html', { 'form': form })
+    return render(request, 'tournament_bracket/new.html',  {'form': form, 'tournament':tournament})
 
 
 @admin_required
 @login_required
-def edit(request, id):
-    tournament_bracket = TournamentBracket.objects.get(id=id)
+def edit(request, bracket_id):
+    tournament_bracket = TournamentBracket.objects.get(id=bracket_id)
     if request.method == 'POST':
         form = TournamentBracketForm(request.POST, instance=tournament_bracket)
 
         if form.is_valid():
-            form.save()
+            bracket = form.save(commit=False)
+            bracket.save()
+
+            # Save related sneks
+            for snake in form.cleaned_data["snakes"]:
+                # There has to be a tournament / snake relation, or its an error
+                # (ie: can't add snake from outside the tournament)
+                ts, _ = TournamentSnake.objects.get_or_create(tournament=tournament_bracket.tournament, snake=snake)
+                ts.bracket = bracket
+                ts.save()
+
             messages.success(request, f'Tournament Bracket "{tournament_bracket.name}" updated')
             return redirect('/tournaments/')
     else:
@@ -49,7 +72,7 @@ def edit(request, id):
 def show_current_game(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
 
-    if request.GET.get("json") == 'true':
+    if request.GET.get('json') == 'true':
         details = tournament_bracket.game_details()
         return JsonResponse({"games": details})
 
@@ -120,11 +143,7 @@ def show_csv(request, id):
 @login_required
 def create_next_round(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    try:
-        tournament_bracket.create_next_round()
-    except:
-        messages.error(request, f"Failed to create a new tournament round")
-
+    tournament_bracket.create_next_round()
     return redirect(f'/tournament/bracket/{id}')
 
 
@@ -132,10 +151,7 @@ def create_next_round(request, id):
 @login_required
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
-    try:
-        heat.create_next_game()
-    except:
-        messages.error(request, f"Failed to add a new bracket heat")
+    heat.create_next_game()
     return redirect(f'/tournament/bracket/{id}/')
 
 
@@ -146,4 +162,8 @@ def run_game(request, id, heat_id, heat_game_number):
     if heat_game.game is None or heat_game.game.engine_id is None:
         heat_game.game.create()
         heat_game.game.run()
+
+    if 'autoplay' in request.META['QUERY_STRING']:
+        return redirect(f'/games/{heat_game.game.engine_id}?autoplay=true')
+
     return redirect(f'/games/{heat_game.game.engine_id}')

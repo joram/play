@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import logging
 import os
 import sys
 
@@ -26,7 +25,6 @@ def get_env(key, default=None, allow_default=True):
     return os.environ[key]
 
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -34,13 +32,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # default to production if it doesn't exist
 ENV = get_env('ENV', 'production', True)
 
+
 def is_production_env():
     return ENV == 'production'
+
 
 if not is_production_env():
     # Read environment values from the .env file
     dot_env_path = os.path.join(BASE_DIR + "/.env")
-    dotenv.read_dotenv(dot_env_path)
+    if os.path.isfile(dot_env_path):
+        dotenv.read_dotenv(dot_env_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -54,7 +55,7 @@ DEBUG = not is_production_env()
 ALLOWED_HOSTS = []
 
 if is_production_env():
-    ALLOWED_HOSTS = [ get_env("BATTLESNAKEIO_DOMAIN", None, False) ]
+    ALLOWED_HOSTS = [get_env("BATTLESNAKEIO_DOMAIN", None, False)]
 
 # Forwarding through the proxy
 if is_production_env():
@@ -78,10 +79,12 @@ INSTALLED_APPS = [
     'social_django',
     'widget_tweaks',
     'django_extensions',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,6 +95,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'urls'
+
+INTERNAL_IPS = ['127.0.0.1']
 
 TEMPLATES = [
     {

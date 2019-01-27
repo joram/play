@@ -24,11 +24,11 @@ urlpatterns = [
     url(r'^team/members/(?P<id>\w+)/$', method_dispatch(
         DELETE=tournament_views.members.delete,
     )),
-    url(r'^tournament/bracket/new/$', method_dispatch(
+    url(r'^tournament/(?P<tournament_id>\w+)/bracket/new/$', method_dispatch(
         GET=tournament_views.tournament_bracket.new,
         POST=tournament_views.tournament_bracket.new,
     )),
-    url(r'^tournament/bracket/(?P<id>\w+)/edit/$', method_dispatch(
+    url(r'^tournament/bracket/(?P<bracket_id>\w+)/edit/$', method_dispatch(
         GET=tournament_views.tournament_bracket.edit,
         POST=tournament_views.tournament_bracket.edit,
         PUT=tournament_views.tournament_bracket.edit,
