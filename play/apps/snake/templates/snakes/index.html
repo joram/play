@@ -102,7 +102,7 @@ $(document).on('click', '.popover .close', function () {
   $(this).parents('.popover').popover('dispose')
 })
 
-function validateSnake(snakeUrl, callback){
+function validateSnake(snakeUrl, button, callback){
   var engineUrl = window.__battlesnake.settings.ENGINE_URL
   $.ajax({
     async: true,
@@ -112,7 +112,7 @@ function validateSnake(snakeUrl, callback){
   .done(callback)
   .fail(function(xhr, message, error) {
     console.error(`Snake validation resposne failed: ${message} ${error}`)
-    changeInfoButtonState('btn-danger')
+    changeInfoButtonState(button, 'btn-danger')
     snakeStatuses[snakeUrl] = status('Could not contact engine to validate snake', 'danger')
   })
 }
@@ -140,19 +140,18 @@ function status(message, type) {
   return `<div class="alert alert-${type} text-center">${message}</div>`
 }
 
-function changeInfoButtonState(state) {
-  const $elem = $('.js-show-snake-status')
-  $elem.removeClass('btn-success')
-  $elem.removeClass('btn-light')
-  $elem.removeClass('btn-danger')
-  $elem.addClass(state)
+function changeInfoButtonState(button, state) {
+  button.removeClass('btn-success')
+  button.removeClass('btn-light')
+  button.removeClass('btn-danger')
+  button.addClass(state)
 }
 
 function updateAllSnakeStatusLabels() {
   $('.js-show-snake-status').each(function(index,currentSnake){
     var $elem = $(this)
     var snakeUrl = $elem.data('snake-url')
-    validateSnake(snakeUrl, function(data){
+    validateSnake(snakeUrl, $elem, function(data){
       var hasErrors = false
 
       var scoreTotal = 0
@@ -168,7 +167,7 @@ function updateAllSnakeStatusLabels() {
           'Status: <span class="badge badge-sm ' + (item.statusCode !== 200 ? 'badge-danger' : 'badge-success') + '">' + item.statusCode + '</span><br />' +
           'Checks: <span class="badge badge-success badge-sm">' + item.score.checksPassed + ' passed</span>' + (item.score.checksFailed !== 0 ? ' / <span class="badge badge-danger badge-sm">' + item.score.checksFailed + ' failed</span>' : '') + '<br />' +
           'Message: ' + item.Message +
-          '</p>' 
+          '</p>'
 
         if (item.Errors.length) {
           hasErrors = true
@@ -186,9 +185,9 @@ function updateAllSnakeStatusLabels() {
       }
 
       if (scorePassedTotal < scoreTotal) {
-        changeInfoButtonState('btn-danger')
+        changeInfoButtonState($elem, 'btn-danger')
       } else {
-        changeInfoButtonState('btn-success')
+        changeInfoButtonState($elem, 'btn-success')
       }
 
       snakeStatuses[snakeUrl] = html
