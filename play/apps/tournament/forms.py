@@ -1,20 +1,12 @@
 from django import forms
 from django.forms import ValidationError
-from apps.tournament.models import Team, TeamMember, TournamentBracket, Tournament
+from apps.tournament.models import Team, TeamMember, TournamentBracket, Tournament, TournamentSnake
 from apps.authentication.models import User
 from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
 
 
 class TeamForm(forms.ModelForm):
-    snake_url = forms.CharField(
-        max_length=255,
-        label="URL",
-        help_text="Be sure to add a <strong>valid</strong> Snake URL here before \
-                    the tournament starts, otherwise you may not be able to compete!",
-        required=False,
-        widget=forms.URLInput(),
-    )
 
     class Meta:
         model = Team
@@ -27,12 +19,6 @@ class TeamForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-
-        if cleaned_data.get("snake_url") and not is_valid_url(
-            cleaned_data.get("snake_url")
-        ):
-            raise ValidationError("Snake requires a valid URL")
-
         return cleaned_data
 
     def load_snake_data(self):
@@ -43,7 +29,6 @@ class TeamForm(forms.ModelForm):
             self.snake = Snake()
 
     def save(self, *args, **kwargs):
-        self.snake.url = self.cleaned_data["snake_url"]
         self.snake.name = self.cleaned_data["name"]
         self.snake.save()
 
@@ -89,12 +74,49 @@ class AddTeamMemberForm(forms.Form):
 
 
 class TournamentBracketForm(forms.ModelForm):
+    snakes = forms.ModelMultipleChoiceField(Snake.objects.all(), required=False)
+
     class Meta:
         model = TournamentBracket
         fields = ["name", "snakes"]
 
 
 class TournamentForm(forms.ModelForm):
+    snakes = forms.ModelMultipleChoiceField(Snake.objects.all(), required=False)
+
     class Meta:
         model = Tournament
         fields = ["name", "date", "snakes", "status", "single_snake_per_team"]
+
+
+class TournamentSnakeForm(forms.ModelForm):
+
+    def __init__(self, user, tournament, snake, bracket, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.team = TeamMember.objects.get(user=user).team
+        self.user = user
+        self.snake = snake
+        self.tournament = tournament
+        self.fields['snake'].choices = [(s.id, s.name) for s in self.team.snakes]
+        self.initial['snake'] = snake
+        self.fields['bracket'].choices = [(b.id, b.name) for b in self.tournament.brackets]
+        self.initial['bracket'] = bracket
+
+    def is_valid(self):
+        return True
+
+    def save(self, *args, **kwargs):
+        if self.tournament.single_snake_per_team:
+            qs = TournamentSnake.objects.filter(snake__in=self.team.snakes, tournament=self.tournament)
+            qs.delete()
+
+        ts, _ = TournamentSnake.objects.get_or_create(
+            snake=self.snake,
+            bracket=self.bracket,
+            tournament=self.tournament,
+        )
+        return ts
+
+    class Meta:
+        model = TournamentSnake
+        fields = ["bracket", "snake"]

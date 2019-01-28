@@ -10,26 +10,13 @@
     </span>
   </div>
   <div class="card-body container">
+
     <div class="row">
       <div class="col-md-6">
         <h4 class="card-title">{{ team.name }}</h4>
         <p>
           {{ team.description }}
         </p>
-        <p>
-          Team Snake URL: <br />
-          {% if team.snake.url %}
-          <code>{{ team.snake.url }}</code>
-          <button class="btn btn-link btn-sm" data-clipboard-text="{{ team.snake.url }}" title="Copy to clipboard">
-            <i class="fa fa-copy"></i>
-          </button>
-          {% else %}
-          <span class="badge badge-pill badge-danger">
-            No Snake URL provided
-          </span>
-          {% endif %}
-        </p>
-        <p class="text-danger"><small>Be sure to add a <strong>valid</strong> Snake URL here before the tournament starts, otherwise you may not be able to compete!</small></p>
       </div>
       <div class="col-md-6">
         <h4 class="card-title d-inline-block">Members</h4>
@@ -66,6 +53,40 @@
         </ul>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h4 class="card-title">Tournament Details</h4>
+        <div>
+          {% if team.tournament_snakes %}
+            {% for ts in team.tournament_snakes %}
+              <span class="badge badge-pill badge-primary">{{ ts.snake.name }}</span>
+              is entered in the
+              <span class="badge badge-pill badge-info">{{ ts.bracket.name }}</span>
+              bracket for
+              <span class="badge badge-pill badge-secondary">{{ ts.tournament.name }}</span>
+
+              <div style="float:right;">
+                <a href="/tournament/snake/{{ts.id}}/edit"><i class="fa fa-edit"></i> Edit</a>
+                <a href="/tournament/snake/{{ts.id}}/delete"><i class="fa fa-trash"></i> Delete</a>
+              </div>
+              <br/>
+            {% endfor %}
+          {% else %}
+            <span class="badge badge-pill badge-danger">
+              Not Competing in Any Tournament
+            </span>
+          {% endif %}
+        </div>
+        <br/>
+        <div>
+          {% for t in team.available_tournaments %}
+            <a class="btn btn-primary btn-sm" href="/tournament/{{ t.id }}/compete">Compete in {{ t.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
