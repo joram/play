@@ -6,18 +6,15 @@ import util.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0002_adds_created_modified_columns'),
-    ]
+    dependencies = [("game", "0002_adds_created_modified_columns")]
 
     operations = [
         migrations.AlterField(
-            model_name='gamesnake',
-            name='id',
-            field=util.fields.ShortUUIDField(max_length=128, primary_key=True, serialize=False),
+            model_name="gamesnake",
+            name="id",
+            field=util.fields.ShortUUIDField(
+                max_length=128, primary_key=True, serialize=False
+            ),
         ),
-        migrations.AlterUniqueTogether(
-            name='gamesnake',
-            unique_together=set(),
-        ),
+        migrations.AlterUniqueTogether(name="gamesnake", unique_together=set()),
     ]

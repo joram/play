@@ -5,13 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0007_merge_20181124_0020'),
-    ]
+    dependencies = [("game", "0007_merge_20181124_0020")]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='gamesnake',
-            unique_together=set(),
-        ),
+        migrations.AlterUniqueTogether(name="gamesnake", unique_together=set())
     ]

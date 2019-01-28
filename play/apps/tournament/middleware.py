@@ -9,5 +9,6 @@ def with_current_team(action):
             request.team = team
             return action(request, *args, **kwargs)
         except TeamMember.DoesNotExist:
-            return redirect('/team/new')
+            return redirect("/team/new")
+
     return decorate

@@ -10,24 +10,41 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Snake',
+            name="Snake",
             fields=[
-                ('id', util.fields.ShortUUIDField(max_length=128, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=128)),
-                ('url', models.CharField(max_length=128)),
+                (
+                    "id",
+                    util.fields.ShortUUIDField(
+                        max_length=128, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                ("url", models.CharField(max_length=128)),
             ],
         ),
         migrations.CreateModel(
-            name='UserSnake',
+            name="UserSnake",
             fields=[
-                ('snake', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='snake.Snake')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "snake",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to="snake.Snake",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

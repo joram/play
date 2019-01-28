@@ -7,27 +7,54 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('snake', '0002_auto_20181213_0150'),
-        ('tournament', '0013_auto_20181210_2049'),
+        ("snake", "0002_auto_20181213_0150"),
+        ("tournament", "0013_auto_20181210_2049"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TournamentSnake',
+            name="TournamentSnake",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bracket', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='tournament.TournamentBracket')),
-                ('snake', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='snake.Snake')),
-                ('tournament', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournament.Tournament')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "bracket",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tournament.TournamentBracket",
+                    ),
+                ),
+                (
+                    "snake",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="snake.Snake"
+                    ),
+                ),
+                (
+                    "tournament",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tournament.Tournament",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='tournament',
-            name='snakes',
-            field=models.ManyToManyField(through='tournament.TournamentSnake', to='snake.Snake'),
+            model_name="tournament",
+            name="snakes",
+            field=models.ManyToManyField(
+                through="tournament.TournamentSnake", to="snake.Snake"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='tournamentsnake',
-            unique_together={('snake', 'tournament')},
+            name="tournamentsnake", unique_together={("snake", "tournament")}
         ),
     ]

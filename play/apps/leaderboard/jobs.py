@@ -8,11 +8,10 @@ from apps.snake.models import Snake
 
 
 class MatchStarter:
-
     def chunks(self, l, n):
         """Yield successive n-sized chunks from l."""
         for i in range(0, len(l), n):
-            yield l[i:i + n]
+            yield l[i : i + n]
 
     def matches(self):
         """ Select matches to run. A random mix of snakes. """
@@ -20,7 +19,12 @@ class MatchStarter:
             UserSnakeLeaderboard.objects.all().values_list("user_snake_id", flat=True)
         )
 
-        current_leaderboard_games = list(GameLeaderboard.objects.filter(Q(game__status=Game.Status.RUNNING) | Q(game__status=Game.Status.PENDING)))
+        current_leaderboard_games = list(
+            GameLeaderboard.objects.filter(
+                Q(game__status=Game.Status.RUNNING)
+                | Q(game__status=Game.Status.PENDING)
+            )
+        )
         for lb_game in current_leaderboard_games:
             for gs in lb_game.game.get_snakes():
                 if gs.snake.id in snake_ids:
