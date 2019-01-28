@@ -102,14 +102,19 @@ $(document).on('click', '.popover .close', function () {
   $(this).parents('.popover').popover('dispose')
 })
 
-function validateSnake(snakeUrl, callback){
+function validateSnake(snakeUrl, button, callback){
   var engineUrl = window.__battlesnake.settings.ENGINE_URL
   $.ajax({
     async: true,
     dataType: 'json',
     url: engineUrl + '/validateSnake?url=' + snakeUrl,
-    success: callback
-  });
+  })
+  .done(callback)
+  .fail(function(xhr, message, error) {
+    console.error(`Snake validation resposne failed: ${message} ${error}`)
+    changeInfoButtonState(button, 'btn-danger')
+    snakeStatuses[snakeUrl] = status('Could not contact engine to validate snake', 'danger')
+  })
 }
 
 var snakeStatuses = []
@@ -126,16 +131,27 @@ $('.js-show-snake-status').on('click', function (event) {
     trigger: 'click',
     title: 'Snake API Validation <button type="button" class="close" aria-label="Close" style="line-height: .6;"><span aria-hidden="true">&times;</span></button>',
     html: true,
-    content: snakeStatuses[snakeUrl],
+    content: snakeStatuses[snakeUrl] || status('Snake is currently being validated ...', 'info')
   })
   $elem.popover('show')
 })
+
+function status(message, type) {
+  return `<div class="alert alert-${type} text-center">${message}</div>`
+}
+
+function changeInfoButtonState(button, state) {
+  button.removeClass('btn-success')
+  button.removeClass('btn-light')
+  button.removeClass('btn-danger')
+  button.addClass(state)
+}
 
 function updateAllSnakeStatusLabels() {
   $('.js-show-snake-status').each(function(index,currentSnake){
     var $elem = $(this)
     var snakeUrl = $elem.data('snake-url')
-    validateSnake(snakeUrl, function(data){
+    validateSnake(snakeUrl, $elem, function(data){
       var hasErrors = false
 
       var scoreTotal = 0
@@ -151,7 +167,7 @@ function updateAllSnakeStatusLabels() {
           'Status: <span class="badge badge-sm ' + (item.statusCode !== 200 ? 'badge-danger' : 'badge-success') + '">' + item.statusCode + '</span><br />' +
           'Checks: <span class="badge badge-success badge-sm">' + item.score.checksPassed + ' passed</span>' + (item.score.checksFailed !== 0 ? ' / <span class="badge badge-danger badge-sm">' + item.score.checksFailed + ' failed</span>' : '') + '<br />' +
           'Message: ' + item.Message +
-          '</p>' 
+          '</p>'
 
         if (item.Errors.length) {
           hasErrors = true
@@ -165,17 +181,13 @@ function updateAllSnakeStatusLabels() {
       }
 
       if (!hasErrors) {
-        html = '<div class="alert alert-success text-center">No errors!</div>' + html
+        html = status('No errors!', 'success') + html
       }
 
       if (scorePassedTotal < scoreTotal) {
-        $elem.removeClass('btn-success')
-        $elem.removeClass('btn-light')
-        $elem.addClass('btn-danger')
+        changeInfoButtonState($elem, 'btn-danger')
       } else {
-        $elem.removeClass('btn-light')
-        $elem.removeClass('btn-danger')
-        $elem.addClass('btn-success')
+        changeInfoButtonState($elem, 'btn-success')
       }
 
       snakeStatuses[snakeUrl] = html
@@ -186,4 +198,3 @@ updateAllSnakeStatusLabels();
 setInterval(updateAllSnakeStatusLabels, 5000);
 
 {% endblock %}
-
