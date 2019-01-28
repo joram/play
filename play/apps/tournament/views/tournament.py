@@ -14,32 +14,38 @@ from apps.authentication.decorators import admin_required
 @login_required
 def index(request):
     user = request.user
-    return render(request, 'tournament/list.html', {
-        'tournaments': Tournament.objects.all(),
-        'tournament_brackets': TournamentBracket.objects.all(),
-        'user': user,
-    })
+    return render(
+        request,
+        "tournament/list.html",
+        {
+            "tournaments": Tournament.objects.all(),
+            "tournament_brackets": TournamentBracket.objects.all(),
+            "user": user,
+        },
+    )
 
 
 @admin_required
 @login_required
 @transaction.atomic
 def new(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TournamentForm(request.POST)
 
         if form.is_valid():
             tournament = form.save(commit=False)
             tournament.save()
-            for snake in form.cleaned_data['snakes']:
+            for snake in form.cleaned_data["snakes"]:
                 ts = TournamentSnake(tournament=tournament, snake=snake)
                 ts.save()
-            messages.success(request, f'Tournament "{tournament.name}" successfully created')
-            return redirect('/tournaments/')
+            messages.success(
+                request, f'Tournament "{tournament.name}" successfully created'
+            )
+            return redirect("/tournaments/")
     else:
-        form = TournamentForm(initial={'date': datetime.now()})
+        form = TournamentForm(initial={"date": datetime.now()})
 
-    return render(request, 'tournament/new.html', {'form': form})
+    return render(request, "tournament/new.html", {"form": form})
 
 
 @admin_required
@@ -47,7 +53,7 @@ def new(request):
 @transaction.atomic
 def edit(request, id):
     tournament = Tournament.objects.get(id=id)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TournamentForm(request.POST, instance=tournament)
 
         if form.is_valid():
@@ -56,13 +62,13 @@ def edit(request, id):
             ts = TournamentSnake.objects.filter(tournament=tournament)
 
             # Remove snakes from the tournament
-            snake_ids = [s.id for s in form.cleaned_data['snakes']]
+            snake_ids = [s.id for s in form.cleaned_data["snakes"]]
             for remove in ts.exclude(snake_id__in=snake_ids):
                 remove.delete()
 
             # Add new snakes
-            ts_ids = ts.values_list('snake__pk', flat=True)
-            for snake in form.cleaned_data['snakes']:
+            ts_ids = ts.values_list("snake__pk", flat=True)
+            for snake in form.cleaned_data["snakes"]:
                 if snake.id not in ts_ids:
                     ts = TournamentSnake(tournament=tournament, snake=snake)
                     ts.save()
@@ -72,4 +78,4 @@ def edit(request, id):
     else:
         form = TournamentForm(instance=tournament)
 
-    return render(request, 'tournament/edit.html', {'form': form})
+    return render(request, "tournament/edit.html", {"form": form})

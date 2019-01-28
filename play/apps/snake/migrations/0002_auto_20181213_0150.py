@@ -7,29 +7,35 @@ import util.time
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('snake', '0001_initial'),
-    ]
+    dependencies = [("snake", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='snake',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="snake",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='snake',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="snake",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='usersnake',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="usersnake",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='usersnake',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="usersnake",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
     ]

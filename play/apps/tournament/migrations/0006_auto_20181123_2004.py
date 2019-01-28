@@ -6,20 +6,22 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0005_heatgame_game'),
-    ]
+    dependencies = [("tournament", "0005_heatgame_game")]
 
     operations = [
         migrations.AddField(
-            model_name='heat',
-            name='desired_games',
+            model_name="heat",
+            name="desired_games",
             field=models.IntegerField(default=2),
         ),
         migrations.AlterField(
-            model_name='heatgame',
-            name='game',
-            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.DO_NOTHING, to='game.Game'),
+            model_name="heatgame",
+            name="game",
+            field=models.ForeignKey(
+                default=2,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to="game.Game",
+            ),
             preserve_default=False,
         ),
     ]

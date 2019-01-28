@@ -6,16 +6,21 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0001_initial'),
-        ('leaderboard', '0001_initial'),
-    ]
+    dependencies = [("game", "0001_initial"), ("leaderboard", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='GameLeaderboard',
+            name="GameLeaderboard",
             fields=[
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='game.Game')),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to="game.Game",
+                    ),
+                )
             ],
-        ),
+        )
     ]

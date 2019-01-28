@@ -30,11 +30,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Get environment variable ENV from the system
 # default to production if it doesn't exist
-ENV = get_env('ENV', 'production', True)
+ENV = get_env("ENV", "production", True)
 
 
 def is_production_env():
-    return ENV == 'production'
+    return ENV == "production"
 
 
 if not is_production_env():
@@ -66,84 +66,82 @@ if is_production_env():
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'apps.authentication',
-    'apps.tournament',
-    'apps.leaderboard',
-    'apps.snake',
-    'apps.game',
-    'social_django',
-    'widget_tweaks',
-    'django_extensions',
-    'debug_toolbar',
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "apps.authentication",
+    "apps.tournament",
+    "apps.leaderboard",
+    "apps.snake",
+    "apps.game",
+    "social_django",
+    "widget_tweaks",
+    "django_extensions",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = "urls"
 
-INTERNAL_IPS = ['127.0.0.1']
+INTERNAL_IPS = ["127.0.0.1"]
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            (os.path.join(BASE_DIR, 'templates'))
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
-                'util.context_processors.window_globals',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [(os.path.join(BASE_DIR, "templates"))],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
+                "util.context_processors.window_globals",
+            ]
         },
-    },
+    }
 ]
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = "wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
 if is_production_env():
-    '''
+    """
     Only enable the PG config if we're running in production
-    '''
+    """
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': get_env("POSTGRES_DB", "battlesnakeio_play", True),
-            'USER': get_env("POSTGRES_USER", None, False),
-            'PASSWORD': get_env("POSTGRES_PASSWORD", None, False),
-            'HOST': get_env("POSTGRES_HOST", None, False),
-            'PORT': get_env("POSTGRES_PORT", None, False),
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": get_env("POSTGRES_DB", "battlesnakeio_play", True),
+            "USER": get_env("POSTGRES_USER", None, False),
+            "PASSWORD": get_env("POSTGRES_PASSWORD", None, False),
+            "HOST": get_env("POSTGRES_HOST", None, False),
+            "PORT": get_env("POSTGRES_PORT", None, False),
         }
     }
 
@@ -153,37 +151,31 @@ if is_production_env():
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+    "social_core.backends.github.GithubOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
-SOCIAL_AUTH_GITHUB_KEY = get_env('BATTLESNAKEIO_GITHUB_CLIENT_ID')
-SOCIAL_AUTH_GITHUB_SECRET = get_env('BATTLESNAKEIO_GITHUB_CLIENT_SECRET')
+SOCIAL_AUTH_GITHUB_KEY = get_env("BATTLESNAKEIO_GITHUB_CLIENT_ID")
+SOCIAL_AUTH_GITHUB_SECRET = get_env("BATTLESNAKEIO_GITHUB_CLIENT_SECRET")
 if is_production_env():
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'home'
-AUTH_USER_MODEL = 'authentication.User'
+LOGIN_URL = "login"
+LOGOUT_URL = "logout"
+LOGIN_REDIRECT_URL = "home"
+AUTH_USER_MODEL = "authentication.User"
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -195,77 +187,51 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+STATIC_URL = "/static/"
+STATIC_ROOT = "/static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-ENGINE_URL = get_env('ENGINE_URL', 'http://localhost:3005')
-BOARD_URL = get_env('BOARD_URL', 'http://localhost:3000')
+ENGINE_URL = get_env("ENGINE_URL", "http://localhost:3005")
+BOARD_URL = get_env("BOARD_URL", "http://localhost:3000")
 
 # Silencing system checks that are unneeded.
 # https://docs.djangoproject.com/en/2.1/ref/checks/
 
-SILENCED_SYSTEM_CHECKS = ['fields.W342']
+SILENCED_SYSTEM_CHECKS = ["fields.W342"]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'simple': {
-            'format': '%(message)s'
-        },
-        'standard': {
-            'format': '[%(process)d] [%(levelname)s] %(message)s'
-        },
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {"format": "%(message)s"},
+        "standard": {"format": "[%(process)d] [%(levelname)s] %(message)s"},
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-            'formatter': 'standard'
-        },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "standard",
+        }
     },
-    'loggers': {
-        'console': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+    "loggers": {
+        "console": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
         # Route all logs to console by default.
-        'apps': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False
-        },
-        'settings': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False
-        },
+        "apps": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
+        "settings": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
         # Library loggers
-        'gunicorn': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False
-        },
-        'requests': {
-            'handlers': ['console'],
-            'level': 'WARNING',
-            'propagate': False
-        },
-    }
+        "gunicorn": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "requests": {"handlers": ["console"], "level": "WARNING", "propagate": False},
+    },
 }
 
 # Bootstrap alert messaging
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
+    messages.DEBUG: "alert-info",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
 }

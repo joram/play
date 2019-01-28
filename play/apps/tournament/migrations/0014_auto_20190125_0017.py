@@ -5,19 +5,26 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0013_auto_20181210_2049'),
-    ]
+    dependencies = [("tournament", "0013_auto_20181210_2049")]
 
     operations = [
         migrations.AddField(
-            model_name='tournament',
-            name='single_snake_per_team',
+            model_name="tournament",
+            name="single_snake_per_team",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='tournament',
-            name='status',
-            field=models.CharField(choices=[('LO', 'Locked'), ('RE', 'Registration'), ('PR', 'In Progress'), ('JR', 'Complete')], default='LO', max_length=2),
+            model_name="tournament",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("LO", "Locked"),
+                    ("RE", "Registration"),
+                    ("PR", "In Progress"),
+                    ("JR", "Complete"),
+                ],
+                default="LO",
+                max_length=2,
+            ),
         ),
     ]

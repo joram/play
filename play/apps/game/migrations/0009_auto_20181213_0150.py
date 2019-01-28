@@ -7,19 +7,21 @@ import util.time
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0008_remove_game_snake_uniqueness'),
-    ]
+    dependencies = [("game", "0008_remove_game_snake_uniqueness")]
 
     operations = [
         migrations.AddField(
-            model_name='gamesnake',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="gamesnake",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='gamesnake',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="gamesnake",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
     ]

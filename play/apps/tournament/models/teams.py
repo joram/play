@@ -18,7 +18,7 @@ class Team(models.Model):
         return snakes
 
     class Meta:
-        app_label = 'tournament'
+        app_label = "tournament"
 
 
 class TeamMember(models.Model):
@@ -26,6 +26,5 @@ class TeamMember(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
 
     class Meta:
-        app_label = 'tournament'
-        unique_together = (('team', 'user'))
-
+        app_label = "tournament"
+        unique_together = ("team", "user")

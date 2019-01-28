@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0008_remove_game_snake_uniqueness'),
-    ]
+    dependencies = [("game", "0008_remove_game_snake_uniqueness")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='game',
-            name='is_leaderboard_game',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="game", name="is_leaderboard_game")]

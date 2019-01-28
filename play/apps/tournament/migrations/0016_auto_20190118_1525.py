@@ -6,14 +6,14 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0015_auto_20190117_1623'),
-    ]
+    dependencies = [("tournament", "0015_auto_20190117_1623")]
 
     operations = [
         migrations.AlterField(
-            model_name='snakeheat',
-            name='snake',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='snake.Snake'),
-        ),
+            model_name="snakeheat",
+            name="snake",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="snake.Snake"
+            ),
+        )
     ]

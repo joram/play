@@ -12,9 +12,9 @@ class CreatedDateTimeField(DateTimeField):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('editable', False)
-        kwargs.setdefault('blank', True)
-        kwargs.setdefault('default', time_now)
+        kwargs.setdefault("editable", False)
+        kwargs.setdefault("blank", True)
+        kwargs.setdefault("default", time_now)
         DateTimeField.__init__(self, *args, **kwargs)
 
     def get_internal_type(self):
@@ -24,6 +24,7 @@ class CreatedDateTimeField(DateTimeField):
         "Returns a suitable description of this field for South."
         # We'll just introspect ourselves, since we inherit.
         from south.modelsinspector import introspector
+
         field_class = "django.db.models.fields.DateTimeField"
         args, kwargs = introspector(self)
         return (field_class, args, kwargs)
@@ -48,13 +49,14 @@ class ModifiedDateTimeField(CreatedDateTimeField):
         "Returns a suitable description of this field for South."
         # We'll just introspect ourselves, since we inherit.
         from south.modelsinspector import introspector
+
         field_class = "django.db.models.fields.DateTimeField"
         args, kwargs = introspector(self)
         return (field_class, args, kwargs)
 
 
 class ShortUUIDField(models.CharField):
-    ALPHABET = '346789BCDFGHJKMPQRSTVWXYbcdfghjkmpqrtvwxy'  # 41 chars total
+    ALPHABET = "346789BCDFGHJKMPQRSTVWXYbcdfghjkmpqrtvwxy"  # 41 chars total
 
     def __init__(self, prefix=None, *args, **kwargs):
         super(ShortUUIDField, self).__init__(*args, **kwargs)
@@ -67,9 +69,9 @@ class ShortUUIDField(models.CharField):
         uuid = short_uuid.uuid()
 
         if self.__prefix:
-            uuid = '{}_{}'.format(self.__prefix, uuid)
+            uuid = "{}_{}".format(self.__prefix, uuid)
 
-        uuid = uuid[:self.max_length]
+        uuid = uuid[: self.max_length]
 
         return uuid
 

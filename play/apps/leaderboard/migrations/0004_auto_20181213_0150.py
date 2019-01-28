@@ -7,29 +7,35 @@ import util.time
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('leaderboard', '0003_auto_20181016_2142'),
-    ]
+    dependencies = [("leaderboard", "0003_auto_20181016_2142")]
 
     operations = [
         migrations.AddField(
-            model_name='gameleaderboard',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="gameleaderboard",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='gameleaderboard',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="gameleaderboard",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='usersnakeleaderboard',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="usersnakeleaderboard",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='usersnakeleaderboard',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="usersnakeleaderboard",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
     ]

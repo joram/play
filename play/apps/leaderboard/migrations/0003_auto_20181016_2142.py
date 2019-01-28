@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('leaderboard', '0002_gameleaderboard'),
-    ]
+    dependencies = [("leaderboard", "0002_gameleaderboard")]
 
     operations = [
         migrations.AddField(
-            model_name='usersnakeleaderboard',
-            name='mu',
+            model_name="usersnakeleaderboard",
+            name="mu",
             field=models.FloatField(null=True),
         ),
         migrations.AddField(
-            model_name='usersnakeleaderboard',
-            name='sigma',
+            model_name="usersnakeleaderboard",
+            name="sigma",
             field=models.FloatField(null=True),
         ),
     ]

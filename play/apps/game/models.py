@@ -22,13 +22,13 @@ class Game(BaseModel):
     """
 
     class Status:
-        PENDING = 'pending'
-        RUNNING = 'running'
-        ERROR = 'error'
-        STOPPED = 'stopped'
-        COMPLETE = 'complete'
+        PENDING = "pending"
+        RUNNING = "running"
+        ERROR = "error"
+        STOPPED = "stopped"
+        COMPLETE = "complete"
 
-    id = ShortUUIDField(prefix='gam', max_length=128, primary_key=True)
+    id = ShortUUIDField(prefix="gam", max_length=128, primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
     engine_id = models.CharField(null=True, max_length=128)
     status = models.CharField(default=Status.PENDING, max_length=30)
@@ -38,25 +38,23 @@ class Game(BaseModel):
     food = models.IntegerField()
 
     def __init__(self, *args, **kwargs):
-        self.snakes = kwargs.get('snakes', [])
-        if 'snakes' in kwargs:
-            del kwargs['snakes']
+        self.snakes = kwargs.get("snakes", [])
+        if "snakes" in kwargs:
+            del kwargs["snakes"]
         super().__init__(*args, **kwargs)
 
     def config(self):
         """ Fetch the engine configuration. """
         config = {
-            'width': self.width,
-            'height': self.height,
-            'food': self.food,
-            'snakes': [],
+            "width": self.width,
+            "height": self.height,
+            "food": self.food,
+            "snakes": [],
         }
         for snake in self.get_snakes():
-            config['snakes'].append({
-                'name': snake.snake.name,
-                'url': snake.snake.url,
-                'id': snake.id,
-            })
+            config["snakes"].append(
+                {"name": snake.snake.name, "url": snake.snake.url, "id": snake.id}
+            )
         return config
 
     def create(self):
@@ -70,7 +68,7 @@ class Game(BaseModel):
             self.save()
 
             for s in self.snakes:
-                snake = Snake.objects.get(id=s['id'])
+                snake = Snake.objects.get(id=s["id"])
                 GameSnake.objects.create(snake=snake, game=self)
 
     def run(self):
@@ -84,22 +82,22 @@ class Game(BaseModel):
         """ Update the status and snake statuses from the engine. """
         with transaction.atomic():
             status = engine.status(self.engine_id)
-            self.status = status['status']
-            self.turn = status['turn']
+            self.status = status["status"]
+            self.turn = status["turn"]
 
             for game_snake in self.get_snakes():
-                snake_status = status['snakes'][game_snake.id]
-                game_snake.death = snake_status['death']
+                snake_status = status["snakes"][game_snake.id]
+                game_snake.death = snake_status["death"]
                 game_snake.save()
 
             self.save()
             return status
 
     def get_snakes(self):
-        return GameSnake.objects.filter(game_id=self.id).prefetch_related('snake')
+        return GameSnake.objects.filter(game_id=self.id).prefetch_related("snake")
 
     def alive_game_snakes(self):
-        return self.get_snakes().filter(death='pending')
+        return self.get_snakes().filter(death="pending")
 
     def winner(self):
         if self.status == self.Status.COMPLETE:
@@ -110,21 +108,22 @@ class Game(BaseModel):
     @property
     def leaderboard_game(self):
         from apps.leaderboard.models import GameLeaderboard
+
         try:
             return self.gameleaderboard
         except GameLeaderboard.DoesNotExist:
             return None
 
     class Meta:
-        app_label = 'game'
+        app_label = "game"
 
 
 class GameSnake(BaseModel):
-    id = ShortUUIDField(prefix='gs', max_length=128, primary_key=True)
+    id = ShortUUIDField(prefix="gs", max_length=128, primary_key=True)
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    death = models.CharField(default='pending', max_length=128)
+    death = models.CharField(default="pending", max_length=128)
     turns = models.IntegerField(default=0)
 
     class Meta:
-        app_label = 'game'
+        app_label = "game"

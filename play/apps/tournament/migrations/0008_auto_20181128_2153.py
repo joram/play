@@ -6,23 +6,33 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0007_merge_20181124_0020'),
-    ]
+    dependencies = [("tournament", "0007_merge_20181124_0020")]
 
     operations = [
         migrations.CreateModel(
-            name='TournamentGroup',
+            name="TournamentGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256)),
-                ('date', models.DateField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=256)),
+                ("date", models.DateField()),
             ],
         ),
         migrations.AddField(
-            model_name='tournament',
-            name='tournament_group',
-            field=models.ForeignKey(default=-1, on_delete=django.db.models.deletion.CASCADE, to='tournament.TournamentGroup'),
+            model_name="tournament",
+            name="tournament_group",
+            field=models.ForeignKey(
+                default=-1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="tournament.TournamentGroup",
+            ),
             preserve_default=False,
         ),
     ]

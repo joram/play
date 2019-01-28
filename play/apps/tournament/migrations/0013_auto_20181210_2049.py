@@ -5,18 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0012_auto_20181210_1932'),
-    ]
+    dependencies = [("tournament", "0012_auto_20181210_1932")]
 
     operations = [
         migrations.RenameField(
-            model_name='round',
-            old_name='tournament',
-            new_name='tournament_bracket',
+            model_name="round", old_name="tournament", new_name="tournament_bracket"
         ),
         migrations.AlterUniqueTogether(
-            name='round',
-            unique_together={('number', 'tournament_bracket')},
+            name="round", unique_together={("number", "tournament_bracket")}
         ),
     ]

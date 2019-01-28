@@ -8,7 +8,9 @@ from apps.authentication.models import User
 def get_user_snakes(user):
     return [
         user_snake.snake
-        for user_snake in UserSnake.objects.filter(user_id=user.id).prefetch_related('snake')
+        for user_snake in UserSnake.objects.filter(user_id=user.id).prefetch_related(
+            "snake"
+        )
     ]
 
 
@@ -18,10 +20,10 @@ class Snake(BaseModel):
     url = models.CharField(max_length=128)
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
     class Meta:
-        app_label = 'snake'
+        app_label = "snake"
 
 
 class UserSnake(BaseModel):
@@ -29,4 +31,4 @@ class UserSnake(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        app_label = 'snake'
+        app_label = "snake"
