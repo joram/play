@@ -103,7 +103,7 @@ class TournamentSnakeForm(forms.ModelForm):
         self.initial['bracket'] = bracket
 
     def is_valid(self):
-        return True
+        return self.tournament.status == Tournament.REGISTRATION
 
     def save(self, *args, **kwargs):
         if self.tournament.single_snake_per_team:

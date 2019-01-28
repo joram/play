@@ -7,7 +7,6 @@ from apps.tournament.models import Tournament, TournamentSnake, Snake, Tournamen
 from apps.authentication.decorators import admin_required
 
 
-@admin_required
 @login_required
 @transaction.atomic
 def compete(request, tournament_id):
@@ -39,7 +38,6 @@ def compete(request, tournament_id):
     )
 
 
-@admin_required
 @login_required
 @transaction.atomic
 def edit(request, tournament_snake_id):
@@ -56,6 +54,7 @@ def edit(request, tournament_snake_id):
             if ts.bracket != old_ts.bracket:
                 messages.success(request, f"switched bracket from  {old_ts.bracket.name} to {ts.bracket.name}")
             return redirect("/team/")
+        messages.error(request, "Tournament in a non-modifiable state.")
         return redirect("/team/")
 
     form = TournamentSnakeForm(user=request.user, tournament=ts.tournament, snake=ts.snake, bracket=ts.bracket)
@@ -69,7 +68,6 @@ def edit(request, tournament_snake_id):
     )
 
 
-@admin_required
 @login_required
 @transaction.atomic
 def delete(request, tournament_snake_id):

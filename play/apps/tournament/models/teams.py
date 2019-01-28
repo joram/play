@@ -25,7 +25,7 @@ class Team(models.Model):
     @property
     def available_tournaments(self):
         from apps.tournament.models import Tournament
-        return Tournament.objects.all().exclude(id__in=[ts.tournament.id for ts in self.tournament_snakes])
+        return Tournament.objects.filter(status=Tournament.REGISTRATION).exclude(id__in=[ts.tournament.id for ts in self.tournament_snakes])
 
     class Meta:
         app_label = "tournament"

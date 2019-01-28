@@ -66,10 +66,12 @@
               bracket for
               <span class="badge badge-pill badge-secondary">{{ ts.tournament.name }}</span>
 
+              {% if ts.tournament.status == "RE" %}
               <div style="float:right;">
                 <a href="/tournament/snake/{{ts.id}}/edit"><i class="fa fa-edit"></i> Edit</a>
                 <a href="/tournament/snake/{{ts.id}}/delete"><i class="fa fa-trash"></i> Delete</a>
               </div>
+              {% endif %}
               <br/>
             {% endfor %}
           {% else %}
