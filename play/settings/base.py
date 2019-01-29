@@ -73,15 +73,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "apps.authentication",
-    "apps.tournament",
-    "apps.leaderboard",
-    "apps.snake",
-    "apps.game",
+
+    "debug_toolbar",
+    "django_extensions",
     "social_django",
     "widget_tweaks",
-    "django_extensions",
-    "debug_toolbar",
+
+    "apps.authentication",
+    "apps.game",
+    "apps.leaderboard",
+    "apps.snake",
+    "apps.tournament"
 ]
 
 MIDDLEWARE = [

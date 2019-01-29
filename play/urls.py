@@ -3,21 +3,19 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.tournament import urls as tournament_urls
-from apps.authentication import urls as authentication_urls
-from apps.snake import urls as snake_urls
-from apps.game import urls as game_urls
-from apps.leaderboard import urls as leaderboard_urls
 
-urlpatterns = (
-    authentication_urls.urlpatterns
-    + [path("admin/", admin.site.urls)]
-    + game_urls.urlpatterns
-    + tournament_urls.urlpatterns
-    + snake_urls.urlpatterns
-    + leaderboard_urls.urlpatterns
-    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-)
+urlpatterns = [
+    path("admin/", admin.site.urls),
+
+    path("", include("apps.authentication.urls")),
+    path("", include("apps.game.urls")),
+    path("", include("apps.leaderboard.urls")),
+    path("", include("apps.tournament.urls")),
+    path("", include("apps.snake.urls"))
+]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
 
 if settings.DEBUG:
     import debug_toolbar
