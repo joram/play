@@ -17,6 +17,16 @@ class Team(models.Model):
         snakes = [us.snake for us in UserSnake.objects.filter(user__in=users)]
         return snakes
 
+    @property
+    def tournament_snakes(self):
+        from apps.tournament.models import TournamentSnake
+        return TournamentSnake.objects.filter(snake__in=self.snakes)
+
+    @property
+    def available_tournaments(self):
+        from apps.tournament.models import Tournament
+        return Tournament.objects.filter(status=Tournament.REGISTRATION).exclude(id__in=[ts.tournament.id for ts in self.tournament_snakes])
+
     class Meta:
         app_label = "tournament"
 

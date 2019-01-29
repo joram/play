@@ -4,6 +4,7 @@ from apps.tournament.views import (
     tournament_bracket,
     tournament,
     tournament_bracket_snake,
+    tournament_snake,
 )
 
 __all__ = ["team", "members", "tournament_bracket.py"]

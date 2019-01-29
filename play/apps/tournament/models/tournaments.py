@@ -42,6 +42,10 @@ class Tournament(models.Model):
     def brackets(self):
         return TournamentBracket.objects.filter(tournament=self)
 
+    @property
+    def is_registration_open(self):
+      return self.status == self.REGISTRATION
+
     def __str__(self):
         return f"{self.name}"
 
@@ -136,35 +140,6 @@ class TournamentSnake(models.Model):
 
     class Meta:
         app_label = "tournament"
-
-        # TODO: @joram make this work
-        # unique_together = (
-        #     ('snake', 'tournament_bracket'),
-        # )
-
-    # TODO: @joram make this work
-    # def validate_unique(self, exclude=None):
-    #     user_snake = UserSnake.objects.get(snake=self.snake)
-    #     team_member = TeamMember.objects.get(user=user_snake.user)
-    #     team = team_member.team
-    #     tournament = self.tournament_bracket.tournament
-
-    #     if tournament.status in [Tournament.LOCKED, Tournament.IN_PROGRESS, Tournament.COMPLETE]:
-    #         raise TournamentClosedValidationError()
-
-    #     tournament_brackets = TournamentBracket.objects.filter(tournament=self.tournament_bracket.tournament)
-    #     qs = SnakeTournamentBracket.objects.filter(snake__in=team.snakes, tournament_bracket__in=tournament_brackets)
-    #     if tournament.single_snake_per_team:
-    #         if qs.count() > 1:
-    #             raise SingleSnakePerTeamPerTournamentValidationError()
-    #         if qs.count() == 1 and qs[0] != self:
-    #             raise SingleSnakePerTeamPerTournamentValidationError()
-
-    #     models.Model.validate_unique(self, exclude=exclude)
-
-    # def save(self, *args, **kwargs):
-    #     self.validate_unique()
-    #     super(SnakeTournamentBracket, self).save(*args, **kwargs)
 
 
 class RoundManager(models.Manager):

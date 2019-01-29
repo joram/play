@@ -41,13 +41,30 @@ urlpatterns = [
         ),
     ),
     url(
-        r"^tournament/bracket/(?P<id>\w+)/add/snake$",
+        r"^tournament/(?P<tournament_id>\w+)/compete$",
         method_dispatch(
-            GET=tournament_views.tournament_bracket_snake.new,
-            POST=tournament_views.tournament_bracket_snake.new,
-            PUT=tournament_views.tournament_bracket_snake.new,
+            GET=tournament_views.tournament_snake.compete,
+            POST=tournament_views.tournament_snake.compete,
+            PUT=tournament_views.tournament_snake.compete,
         ),
     ),
+    url(
+        r"^tournament/snake/(?P<tournament_snake_id>\w+)/edit",
+        method_dispatch(
+            GET=tournament_views.tournament_snake.edit,
+            POST=tournament_views.tournament_snake.edit,
+            PUT=tournament_views.tournament_snake.edit,
+        ),
+    ),
+    url(
+        r"^tournament/snake/(?P<tournament_snake_id>\w+)/delete",
+        method_dispatch(
+            GET=tournament_views.tournament_snake.delete,
+            POST=tournament_views.tournament_snake.delete,
+            PUT=tournament_views.tournament_snake.delete,
+        ),
+    ),
+
     url(
         r"^tournament/bracket/(?P<id>\w+)/$",
         method_dispatch(GET=tournament_views.tournament_bracket.show),

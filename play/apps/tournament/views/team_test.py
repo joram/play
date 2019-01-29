@@ -26,7 +26,7 @@ def test_create(client):
     user = user_factory.login_as(client)
     response = client.post(
         "/team/new/",
-        {"name": "test2", "description": "test", "snake_url": "http://example.com"},
+        {"name": "test2", "description": "test"},
     )
     assert response.status_code == 302
     assert TeamMember.objects.get(user=user) is not None
@@ -49,7 +49,6 @@ def test_update(client):
         {
             "name": "test3",
             "description": "test",
-            "snake_url": "http://example.com",
             "_method": "put",
         },
     )
@@ -57,5 +56,4 @@ def test_update(client):
     snake.refresh_from_db()
     team.refresh_from_db()
     assert snake.name == "test3"
-    assert snake.url == "http://example.com"
     assert team.name == "test3"
