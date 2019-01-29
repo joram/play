@@ -42,6 +42,10 @@ class Tournament(models.Model):
     def brackets(self):
         return TournamentBracket.objects.filter(tournament=self)
 
+    @property
+    def is_registration_open(self):
+      return self.status == self.REGISTRATION
+
     def __str__(self):
         return f"{self.name}"
 
