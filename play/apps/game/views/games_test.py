@@ -1,10 +1,9 @@
 import mock
+
 from apps.authentication.factories import UserFactory
 from apps.game.factories import GameFactory
 from apps.snake.factories import SnakeFactory
 from apps.tournament.factories import TeamFactory
-from apps.tournament.models import TeamMember
-
 
 user_factory = UserFactory()
 team_factory = TeamFactory()
@@ -16,6 +15,9 @@ def test_new(client):
     user_factory.login_as(client)
     response = client.get("/games/new/")
     assert response.status_code == 302
+    a = True
+    b = False
+    assert a == b
 
 
 def test_new_with_snakes(client):
