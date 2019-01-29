@@ -15,9 +15,6 @@ def test_new(client):
     user_factory.login_as(client)
     response = client.get("/games/new/")
     assert response.status_code == 302
-    a = True
-    b = False
-    assert a == b
 
 
 def test_new_with_snakes(client):
