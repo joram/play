@@ -14,7 +14,9 @@ import os
 import sys
 
 import dotenv
+import sentry_sdk
 
+from sentry_sdk.integrations.django import DjangoIntegration
 from django.contrib.messages import constants as messages
 
 
@@ -55,6 +57,10 @@ SECRET_KEY = get_env("BATTLESNAKEIO_SECRET", "thisshouldbeset", True)
 DEBUG = not is_production_env()
 
 ALLOWED_HOSTS = []
+
+SENTRY_KEY = get_env("SENTRY_KEY", "")
+if SENTRY_KEY:
+    sentry_sdk.init(dsn=SENTRY_KEY, integrations=[DjangoIntegration()], environment=ENV)
 
 if is_production_env():
     ALLOWED_HOSTS = [get_env("BATTLESNAKEIO_DOMAIN", None, False)]
