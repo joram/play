@@ -1,10 +1,9 @@
 import mock
+
 from apps.authentication.factories import UserFactory
 from apps.game.factories import GameFactory
 from apps.snake.factories import SnakeFactory
 from apps.tournament.factories import TeamFactory
-from apps.tournament.models import TeamMember
-
 
 user_factory = UserFactory()
 team_factory = TeamFactory()
