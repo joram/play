@@ -1,3 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/battlesnakeio/play', '.']
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/play:$SHORT_SHA', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['run', '-e', 'ENV=local', 'gcr.io/$PROJECT_ID/play:$SHORT_SHA', 'pytest']
