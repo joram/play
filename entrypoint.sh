@@ -24,7 +24,7 @@ http {
     listen 8000;
     server_name play.battlesnake.io;
     location /static/ {
-      alias /app/static/;
+      alias /static/;
     }
     location / {
       include uwsgi_params;
@@ -39,7 +39,6 @@ http {
   }
 }
 EOF
-cat /etc/nginx/nginx.conf
 
 cat > /etc/supervisord.conf <<EOF
 [supervisord]
@@ -60,7 +59,6 @@ stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
 EOF
-
 
 ./manage.py migrate
 ./manage.py collectstatic --noinput
