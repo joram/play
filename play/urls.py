@@ -1,5 +1,6 @@
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib import admin
 from django.urls import path, include
 
 from apps.tournament import urls as tournament_urls
@@ -10,6 +11,7 @@ from apps.leaderboard import urls as leaderboard_urls
 
 urlpatterns = (
     authentication_urls.urlpatterns
+    + [path("admin/", admin.site.urls)]
     + game_urls.urlpatterns
     + tournament_urls.urlpatterns
     + snake_urls.urlpatterns

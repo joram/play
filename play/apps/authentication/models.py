@@ -2,6 +2,7 @@ from util.fields import ShortUUIDField
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
+    PermissionsMixin,
     UserManager as DjangoUserManager,
 )
 
@@ -11,12 +12,14 @@ class UserManager(DjangoUserManager):
         return super()._create_user(username, email, password)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = ShortUUIDField(prefix="usr", max_length=128, primary_key=True)
     username = models.CharField(
         max_length=39, unique=True
     )  # 39 is max GitHub username length
     email = models.CharField(max_length=512)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
@@ -31,7 +34,8 @@ class User(AbstractBaseUser):
         return self.username.lower() in [
             "brandonb927",
             "bvanvugt",
-            "codeallthethingz" "coldog",
+            "codeallthethingz",
+            "coldog",
             "dlsteuer",
             "joram",
             "matthieudolci",

@@ -15,6 +15,8 @@ import sys
 
 import dotenv
 
+from django.contrib.messages import constants as messages
+
 
 def get_env(key, default=None, allow_default=True):
     if key not in os.environ:
@@ -65,7 +67,7 @@ if is_production_env():
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -226,8 +228,6 @@ LOGGING = {
 }
 
 # Bootstrap alert messaging
-from django.contrib.messages import constants as messages
-
 MESSAGE_TAGS = {
     messages.DEBUG: "alert-info",
     messages.INFO: "alert-info",
