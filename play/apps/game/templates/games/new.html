@@ -23,7 +23,7 @@
 
       <div class="form-row">
         {% for field in game_form %}
-          <div class="col-4 form-group">
+          <div class="col-4 form-group {{ field.css_classes }}">
             {{ field.label_tag }}
 
             {% if game_form.is_bound %}
@@ -114,6 +114,7 @@
 {% block js_dom_ready %}
 if (localStorage.getItem('formFlag')) {
   var data = $('form').serializeArray();
+  changeSizeInputs(true)
 
   $.each(data, function (i, obj) {
     if (obj.name.indexOf('snake') != -1) {
@@ -127,10 +128,24 @@ if (localStorage.getItem('formFlag')) {
   })
 }
 
+function changeSizeInputs(disabled) {
+    $("#id_width").prop('disabled', disabled)
+    $("#id_height").prop('disabled', disabled)
+}
+
 $(document).on('click', '.js-clear-form', function (event) {
   event.preventDefault()
   localStorage.clear()
   window.location.reload()
+})
+
+$(document).on('change', '', function(event) {
+    let size = $("#id_board_sizes").val()
+    if (size == 'custom') {
+        changeSizeInputs(false)
+    } else {
+        changeSizeInputs(true)
+    }
 })
 
 $(document).on('click', '.js-choose-snake', function (event) {
