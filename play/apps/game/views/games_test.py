@@ -57,6 +57,7 @@ def test_create(mock_run, client):
             "width": 10,
             "height": 10,
             "food": 10,
+            "board_sizes": "custom",
             # snake formset
             "snake-TOTAL_FORMS": 1,
             "snake-INITIAL_FORMS": 0,

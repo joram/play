@@ -3,11 +3,8 @@ import re
 from django import forms
 from django.forms import ValidationError
 
-from apps.game import engine
 from apps.game.models import Game
-from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
-
 
 SNAKE_FORMSET_INDEX_REGEX = re.compile(r"^snake\-(\d+)")
 
@@ -68,8 +65,17 @@ class GameForm(forms.Form):
     GameForm initializes a game and posts this to the engine to start the game.
     """
 
-    width = forms.IntegerField(initial=20, required=True)
-    height = forms.IntegerField(initial=20, required=True)
+    board_sizes = forms.ChoiceField(
+        choices=[
+            ("small", "Small"),
+            ("medium", "Medium"),
+            ("large", "Large"),
+            ("custom", "Custom"),
+        ],
+        required=True,
+    )
+    width = forms.IntegerField(initial=20, required=False)
+    height = forms.IntegerField(initial=20, required=False)
     food = forms.IntegerField(initial=5, required=True)
 
     def __init__(self, *args, **kwargs):
@@ -78,7 +84,7 @@ class GameForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super().clean()
+        super().clean()
 
         if not self.snakes:
             raise ValidationError("Must add at least 1 snake to start a game")
@@ -92,6 +98,18 @@ class GameForm(forms.Form):
 
             if not is_valid_url(snake["url"]):
                 raise ValidationError("Snake requires a valid URL")
+
+        board_size = self.cleaned_data["board_sizes"]
+        if board_size != "custom":
+            if board_size == "large":
+                self.cleaned_data["width"] = 19
+                self.cleaned_data["height"] = 19
+            elif board_size == "medium":
+                self.cleaned_data["width"] = 11
+                self.cleaned_data["height"] = 11
+            elif board_size == "small":
+                self.cleaned_data["width"] = 7
+                self.cleaned_data["height"] = 7
 
         return {
             "width": self.cleaned_data["width"],
