@@ -10,6 +10,8 @@ urlpatterns = [
         name="games_new",
     ),
     url(
-        r"^games/(?P<id>.+)/$", method_dispatch(GET=views.games.show), name="games_show"
+        r"^games/(?P<game_id>.+)/$",
+        method_dispatch(GET=views.games.show),
+        name="games_show",
     ),
 ]
