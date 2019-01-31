@@ -3,11 +3,8 @@ import re
 from django import forms
 from django.forms import ValidationError
 
-from apps.game import engine
 from apps.game.models import Game
-from apps.snake.models import Snake
 from apps.utils.url import is_valid_url
-
 
 SNAKE_FORMSET_INDEX_REGEX = re.compile(r"^snake\-(\d+)")
 
@@ -78,7 +75,7 @@ class GameForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super().clean()
+        super().clean()
 
         if not self.snakes:
             raise ValidationError("Must add at least 1 snake to start a game")
