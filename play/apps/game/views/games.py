@@ -1,11 +1,11 @@
-from django.forms import formset_factory
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
+from django.shortcuts import render, redirect
 
-from apps.game.models import Game
 from apps.game.forms import GameForm, SnakeForm, get_snakes_from_request
-from apps.snake.models import UserSnake, get_user_snakes
+from apps.game.models import Game
+from apps.snake.models import get_user_snakes
 from apps.tournament.middleware import with_current_team
 from apps.utils.helpers import generate_game_url
 
@@ -62,11 +62,10 @@ def new(request):
     )
 
 
-@login_required
-def show(request, id):
-    game_board_url = generate_game_url(id)
+def show(request, game_id):
+    game_board_url = generate_game_url(game_id)
 
     if "autoplay" in request.META["QUERY_STRING"]:
         game_board_url = f"{game_board_url}&autoplay=true"
 
-    return render(request, "games/show.html", {"id": id, "url": game_board_url})
+    return render(request, "games/show.html", {"id": game_id, "url": game_board_url})
