@@ -68,8 +68,10 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <p class="dropdown-header">
-              Logged in as <br />
-              <strong>{{ user.username }}</strong>
+                <a href="/profile" style="text-decoration: none; color: #212529">
+                  Logged in as <br />
+                  <strong>{{ user.username }}</strong>
+                </a>
             </p>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="/team">My Tournament Team</a>
