@@ -1,6 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
+{% if tournament_bracket.winners %}
+<div class="card" style="margin-bottom: 10px;">
+  <div class="card-header">
+    Winners
+  </div>
+
+  <div class="card-body container">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            {% for winner in tournament_bracket.winners %}
+            <li class="list-group-item">{{ winner.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <div class="card" style="margin-bottom: 10px;">
   <div class="card-header">
     Expected Progression

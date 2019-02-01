@@ -22,6 +22,11 @@ class TournamentClosedValidationError(ValidationError):
         super().__init__(message="Tournament over")
 
 
+class DesiredGamesReachedValidationError(ValidationError):
+    def __init__(self):
+        super().__init__(message="No more games should be run for this heat")
+
+
 class Tournament(models.Model):
     LOCKED = "LO"  # Not started, but nobody can register
     HIDDEN = "HI"  # Able to add snakes manually (invite-only)
@@ -81,7 +86,7 @@ class TournamentBracket(models.Model):
 
     @property
     def rounds(self):
-        rounds = Round.objects.filter(tournament_bracket=self).order_by("number")
+        rounds = Round.objects.filter(tournament_bracket=self).order_by("-number")
         return list(rounds)
 
     @property
@@ -90,6 +95,19 @@ class TournamentBracket(models.Model):
         if len(rounds) == 0:
             return None
         return rounds[0]
+
+    @property
+    def winners(self):
+        if self.latest_round.heats.count() != 1:
+            return False
+        if self.latest_round.heats[0].games.count() != 1:
+            return False
+        if self.latest_round.status != "complete":
+            return False
+
+        final_game = self.latest_round.heats[0].games[0]
+        final_game.game.ranked_snakes()
+
 
     @property
     def snake_count(self):
@@ -153,7 +171,6 @@ class RoundManager(models.Manager):
         round = super(RoundManager, self).create(*args, **kwargs)
         max_snakes_per = 8
         num_snakes = len(round.snakes)
-        print("creating a round with snakes:", round.snakes)
         # reduction round
         if num_snakes > 6 and round.tournament_bracket.tournament.snakes.count() > 8:
 
@@ -267,7 +284,7 @@ class Heat(models.Model):
 
     def create_next_game(self):
         if len(self.games) >= self.desired_games:
-            raise Exception("shouldn't create any more games")
+            raise DesiredGamesReachedValidationError()
 
         n = self.games.count() + 1
         if self.latest_game is not None and self.latest_game.game_status != "complete":
@@ -283,7 +300,6 @@ class HeatGameManager(models.Manager):
         heat = kwargs.get("heat")
         previous_game = heat.latest_game
         skip = [w.snake.id for w in heat.winners]
-        print(skip)
         if previous_game is not None:
             if previous_game.winner is None:
                 raise PreviousGameTiedException()
@@ -292,9 +308,8 @@ class HeatGameManager(models.Manager):
         else:
             next_snakes = [sh.snake for sh in heat.snakes]
         snake_ids = [{"id": snake.id} for snake in next_snakes]
-        print(snake_ids)
-        from apps.game.models import Game
 
+        from apps.game.models import Game
         game = Game(width=20, height=20, food=10, snakes=snake_ids)
         game.create()
         game.save()

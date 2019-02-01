@@ -14,6 +14,7 @@ from apps.tournament.models import (
     Heat,
     HeatGame,
     PreviousGameTiedException,
+    DesiredGamesReachedValidationError,
 )
 from apps.authentication.decorators import admin_required
 
@@ -165,6 +166,8 @@ def create_game(request, id, heat_id):
         heat.create_next_game()
     except PreviousGameTiedException:
         messages.error(request, "Previous game tied. It must be rerun")
+    except DesiredGamesReachedValidationError:
+        messages.error(request, "shouldn't create another game for this heat")
     return redirect(f"/tournament/bracket/{id}/")
 
 
