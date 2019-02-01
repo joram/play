@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = "Ping all snakes in active tournaments"
 
     def handle(self, *args, **options):
-        states = [Tournament.LOCKED, Tournament.REGISTRATION, Tournament.IN_PROGRESS]
+        states = [Tournament.LOCKED, Tournament.IN_PROGRESS]
         snake_ids = []
         for tournament in Tournament.objects.filter(status__in=states):
             for bracket in tournament.brackets:
