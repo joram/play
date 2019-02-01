@@ -79,17 +79,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "debug_toolbar",
     "django_extensions",
     "social_django",
     "widget_tweaks",
-
     "apps.authentication",
     "apps.game",
     "apps.leaderboard",
+    "apps.profile",
     "apps.snake",
-    "apps.tournament"
+    "apps.tournament",
 ]
 
 MIDDLEWARE = [
@@ -175,6 +174,7 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_GITHUB_KEY = get_env("BATTLESNAKEIO_GITHUB_CLIENT_ID")
 SOCIAL_AUTH_GITHUB_SECRET = get_env("BATTLESNAKEIO_GITHUB_CLIENT_SECRET")
+SOCIAL_AUTH_GITHUB_SCOPE = ["user:email"]
 if is_production_env():
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 

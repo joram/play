@@ -50,33 +50,37 @@
     {% endblock %}
     <div class="navbar-right">
       {% block navbar_right %}
-        <div class="dropdown">
-          <a href="#"
-            class="dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            style="text-decoration: none; color: var(--dark)"
-          >
-            <img
-              src="https://github.com/{{ user.username }}.png?size=64"
-              alt="{{ user.username }} GitHub profile avatar"
-              height="24"
-              width="24"
-              class="rounded"
-            />
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <p class="dropdown-header">
-              Logged in as <br />
-              <strong>{{ user.username }}</strong>
-            </p>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/team">My Tournament Team</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/logout">Logout</a>
-          </div>
-        </div>
+          {% if not user.is_anonymous %}
+            <div class="dropdown">
+              <a href="#"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                style="text-decoration: none; color: var(--dark)"
+              >
+                <img
+                  src="https://github.com/{{ user.username }}.png?size=64"
+                  alt="{{ user.username }} GitHub profile avatar"
+                  height="24"
+                  width="24"
+                  class="rounded"
+                />
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <p class="dropdown-header">
+                    <a href="/profile" style="text-decoration: none; color: #212529">
+                      Logged in as <br />
+                      <strong>{{ user.username }}</strong>
+                    </a>
+                </p>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/team">My Tournament Team</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">Logout</a>
+              </div>
+            </div>
+          {% endif %}
       {% endblock %}
     </div>
   </nav>

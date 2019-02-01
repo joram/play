@@ -21,8 +21,9 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+ADD requirements.dev.txt /app/requirements.dev.txt
 ADD requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+RUN pip install -r /app/requirements.dev.txt
 
 COPY ./play \
     ./entrypoint.sh \
@@ -30,4 +31,4 @@ COPY ./play \
 
 EXPOSE 8000
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+CMD [ "/app/entrypoint.sh" ]

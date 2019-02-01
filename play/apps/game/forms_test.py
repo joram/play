@@ -15,7 +15,7 @@ def test_submit(mock_run):
     snake = snake_factory.basic(n=1, commit=True)
 
     form = GameForm(
-        {"width": 10, "height": 10, "food": 10},
+        {"width": 10, "height": 10, "food": 10, "board_sizes": "custom"},
         snakes=[{"id": snake.id, "name": snake.name, "url": snake.url}],
     )
 

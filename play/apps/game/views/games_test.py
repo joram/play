@@ -1,10 +1,9 @@
 import mock
+
 from apps.authentication.factories import UserFactory
 from apps.game.factories import GameFactory
 from apps.snake.factories import SnakeFactory
 from apps.tournament.factories import TeamFactory
-from apps.tournament.models import TeamMember
-
 
 user_factory = UserFactory()
 team_factory = TeamFactory()
@@ -58,6 +57,7 @@ def test_create(mock_run, client):
             "width": 10,
             "height": 10,
             "food": 10,
+            "board_sizes": "custom",
             # snake formset
             "snake-TOTAL_FORMS": 1,
             "snake-INITIAL_FORMS": 0,
