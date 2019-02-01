@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from apps.tournament.forms import TournamentForm
 from apps.tournament.models import Tournament, TournamentBracket, TournamentSnake, Heat, HeatGame, Round
@@ -90,39 +91,69 @@ def show_current_game(request, tournament_id):
     rounds = Round.objects.filter(tournament_bracket__in=tournament.brackets)
     heats = Heat.objects.filter(round__in=rounds)
     heat_games = HeatGame.objects.filter(heat__in=heats)
-    # heat_game = heat_games.filter(status=HeatGame.WATCHING)
-    heat_game = heat_games[0]
+    heat_game = heat_games.filter(status=HeatGame.WATCHING)
 
     if request.GET.get("json") == "true":
-        if True: #heat_game.exists():
-            # heat_game = heat_game[0]
-            return JsonResponse({"heat_game": {
-                # "status": heat_game.status,
-                "number": heat_game.number,
-                "heat": {
-                    "id": heat_game.heat.id,
-                    "number": heat_game.heat.number,
-                    "round": {
-                        "id": heat_game.heat.round.id,
-                        "number": heat_game.heat.round.number,
-                        "bracket": {
-                            "id": heat_game.heat.round.tournament_bracket.id,
-                            "name": heat_game.heat.round.tournament_bracket.name,
-                            "tournament": {
-                                "id": heat_game.heat.round.tournament_bracket.tournament.id,
-                                "name": heat_game.heat.round.tournament_bracket.tournament.name,
-                            },
+        if not heat_game.exists():
+          return JsonResponse({"heat_game": {"game": {"id": -1}}})
+
+        heat_game = heat_game[0]
+        return JsonResponse({"heat_game": {
+            # "status": heat_game.status,
+            "number": heat_game.number,
+            "heat": {
+                "id": heat_game.heat.id,
+                "number": heat_game.heat.number,
+                "round": {
+                    "id": heat_game.heat.round.id,
+                    "number": heat_game.heat.round.number,
+                    "bracket": {
+                        "id": heat_game.heat.round.tournament_bracket.id,
+                        "name": heat_game.heat.round.tournament_bracket.name,
+                        "tournament": {
+                            "id": heat_game.heat.round.tournament_bracket.tournament.id,
+                            "name": heat_game.heat.round.tournament_bracket.tournament.name,
                         },
                     },
                 },
-                "game": {
-                    "id": heat_game.game.id,
-                    "url": generate_game_url(heat_game.game.id),
-                },
-            }})
+            },
+            "game": {
+                "id": heat_game.game.id,
+                "url": generate_game_url(heat_game.game.id),
+            },
+        }})
 
     return render(
         request,
         "tournament/show_current_game.html",
-        {"heat_game": heat_game},
+        {
+          "heat_game": heat_game,
+          "tournament": tournament,
+        },
     )
+
+
+@admin_required
+@login_required
+@transaction.atomic
+def set_current_game(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    rounds = Round.objects.filter(tournament_bracket__in=tournament.brackets)
+    heats = Heat.objects.filter(round__in=rounds)
+    heat_games = HeatGame.objects.filter(heat__in=heats)
+
+    heat_game = heat_games.filter(status=HeatGame.WATCHING)
+    if not heat_game.exists():
+        # problem
+        pass
+
+    watch_heat_game = heat_games.filter(id=request.POST.get("heat_game_id"))
+    if not watch_heat_game.exists():
+        # problem
+        pass
+
+    heat_game.update(status=HeatGame.WATCHED)
+    watch_heat_game.update(status=HeatGame.WATCHING)
+    heat_games = HeatGame.objects.filter(heat__in=heats)
+
+    return JsonResponse({"heat_games": [{"id": hg.id, "status": hg.human_readable_status} for hg in heat_games]})

@@ -334,6 +334,12 @@ class HeatGame(models.Model):
         return self.game.status
 
     @property
+    def human_readable_status(self):
+        for (short, name) in self.STATUSES:
+            if self.status == short:
+                return name
+
+    @property
     def previous(self):
         if self.number == 1:
             return None

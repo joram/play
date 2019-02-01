@@ -46,7 +46,7 @@
         <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/csv">
           Export as CSV
         </a>
-        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/current_game">
+        <a class="dropdown-item" href="/tournament/{{ tournament_bracket.tournament.id }}/current_game">
           View Current Game
         </a>
       </div>
@@ -96,7 +96,8 @@
                   </a> |
                   <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
                     AutoPlay Game {{ heat_game.number }}
-                  </a>
+                  </a> |
+                  <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game_status }}
                 </li>
                 {% endfor %}
               </ul>
@@ -112,5 +113,27 @@
     </div>
   </div>
 </div>
+
+<script>
+  function updatedGameStates(data){
+    console.log(data);
+  }
+
+  domready(function () {
+
+    $(".watch_game").click(function(e){
+      heat_game_id = e.target.id;
+      $.ajax({
+        data: {
+          heat_game_id: heat_game_id,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        url: "/tournament/{{tournament_bracket.tournament.id}}/current_game",
+        type: 'post',
+        success: updatedGameStates,
+      })
+    })
+  });
+</script>
 
 {% endblock %}
