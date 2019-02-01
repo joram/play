@@ -30,10 +30,10 @@ class UserSnakeLeaderboard(BaseModel):
         return sorted(snakes, key=lambda s: s.mu or 25)
 
     def __str__(self):
-        return f'{self.user_snake.snake.name}'
+        return f"{self.user_snake.snake.name}"
 
     class Meta:
-        app_label = 'leaderboard'
+        app_label = "leaderboard"
 
 
 class LeaderboardResult(BaseModel):

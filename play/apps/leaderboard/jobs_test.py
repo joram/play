@@ -11,8 +11,8 @@ user_factory = UserFactory()
 snake_factory = SnakeFactory()
 
 
-@mock.patch('apps.game.engine.run')
-@mock.patch('random.randint')
+@mock.patch("apps.game.engine.run")
+@mock.patch("random.randint")
 def test_game_status_job(rand_mock, run_mock):
     rand_mock.return_value = 0
     user = user_factory.basic()
@@ -30,4 +30,4 @@ def test_game_status_job(rand_mock, run_mock):
     count = MatchStarter().run()
     assert count == 1
     assert len(run_mock.call_args_list) == 1
-    assert len(run_mock.call_args_list[0][0][0]['snakes']) == 4
+    assert len(run_mock.call_args_list[0][0][0]["snakes"]) == 4

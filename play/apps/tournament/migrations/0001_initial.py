@@ -12,29 +12,59 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('snake', '0001_initial'),
+        ("snake", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Team',
+            name="Team",
             fields=[
-                ('id', util.fields.ShortUUIDField(max_length=128, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=128)),
-                ('description', models.TextField()),
-                ('snake', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='snake.Snake')),
+                (
+                    "id",
+                    util.fields.ShortUUIDField(
+                        max_length=128, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                ("description", models.TextField()),
+                (
+                    "snake",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="snake.Snake"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='TeamMember',
+            name="TeamMember",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tournament.Team')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tournament.Team",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        unique=True,
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='teammember',
-            unique_together={('team', 'user')},
+            name="teammember", unique_together={("team", "user")}
         ),
     ]

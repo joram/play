@@ -5,27 +5,32 @@ import django.db.models.deletion
 
 
 def delete_game_leaderboard(apps, schema_editor):
-    GameLeaderboard = apps.get_model('leaderboard', 'GameLeaderboard')
+    GameLeaderboard = apps.get_model("leaderboard", "GameLeaderboard")
     GameLeaderboard.objects.all().delete()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('leaderboard', '0005_merge_20181221_2129'),
-    ]
+    dependencies = [("leaderboard", "0005_merge_20181221_2129")]
 
     operations = [
         migrations.RunPython(delete_game_leaderboard),
         migrations.AddField(
-            model_name='gameleaderboard',
-            name='id',
-            field=models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'),
+            model_name="gameleaderboard",
+            name="id",
+            field=models.AutoField(
+                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='gameleaderboard',
-            name='game',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='game.Game'),
+            model_name="gameleaderboard",
+            name="game",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="game.Game",
+            ),
         ),
     ]

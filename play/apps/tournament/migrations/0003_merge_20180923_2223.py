@@ -7,8 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         # ('tournament', '0002_auto_20180919_2157'),
-        ('tournament', '0002_auto_20180907_1505'),
+        ("tournament", "0002_auto_20180907_1505")
     ]
 
-    operations = [
-    ]
+    operations = []

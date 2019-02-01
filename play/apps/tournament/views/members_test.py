@@ -12,19 +12,17 @@ def test_new(client):
     user = user_factory.login_as(client)
     team_factory.basic(user=user, snake=snake_factory.basic(commit=True))
 
-    response = client.get('/team/members/new/')
+    response = client.get("/team/members/new/")
     assert response.status_code == 200
 
 
 def test_create(client):
-    user_new = user_factory.basic('test2@test.com', commit=True)
+    user_new = user_factory.basic("test2@test.com", commit=True)
 
     user = user_factory.login_as(client)
     team = team_factory.basic(user=user, snake=snake_factory.basic(commit=True))
 
-    response = client.post('/team/members/new/', {
-        'username': 'test2',
-    })
+    response = client.post("/team/members/new/", {"username": "test2"})
     assert response.status_code == 302
     assert TeamMember.objects.get(user=user_new, team=team) is not None
 
@@ -33,11 +31,9 @@ def test_delete(client):
     user = user_factory.login_as(client)
     team = team_factory.basic(user=user, snake=snake_factory.basic(commit=True))
 
-    user_new = user_factory.basic('test2@test.com', commit=True)
+    user_new = user_factory.basic("test2@test.com", commit=True)
     TeamMember.objects.create(user=user_new, team=team)
 
-    response = client.post(f'/team/members/{user_new.id}/', {
-        '_method': 'DELETE'
-    })
+    response = client.post(f"/team/members/{user_new.id}/", {"_method": "DELETE"})
     assert response.status_code == 302
     assert TeamMember.objects.filter(user=user_new, team=team).first() is None

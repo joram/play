@@ -6,13 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
     atomic = False
 
-    dependencies = [
-        ('tournament', '0009_auto_20181210_1840'),
-    ]
+    dependencies = [("tournament", "0009_auto_20181210_1840")]
 
     operations = [
-        migrations.RenameModel(
-            old_name='TournamentGroup',
-            new_name='Tournament',
-        ),
+        migrations.RenameModel(old_name="TournamentGroup", new_name="Tournament")
     ]

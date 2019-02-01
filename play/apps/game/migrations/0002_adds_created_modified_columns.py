@@ -7,19 +7,21 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0001_initial'),
-    ]
+    dependencies = [("game", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='game',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="game",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='game',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="game",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
     ]

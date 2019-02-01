@@ -7,33 +7,39 @@ import util.time
 
 
 def delete_leaderboard_results(apps, schema_editor):
-    LeaderboardResult = apps.get_model('leaderboard', 'LeaderboardResult')
+    LeaderboardResult = apps.get_model("leaderboard", "LeaderboardResult")
     LeaderboardResult.objects.all().delete()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('game', '0010_merge_20181221_2129'),
-        ('leaderboard', '0006_auto_20181221_2240'),
+        ("game", "0010_merge_20181221_2129"),
+        ("leaderboard", "0006_auto_20181221_2240"),
     ]
 
     operations = [
         migrations.RunPython(delete_leaderboard_results),
         migrations.AddField(
-            model_name='leaderboardresult',
-            name='created',
-            field=util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="leaderboardresult",
+            name="created",
+            field=util.fields.CreatedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='leaderboardresult',
-            name='game',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='game.Game'),
+            model_name="leaderboardresult",
+            name="game",
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.CASCADE, to="game.Game"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='leaderboardresult',
-            name='modified',
-            field=util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False),
+            model_name="leaderboardresult",
+            name="modified",
+            field=util.fields.ModifiedDateTimeField(
+                blank=True, default=util.time.now, editable=False
+            ),
         ),
     ]

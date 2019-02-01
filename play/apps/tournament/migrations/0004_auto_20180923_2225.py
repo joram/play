@@ -6,18 +6,15 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0003_merge_20180923_2223'),
-    ]
+    dependencies = [("tournament", "0003_merge_20180923_2223")]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='teammember',
-            options={},
-        ),
+        migrations.AlterModelOptions(name="teammember", options={}),
         migrations.AlterField(
-            model_name='snaketournament',
-            name='snake',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='snake.Snake'),
+            model_name="snaketournament",
+            name="snake",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="snake.Snake"
+            ),
         ),
     ]

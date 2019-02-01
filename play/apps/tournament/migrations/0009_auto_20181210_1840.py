@@ -7,17 +7,13 @@ class Migration(migrations.Migration):
 
     atomic = False
     dependencies = [
-        ('snake', '0001_initial'),
-        ('tournament', '0008_auto_20181128_2153'),
+        ("snake", "0001_initial"),
+        ("tournament", "0008_auto_20181128_2153"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='SnakeTournament',
-            new_name='SnakeTournamentBracket',
+            old_name="SnakeTournament", new_name="SnakeTournamentBracket"
         ),
-        migrations.RenameModel(
-            old_name='Tournament',
-            new_name='TournamentBracket',
-        ),
+        migrations.RenameModel(old_name="Tournament", new_name="TournamentBracket"),
     ]

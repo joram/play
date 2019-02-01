@@ -9,21 +9,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('id', util.fields.ShortUUIDField(max_length=128, primary_key=True, serialize=False)),
-                ('username', models.CharField(max_length=39, unique=True)),
-                ('email', models.CharField(max_length=512)),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "id",
+                    util.fields.ShortUUIDField(
+                        max_length=128, primary_key=True, serialize=False
+                    ),
+                ),
+                ("username", models.CharField(max_length=39, unique=True)),
+                ("email", models.CharField(max_length=512)),
             ],
-            managers=[
-                ('objects', apps.authentication.models.UserManager()),
-            ],
-        ),
+            managers=[("objects", apps.authentication.models.UserManager())],
+        )
     ]

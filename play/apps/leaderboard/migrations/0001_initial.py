@@ -8,15 +8,21 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('snake', '0001_initial'),
-    ]
+    dependencies = [("snake", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='UserSnakeLeaderboard',
+            name="UserSnakeLeaderboard",
             fields=[
-                ('user_snake', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='snake.UserSnake')),
+                (
+                    "user_snake",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to="snake.UserSnake",
+                    ),
+                )
             ],
-        ),
+        )
     ]

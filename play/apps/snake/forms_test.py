@@ -10,10 +10,7 @@ def test_create_form():
     user = user_factory.basic()
     user.save()
 
-    form = SnakeForm(user, {
-        'name': 'test',
-        'url': 'http://example.com',
-    })
+    form = SnakeForm(user, {"name": "test", "url": "http://example.com"})
     assert form.is_valid()
 
     snake = form.save()
@@ -25,8 +22,5 @@ def test_create_invalid_form():
     user = user_factory.basic()
     user.save()
 
-    form = SnakeForm(user, {
-        'name': '',
-        'url': 'test',
-    })
+    form = SnakeForm(user, {"name": "", "url": "test"})
     assert not form.is_valid()

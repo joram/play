@@ -7,9 +7,10 @@ def method_dispatch(**table):
 
     def route(request, *args, **kwargs):
         method = request.method
-        if request.POST and '_method' in request.POST:
-            method = request.POST['_method']
+        if request.POST and "_method" in request.POST:
+            method = request.POST["_method"]
         method = method.upper()
         handler = table.get(method, invalid_method)
         return handler(request, *args, **kwargs)
+
     return route

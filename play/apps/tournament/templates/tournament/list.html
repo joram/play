@@ -14,7 +14,6 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="tournamentDropdownMenuButton">
         <a class="dropdown-item" href="/tournament/new">New Tournament</a>
-        <a class="dropdown-item" href="/tournament/bracket/new">Create Tournament Bracket</a>
       </div>
     </div>
     </span>
@@ -23,7 +22,9 @@
     <ul>
       {% for t in tournaments %}
       <li>
-        {{ t.name }} ({{t.date}}) <a href="/tournament/{{ t.id }}/edit">Edit</a>
+        <span>{{ t.name }} ({{t.date}})</span> 
+        <a href="/tournament/{{ t.id }}/edit">[Edit]</a>
+        <a href="/tournament/{{ t.id }}/bracket/new">[Create Bracket]</a>
       </li>
       <ul>
         {% for b in t.brackets %}

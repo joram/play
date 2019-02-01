@@ -5,14 +5,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0010_auto_20181210_1842'),
-    ]
+    dependencies = [("tournament", "0010_auto_20181210_1842")]
 
     operations = [
         migrations.RenameField(
-            model_name='tournamentbracket',
-            old_name='tournament_group',
-            new_name='tournament',
-        ),
+            model_name="tournamentbracket",
+            old_name="tournament_group",
+            new_name="tournament",
+        )
     ]

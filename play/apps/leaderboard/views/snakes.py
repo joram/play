@@ -9,17 +9,20 @@ from apps.leaderboard.models import UserSnakeLeaderboard
 def index(request):
     snakes = [
         {
-            'id': user_snake.snake.id,
-            'name': user_snake.snake.name,
-            'registered': UserSnakeLeaderboard.objects.filter(user_snake=user_snake).first() is not None,
-        } for user_snake in
-        UserSnake.objects.filter(user_id=request.user.id).
-        prefetch_related('snake')
+            "id": user_snake.snake.id,
+            "name": user_snake.snake.name,
+            "registered": UserSnakeLeaderboard.objects.filter(
+                user_snake=user_snake
+            ).first()
+            is not None,
+        }
+        for user_snake in UserSnake.objects.filter(
+            user_id=request.user.id
+        ).prefetch_related("snake")
     ]
-    return render(request, 'leaderboard/snakes.html', {
-        'snakes': snakes,
-        'user': request.user,
-    })
+    return render(
+        request, "leaderboard/snakes.html", {"snakes": snakes, "user": request.user}
+    )
 
 
 @login_required
@@ -27,7 +30,7 @@ def index(request):
 def create(request, id):
     user_snake = UserSnake.objects.get(snake_id=id, user_id=request.user.id)
     UserSnakeLeaderboard.objects.get_or_create(user_snake=user_snake)
-    return redirect('/leaderboard/snakes')
+    return redirect("/leaderboard/snakes")
 
 
 @login_required
@@ -38,4 +41,4 @@ def delete(request, id):
         UserSnakeLeaderboard.objects.get(user_snake=user_snake).delete()
     except UserSnakeLeaderboard.DoesNotExist:
         pass
-    return redirect('/leaderboard/snakes')
+    return redirect("/leaderboard/snakes")

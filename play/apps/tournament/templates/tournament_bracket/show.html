@@ -1,6 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="card">
+
+<div class="card" style="margin-bottom: 10px;">
+  <div class="card-header">
+    Expected Progression
+  </div>
+
+  <div class="card-body container">
+    <div class="container">
+      <div class="row">
+      {% for round in progression %}
+        <div class="col-sm">
+          <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            <li class="list-group-item">{{ round.num_games }} games</li>
+            <li class="list-group-item">{{ round.snakes_per_game }} snakes per game.</li>
+          </ul>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 10px;">
   <div class="card-header">
     {{ tournament_bracket.name }}
 
@@ -18,9 +40,6 @@
         Menu
       </button>
       <div class="dropdown-menu" aria-labelledby="bracket{{ tournament_bracket.id }}DropdownMenuButton">
-        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/add/snake">
-          Add Snake to Bracket
-        </a>
         <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/create/next/round">
           Create Next Round
         </a>
@@ -35,24 +54,36 @@
   </div>
 
   <div class="card-body container">
-    <ul class="rounds">
+    <style>
+      .list-group-item {
+        padding: 1px;
+      }
+    </style>
+    <div class="container">
+      <div class="row">
       {% for round in tournament_bracket.rounds %}
-      <li class="round">
-        Round: {{ round.number }}
+        <div class="col-sm">
+        {% for heat in round.heats %}
+          <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            {% for snake in heat.snakes %}
+              <li class="list-group-item{% if snake.winner %} active{% endif %}">{{ snake.name }}</li>
+            {% endfor %}
+          </ul>
 
-        <ul class="heat">
-          {% for heat in round.heats %}
-          <li>
-            Heat: {{ heat.number }}
-
-            <div class="heat-snakes">
-              <ul class="snakes">
-                {% for snake in heat.snakes %}
-                <li class="snake">{{ snake.name }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-
+          <div class="heat-games">
+            <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
+              Create Next Game
+            </a>
+            <ul class="games">
+              {% for heat_game in heat.games %}
+              <li class="heat_game">
+                <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
+                  Game {{ heat_game.number }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
             <div class="heat-games">
               <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
                 Create Next Game
@@ -61,7 +92,10 @@
                 {% for heat_game in heat.games %}
                 <li class="heat_game">
                   <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                    Game {{ heat_game.number }}
+                    Play Game {{ heat_game.number }}
+                  </a> |
+                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
+                    AutoPlay Game {{ heat_game.number }}
                   </a>
                 </li>
                 {% endfor %}
@@ -71,9 +105,12 @@
           {% endfor %}
         </ul>
       </li>
+      {% empty %}
+      <h4>There are no rounds</h4>
       {% endfor %}
-    </ul>
+      </div>
+    </div>
   </div>
 </div>
-{% endblock %}
 
+{% endblock %}

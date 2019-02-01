@@ -9,35 +9,55 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('snake', '0001_initial'),
-    ]
+    dependencies = [("snake", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', util.fields.ShortUUIDField(max_length=128, primary_key=True, serialize=False)),
-                ('engine_id', models.CharField(max_length=128, null=True)),
-                ('status', models.CharField(default='pending', max_length=30)),
-                ('turn', models.IntegerField(default=0)),
-                ('width', models.IntegerField()),
-                ('height', models.IntegerField()),
-                ('food', models.IntegerField()),
+                (
+                    "id",
+                    util.fields.ShortUUIDField(
+                        max_length=128, primary_key=True, serialize=False
+                    ),
+                ),
+                ("engine_id", models.CharField(max_length=128, null=True)),
+                ("status", models.CharField(default="pending", max_length=30)),
+                ("turn", models.IntegerField(default=0)),
+                ("width", models.IntegerField()),
+                ("height", models.IntegerField()),
+                ("food", models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='GameSnake',
+            name="GameSnake",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('death', models.CharField(default='pending', max_length=128)),
-                ('turns', models.IntegerField(default=0)),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='game.Game')),
-                ('snake', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='snake.Snake')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("death", models.CharField(default="pending", max_length=128)),
+                ("turns", models.IntegerField(default=0)),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.Game"
+                    ),
+                ),
+                (
+                    "snake",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="snake.Snake"
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='gamesnake',
-            unique_together={('snake', 'game')},
+            name="gamesnake", unique_together={("snake", "game")}
         ),
     ]
