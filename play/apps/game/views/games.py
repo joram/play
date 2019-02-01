@@ -6,14 +6,12 @@ from django.shortcuts import render, redirect
 from apps.game.forms import GameForm, SnakeForm, get_snakes_from_request
 from apps.game.models import Game
 from apps.snake.models import get_user_snakes
-from apps.tournament.middleware import with_current_team
 from apps.utils.helpers import generate_game_url
 
 
 @login_required
-@with_current_team
 def index(request):
-    games = Game.objects.filter(team_id=request.team.id).order_by("-status", "created")
+    games = Game.objects.all().order_by("-created")[:10]
 
     if games.count() == 0:
         return redirect("/games/new")
@@ -25,12 +23,11 @@ def index(request):
 
 
 @login_required
-@with_current_team
 def new(request):
     if request.method == "POST":
         # GameForm doesn't contain snake data so we have to get it off the request
         game_snakes = get_snakes_from_request(request.POST.dict())
-        game_form = GameForm(request.POST, snakes=game_snakes, team=request.team)
+        game_form = GameForm(request.POST, snakes=game_snakes)
         if game_form.is_valid():
             game_id = game_form.submit()
             return redirect(f"/games/{game_id}")
