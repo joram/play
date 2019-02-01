@@ -32,6 +32,9 @@ class Team(models.Model):
             id__in=[ts.tournament.id for ts in self.tournament_snakes]
         )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         app_label = "tournament"
 
