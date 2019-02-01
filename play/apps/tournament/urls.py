@@ -74,10 +74,6 @@ urlpatterns = [
         method_dispatch(GET=tournament_views.tournament_bracket.show_csv),
     ),
     url(
-        r"^tournament/bracket/(?P<id>\w+)/current_game$",
-        method_dispatch(GET=tournament_views.tournament_bracket.show_current_game),
-    ),
-    url(
         r"^tournament/bracket/(?P<id>\w+)/create/next/round$",
         method_dispatch(GET=tournament_views.tournament_bracket.create_next_round),
     ),
@@ -105,4 +101,9 @@ urlpatterns = [
             GET=tournament_views.tournament.edit, POST=tournament_views.tournament.edit
         ),
     ),
+    url(
+        r"^tournament/(?P<tournament_id>\w+)/current_game$",
+        method_dispatch(GET=tournament_views.tournament.show_current_game),
+    ),
+
 ]

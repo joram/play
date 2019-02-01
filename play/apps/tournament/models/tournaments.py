@@ -143,38 +143,36 @@ class TournamentSnake(models.Model):
 
 
 class RoundManager(models.Manager):
+
     def create(self, *args, **kwargs):
         round = super(RoundManager, self).create(*args, **kwargs)
         max_snakes_per = 8
+        num_snakes = len(round.snakes)
 
-        # Finale
-        if len(round.snakes) <= 3:
-            print("making finals")
-            heat = Heat.objects.create(number=1, round=round, desired_games=1)
-            print(round.snakes)
+        # reduction round
+        if num_snakes > 6 and round.tournament_bracket.tournament.snakes.count() > 8:
+
+            # create heats
+            num_heats = int(math.ceil(num_snakes / max_snakes_per))
+            if 12 <= num_snakes <= 24:
+                num_heats = 3
+            if num_snakes > 24 and num_heats == 4:
+                num_heats = 6
+            heats = [Heat.objects.create(number=i + 1, round=round) for i in range(0, num_heats)]
+
+            i = 0
             for snake in round.snakes:
-                SnakeHeat.objects.create(snake=snake, heat=heat)
+                SnakeHeat.objects.create(snake=snake, heat=heats[i % num_heats])
+                i += 1
+
             return round
 
-        # Semi-Finals (picking top 3)
-        if len(round.snakes) < max_snakes_per:
-            print("making semi-finals")
-            heat = Heat.objects.create(number=1, round=round, desired_games=3)
-            for snake in round.snakes:
-                SnakeHeat.objects.create(snake=snake, heat=heat)
-            return round
-
-        # Reduction
-        num_heats = int(math.ceil(len(round.snakes) / max_snakes_per))
-        heats = [
-            Heat.objects.create(number=i + 1, round=round) for i in range(0, num_heats)
-        ]
-        i = 0
+        # finals
+        heat = Heat.objects.create(number=1, round=round, desired_games=1)
         for snake in round.snakes:
-            heat = heats[i % len(heats)]
             SnakeHeat.objects.create(snake=snake, heat=heat)
-            i += 1
         return round
+
 
 
 class Round(models.Model):
@@ -265,8 +263,8 @@ class Heat(models.Model):
         if len(self.games) < self.desired_games:
             return "running"
         for game in self.games:
-            if game.status is not "complete":
-                return game.status
+            if game.game_status is not "complete":
+                return game.game_status
         return "complete"
 
     def create_next_game(self):
@@ -305,6 +303,15 @@ class HeatGameManager(models.Manager):
 
 
 class HeatGame(models.Model):
+    UNWATCHED = "UW"
+    WATCHING = "W"
+    WATCHED = "WD"
+    STATUSES = (
+        (UNWATCHED, "Unwatched"),
+        (WATCHING, "Watching"),
+        (WATCHED, "Watched"),
+    )
+    status = models.CharField(max_length=2, choices=STATUSES, default=UNWATCHED)
     number = models.IntegerField(default=1)
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
     game = models.ForeignKey("game.Game", on_delete=models.DO_NOTHING)
@@ -323,7 +330,7 @@ class HeatGame(models.Model):
         return self.game.winner()
 
     @property
-    def status(self):
+    def game_status(self):
         return self.game.status
 
     @property

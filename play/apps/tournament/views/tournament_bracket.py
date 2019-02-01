@@ -85,22 +85,6 @@ def edit(request, bracket_id):
 
 @admin_required
 @login_required
-def show_current_game(request, id):
-    tournament_bracket = TournamentBracket.objects.get(id=id)
-
-    if request.GET.get("json") == "true":
-        details = tournament_bracket.game_details()
-        return JsonResponse({"games": details})
-
-    return render(
-        request,
-        "tournament_bracket/show_current_game.html",
-        {"tournament_bracket": tournament_bracket},
-    )
-
-
-@admin_required
-@login_required
 def show(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
 
