@@ -85,44 +85,34 @@
           <div class="tab-content" id="heatTabContent">
           {% for heat in round.heats %}
             <div class="tab-pane fade show{% if forloop.first %} active{% endif %}" id="round-{{ round.number }}-heat-{{ heat.number }}" role="tabpanel" aria-labelledby="home-tab">
-              <ul class="list-group" style="width:200px; padding-bottom:10px;">
-                {% for snake in heat.snakes %}
-                  <li class="list-group-item{% if snake.winner %} active{% endif %}">{{ snake.name }}</li>
-                {% endfor %}
-              </ul>
-
-              <div class="heat-games">
-                <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
-                  Create Next Game
-                </a>
-                <ul class="games">
-                  {% for heat_game in heat.games %}
-                  <li class="heat_game">
-                    <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                      Game {{ heat_game.number }}
-                    </a>
-                  </li>
+              <div class="row">
+                <div class="colM">
+                  <ul class="list-group" style="width:200px; padding-bottom:10px;">
+                  {% for snake in heat.snakes %}
+                    <li class="list-group-item{% if snake.winner %} active{% endif %}">{{ snake.name }}</li>
                   {% endfor %}
                 </ul>
+                </div>
+                <div class="colM">
+                  <div class="heat-games">
+                    <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
+                      Create Next Game
+                    </a>
+                    <ul class="games">
+                      {% for heat_game in heat.games %}
+                      <li class="heat_game">
+                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
+                          Play Game {{ heat_game.number }}
+                        </a> |
+                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
+                          AutoPlay Game {{ heat_game.number }}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
               </div>
-
-              <!--<div class="heat-games">-->
-                <!--<a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">-->
-                  <!--Create Next Game-->
-                <!--</a>-->
-                <!--<ul class="games">-->
-                  <!--{% for heat_game in heat.games %}-->
-                  <!--<li class="heat_game">-->
-                    <!--<a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">-->
-                      <!--Play Game {{ heat_game.number }}-->
-                    <!--</a> |-->
-                    <!--<a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">-->
-                      <!--AutoPlay Game {{ heat_game.number }}-->
-                    <!--</a>-->
-                  <!--</li>-->
-                  <!--{% endfor %}-->
-                <!--</ul>-->
-              <!--</div>-->
             </div>
           {% endfor %}
           </div>
