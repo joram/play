@@ -88,6 +88,10 @@ urlpatterns = [
         r"^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/game/(?P<heat_game_number>\w+)/$",
         method_dispatch(GET=tournament_views.tournament_bracket.run_game),
     ),
+    url(
+        r"^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/game/(?P<heat_game_number>\w+)/delete",
+        method_dispatch(GET=tournament_views.tournament_bracket.delete_game),
+    ),
     url(r"^tournaments/$", method_dispatch(GET=tournament_views.tournament.index)),
     url(
         r"^tournament/new/$",

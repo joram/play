@@ -7,6 +7,11 @@ from apps.tournament.models.teams import TeamMember
 from apps.utils.helpers import generate_game_url
 
 
+class PreviousGameTiedException(ValidationError):
+    def __init__(self):
+        super().__init__(message="Previous game ended in a tie.")
+
+
 class SingleSnakePerTeamPerTournamentValidationError(ValidationError):
     def __init__(self):
         super().__init__(message="Only one snake per event per team")
@@ -148,7 +153,7 @@ class RoundManager(models.Manager):
         round = super(RoundManager, self).create(*args, **kwargs)
         max_snakes_per = 8
         num_snakes = len(round.snakes)
-
+        print("creating a round with snakes:", round.snakes)
         # reduction round
         if num_snakes > 6 and round.tournament_bracket.tournament.snakes.count() > 8:
 
@@ -172,7 +177,6 @@ class RoundManager(models.Manager):
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
         return round
-
 
 
 class Round(models.Model):
@@ -228,13 +232,7 @@ class Heat(models.Model):
     @property
     def snakes(self):
         snake_heats = SnakeHeat.objects.filter(heat=self)
-        snakes = []
-        winner_ids = [w.id for w in self.winners]
-        for sh in snake_heats:
-            snake = sh.snake
-            snake.winner = snake.id in winner_ids
-            snakes.append(snake)
-        return snakes
+        return snake_heats
 
     @property
     def games(self):
@@ -272,7 +270,7 @@ class Heat(models.Model):
             raise Exception("shouldn't create any more games")
 
         n = self.games.count() + 1
-        if self.latest_game is not None and self.latest_game.status != "complete":
+        if self.latest_game is not None and self.latest_game.game_status != "complete":
             raise Exception("can't create next game")
         return HeatGame.objects.create(heat=self, number=n)
 
@@ -287,12 +285,14 @@ class HeatGameManager(models.Manager):
         skip = [w.snake.id for w in heat.winners]
         print(skip)
         if previous_game is not None:
+            if previous_game.winner is None:
+                raise PreviousGameTiedException()
             skip.append(previous_game.winner.snake.id)
-            next_snakes = [s for s in previous_game.snakes if s.id not in skip]
+            next_snakes = [sh.snake for sh in previous_game.snakes if sh.snake.id not in skip]
         else:
-            next_snakes = heat.snakes
+            next_snakes = [sh.snake for sh in heat.snakes]
         snake_ids = [{"id": snake.id} for snake in next_snakes]
-
+        print(snake_ids)
         from apps.game.models import Game
 
         game = Game(width=20, height=20, food=10, snakes=snake_ids)
@@ -327,7 +327,9 @@ class HeatGame(models.Model):
 
     @property
     def winner(self):
-        return self.game.winner()
+        if not hasattr(self, "_winner") or self._winner is None:
+            self._winner = self.game.winner()
+        return self._winner
 
     @property
     def game_status(self):
@@ -349,6 +351,22 @@ class HeatGame(models.Model):
 class SnakeHeat(models.Model):
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
+
+    @property
+    def first(self):
+        if self.heat.games.count() == 0:
+            return False
+        if self.heat.games[0].winner is None:
+            return False
+        return self.heat.games[0].winner.snake == self.snake
+
+    @property
+    def second(self):
+        if self.heat.games.count() <= 1:
+            return False
+        if self.heat.games[1].winner is None:
+            return False
+        return self.heat.games[1].winner.snake == self.snake
 
     class Meta:
         app_label = "tournament"

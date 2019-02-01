@@ -65,8 +65,10 @@
         <div class="col-sm">
         {% for heat in round.heats %}
           <ul class="list-group" style="width:200px; padding-bottom:10px;">
-            {% for snake in heat.snakes %}
-              <li class="list-group-item{% if snake.winner %} active{% endif %}">{{ snake.name }}</li>
+            {% for heat_snake in heat.snakes %}
+              <li class="list-group-item">
+                {{ heat_snake.snake.name }}
+              </li>
             {% endfor %}
           </ul>
 
@@ -97,7 +99,10 @@
                   <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
                     AutoPlay Game {{ heat_game.number }}
                   </a> |
-                  <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game_status }}
+                  <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game_status }}  |
+                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}/delete">
+                    delete
+                  </a>
                 </li>
                 {% endfor %}
               </ul>

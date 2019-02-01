@@ -13,6 +13,7 @@ from apps.tournament.models import (
     TournamentSnake,
     Heat,
     HeatGame,
+    PreviousGameTiedException,
 )
 from apps.authentication.decorators import admin_required
 
@@ -106,12 +107,6 @@ def show(request, id):
         else f"{min_snakes_per_game}"
     )
     while total_snakes > 8:
-        print(
-            round,
-            game_count,
-            (min_snakes_per_game, max_snakes_per_game),
-            snakes_advancing,
-        )
         progression_details.append(
             {
                 "round": round,
@@ -131,10 +126,6 @@ def show(request, id):
             "advancing": snakes_advancing,
         }
     )
-    print(
-        round, game_count, (min_snakes_per_game, max_snakes_per_game), snakes_advancing
-    )
-
     return render(
         request,
         "tournament_bracket/show.html",
@@ -170,7 +161,18 @@ def create_next_round(request, id):
 @login_required
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
-    heat.create_next_game()
+    try:
+        heat.create_next_game()
+    except PreviousGameTiedException:
+        messages.error(request, "Previous game tied. It must be rerun")
+    return redirect(f"/tournament/bracket/{id}/")
+
+
+@admin_required
+@login_required
+def delete_game(request, id, heat_id, heat_game_number):
+    heat_game = HeatGame.objects.get(heat_id=heat_id, number=heat_game_number)
+    heat_game.delete()
     return redirect(f"/tournament/bracket/{id}/")
 
 

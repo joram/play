@@ -45,12 +45,13 @@
             }
 
             // watching new game
-            $('#game').attr('src', data.heat_game.game.url);
+            console.log(data.heat_game.game.url+"?autoplay=true");
+            $('#game').attr('src', data.heat_game.game.url+"?autoplay=true");
             breadcrumbs = data.heat_game.heat.round.bracket.tournament.name+" > "+
               data.heat_game.heat.round.bracket.name+" > Round "+
               data.heat_game.heat.round.number+" > Heat "+
               data.heat_game.heat.number+" > Game "+
-              data.heat_game.number;
+              data.heat_game.number+" ("+data.heat_game.game.engine_id+")";
             $("#breadcrumbs").html(breadcrumbs);
             current_game_id = new_game.id;
 

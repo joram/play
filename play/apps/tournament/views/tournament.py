@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 from apps.tournament.forms import TournamentForm
 from apps.tournament.models import Tournament, TournamentBracket, TournamentSnake, Heat, HeatGame, Round
@@ -92,7 +91,6 @@ def show_current_game(request, tournament_id):
     heats = Heat.objects.filter(round__in=rounds)
     heat_games = HeatGame.objects.filter(heat__in=heats)
     heat_game = heat_games.filter(status=HeatGame.WATCHING)
-
     if request.GET.get("json") == "true":
         if not heat_game.exists():
           return JsonResponse({"heat_game": {"game": {"id": -1}}})
@@ -119,7 +117,8 @@ def show_current_game(request, tournament_id):
             },
             "game": {
                 "id": heat_game.game.id,
-                "url": generate_game_url(heat_game.game.id),
+                "engine_id": heat_game.game.engine_id,
+                "url": generate_game_url(heat_game.game.engine_id),
             },
         }})
 
