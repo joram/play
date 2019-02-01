@@ -11,3 +11,7 @@ def index(request):
 def logout_view(request):
     logout(request)
     return redirect("/login")
+
+
+def send_to_login(request):
+    return redirect("/login")
