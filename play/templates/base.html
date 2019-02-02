@@ -5,10 +5,32 @@
   <title>Battlesnake</title>
 
   {% load static %}
-  <link rel="stylesheet" href="{% static 'application.css' %}">
+<!--   <link rel="stylesheet" href="{% static 'application.css' %}"> -->
   <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <!-- ================== GOOGLE FONTS ==================-->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500" rel="stylesheet">
+  <!-- ======================= GLOBAL VENDOR STYLES ========================-->
+  <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/metismenu/dist/metisMenu.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/switchery-npm/index.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css' %}">
+  <!-- ======================= LINE AWESOME ICONS ===========================-->
+  <link rel="stylesheet" href="{% static 'css/icons/line-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/icons/simple-line-icons.css' %}">
+  <!-- ======================= DRIP ICONS ===================================-->
+  <link rel="stylesheet" href="{% static 'css/icons/dripicons.min.css' %}">
+  <!-- ======================= MATERIAL DESIGN ICONIC FONTS =================-->
+  <link rel="stylesheet" href="{% static 'css/icons/material-design-iconic-font.min.css' %}">
+  <!-- ======================= PAGE VENDOR STYLES ===========================-->
+  <link rel="stylesheet" href="{% static 'vendor/datatables.net-bs4/css/dataTables.bootstrap4.css' %}">
+  <!-- ======================= GLOBAL COMMON STYLES ============================-->
+  <link rel="stylesheet" href="{% static 'css/common/main.bundle.css' %}">
+  <!-- ======================= LAYOUT STYLES ===========================-->
+  <link rel="stylesheet" href="{% static 'css/layouts/horizontal/core/main.css' %}">
+  <!-- ======================= MENU TYPE ===========================-->
+  <link rel="stylesheet" href="{% static 'css/layouts/horizontal/menu-type/auto-hide.css' %}">
+  <!-- ======================= THEME COLOR STYLES ===========================-->
+  <link rel="stylesheet" href="{% static 'css/layouts/horizontal/themes/theme-j.css' %}">
   {% block extra_css %}{% endblock %}
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36561803-13"></script>
@@ -27,9 +49,9 @@
   {% block extra_js %}{% endblock %}
 
 </head>
-<body>
+<body class="layout-horizontal menu-auto-hide">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">Battlesnake</a>
+    <a class="navbar-brand" href="/">Baesnake</a>
     {% block navbar %}
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
