@@ -1,11 +1,13 @@
 import csv
 
-from django import forms
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+
+from apps.authentication.decorators import admin_required
+from apps.game.models import Game
 from apps.tournament.forms import TournamentBracketForm
 from apps.tournament.models import (
     Tournament,
@@ -15,8 +17,8 @@ from apps.tournament.models import (
     HeatGame,
     PreviousGameTiedException,
     DesiredGamesReachedValidationError,
+    RoundNotCompleteException,
 )
-from apps.authentication.decorators import admin_required
 
 
 @admin_required
@@ -154,8 +156,26 @@ def show_csv(request, id):
 @login_required
 def create_next_round(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    tournament_bracket.create_next_round()
+    try:
+        tournament_bracket.create_next_round()
+    except RoundNotCompleteException as e:
+        messages.error(request, e.message)
     return redirect(f"/tournament/bracket/{id}")
+
+
+@admin_required
+@login_required
+def update_game_statuses(request, bracket_id):
+    bracket = TournamentBracket.objects.get(id=bracket_id)
+    for heat in bracket.latest_round.heats:
+        for hg in heat.games:
+            if (
+                hg.game.status == Game.Status.PENDING
+                or hg.game.status == Game.Status.RUNNING
+            ):
+                hg.game.update_from_engine()
+                hg.game.save()
+    return redirect(f"/tournament/bracket/{bracket_id}")
 
 
 @admin_required
@@ -168,6 +188,8 @@ def create_game(request, id, heat_id):
         messages.error(request, "Previous game tied. It must be rerun")
     except DesiredGamesReachedValidationError:
         messages.error(request, "shouldn't create another game for this heat")
+    except Exception as e:
+        messages.error(request, e.__str__())
     return redirect(f"/tournament/bracket/{id}/")
 
 

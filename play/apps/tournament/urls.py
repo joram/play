@@ -64,7 +64,6 @@ urlpatterns = [
             PUT=tournament_views.tournament_snake.delete,
         ),
     ),
-
     url(
         r"^tournament/bracket/(?P<id>\w+)/$",
         method_dispatch(GET=tournament_views.tournament_bracket.show),
@@ -76,6 +75,10 @@ urlpatterns = [
     url(
         r"^tournament/bracket/(?P<id>\w+)/create/next/round$",
         method_dispatch(GET=tournament_views.tournament_bracket.create_next_round),
+    ),
+    url(
+        r"^tournament/bracket/(?P<bracket_id>\w+)/update/games",
+        method_dispatch(GET=tournament_views.tournament_bracket.update_game_statuses),
     ),
     url(
         r"^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$",
@@ -112,5 +115,4 @@ urlpatterns = [
             POST=tournament_views.tournament.set_current_game,
         ),
     ),
-
 ]

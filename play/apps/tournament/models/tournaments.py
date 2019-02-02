@@ -1,9 +1,9 @@
 import math
-from django.db import models
-from django.core.exceptions import ValidationError
 
-from apps.snake.models import Snake, UserSnake
-from apps.tournament.models.teams import TeamMember
+from django.core.exceptions import ValidationError
+from django.db import models
+
+from apps.snake.models import Snake
 from apps.utils.helpers import generate_game_url
 
 
@@ -25,6 +25,11 @@ class TournamentClosedValidationError(ValidationError):
 class DesiredGamesReachedValidationError(ValidationError):
     def __init__(self):
         super().__init__(message="No more games should be run for this heat")
+
+
+class RoundNotCompleteException(ValidationError):
+    def __init__(self):
+        super().__init__(message="Complete all games before creating next round.")
 
 
 class Tournament(models.Model):
@@ -54,7 +59,7 @@ class Tournament(models.Model):
 
     @property
     def is_registration_open(self):
-      return self.status == self.REGISTRATION
+        return self.status == self.REGISTRATION
 
     def __str__(self):
         return f"{self.name}"
@@ -79,7 +84,7 @@ class TournamentBracket(models.Model):
 
     def create_next_round(self):
         if self.latest_round is not None and self.latest_round.status != "complete":
-            raise Exception("can't create next round")
+            raise RoundNotCompleteException
 
         num = max([r.number for r in self.rounds] + [0]) + 1
         return Round.objects.create(number=num, tournament_bracket=self)
@@ -98,6 +103,8 @@ class TournamentBracket(models.Model):
 
     @property
     def winners(self):
+        if self.latest_round is None:
+            return False
         if self.latest_round.heats.count() != 1:
             return False
         if self.latest_round.heats[0].games.count() != 1:
@@ -107,7 +114,6 @@ class TournamentBracket(models.Model):
 
         final_game = self.latest_round.heats[0].games[0]
         final_game.game.ranked_snakes()
-
 
     @property
     def snake_count(self):
@@ -133,18 +139,18 @@ class TournamentBracket(models.Model):
 
     def export(self):
         rows = [self.header_row]
-        for round in self.rounds:
-            for heat in round.heats:
-                for snake in heat.snakes:
+        for r in self.rounds:
+            for heat in r.heats:
+                for snake_heat in heat.snakes:
                     row = [
-                        f"Round {round.number}",
+                        f"Round {r.number}",
                         f"Heat {heat.number}",
-                        snake.name,
-                        snake.id,
+                        snake_heat.snake.name,
+                        snake_heat.snake.id,
                     ]
                     for heat_game in heat.games:
                         row.append(
-                            f"https://play.battlesnake.io/game/{heat_game.game.id}"
+                            f"https://play.battlesnake.io/game/{heat_game.game.engine_id}"
                         )
                     rows.append(row)
         return rows
@@ -166,7 +172,6 @@ class TournamentSnake(models.Model):
 
 
 class RoundManager(models.Manager):
-
     def create(self, *args, **kwargs):
         round = super(RoundManager, self).create(*args, **kwargs)
         max_snakes_per = 8
@@ -180,7 +185,10 @@ class RoundManager(models.Manager):
                 num_heats = 3
             if num_snakes > 24 and num_heats == 4:
                 num_heats = 6
-            heats = [Heat.objects.create(number=i + 1, round=round) for i in range(0, num_heats)]
+            heats = [
+                Heat.objects.create(number=i + 1, round=round)
+                for i in range(0, num_heats)
+            ]
 
             i = 0
             for snake in round.snakes:
@@ -189,7 +197,7 @@ class RoundManager(models.Manager):
 
             return round
 
-        # finals
+        # finals, TODO: this needs to be updated i think, desired_games should be 3?
         heat = Heat.objects.create(number=1, round=round, desired_games=1)
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
@@ -209,7 +217,6 @@ class Round(models.Model):
 
     @property
     def snakes(self):
-        snakes = []
         if self.number == 1:
             return [s for s in self.tournament_bracket.snakes.all()]
         return [s.snake for s in self.previous.winners]
@@ -232,7 +239,7 @@ class Round(models.Model):
     @property
     def status(self):
         for heat in self.heats:
-            if heat.status is not "complete":
+            if heat.status != "complete":
                 return heat.status
         return "complete"
 
@@ -273,13 +280,13 @@ class Heat(models.Model):
 
     @property
     def status(self):
-        for hg in self.games:
-            hg.game.update_from_engine()
         if len(self.games) < self.desired_games:
             return "running"
-        for game in self.games:
-            if game.game_status is not "complete":
-                return game.game_status
+        from apps.game.models import Game
+
+        for hg in self.games:
+            if hg.game.status is not Game.Status.COMPLETE:
+                return hg.game.status
         return "complete"
 
     def create_next_game(self):
@@ -287,7 +294,12 @@ class Heat(models.Model):
             raise DesiredGamesReachedValidationError()
 
         n = self.games.count() + 1
-        if self.latest_game is not None and self.latest_game.game_status != "complete":
+        from apps.game.models import Game
+
+        if (
+            self.latest_game is not None
+            and self.latest_game.game.status != Game.Status.COMPLETE
+        ):
             raise Exception("can't create next game")
         return HeatGame.objects.create(heat=self, number=n)
 
@@ -304,12 +316,15 @@ class HeatGameManager(models.Manager):
             if previous_game.winner is None:
                 raise PreviousGameTiedException()
             skip.append(previous_game.winner.snake.id)
-            next_snakes = [sh.snake for sh in previous_game.snakes if sh.snake.id not in skip]
+            next_snakes = [
+                sh.snake for sh in previous_game.snakes if sh.snake.id not in skip
+            ]
         else:
             next_snakes = [sh.snake for sh in heat.snakes]
         snake_ids = [{"id": snake.id} for snake in next_snakes]
 
         from apps.game.models import Game
+
         game = Game(width=20, height=20, food=10, snakes=snake_ids)
         game.create()
         game.save()
@@ -321,11 +336,7 @@ class HeatGame(models.Model):
     UNWATCHED = "UW"
     WATCHING = "W"
     WATCHED = "WD"
-    STATUSES = (
-        (UNWATCHED, "Unwatched"),
-        (WATCHING, "Watching"),
-        (WATCHED, "Watched"),
-    )
+    STATUSES = ((UNWATCHED, "Unwatched"), (WATCHING, "Watching"), (WATCHED, "Watched"))
     status = models.CharField(max_length=2, choices=STATUSES, default=UNWATCHED)
     number = models.IntegerField(default=1)
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
@@ -345,10 +356,6 @@ class HeatGame(models.Model):
         if not hasattr(self, "_winner") or self._winner is None:
             self._winner = self.game.winner()
         return self._winner
-
-    @property
-    def game_status(self):
-        return self.game.status
 
     @property
     def human_readable_status(self):
