@@ -172,7 +172,7 @@ def update_game_statuses(request, bracket_id):
             if (
                 hg.game.status == Game.Status.PENDING
                 or hg.game.status == Game.Status.RUNNING
-            ):
+            ) and hg.game.engine_id is not None:
                 hg.game.update_from_engine()
                 hg.game.save()
     return redirect(f"/tournament/bracket/{bracket_id}")
