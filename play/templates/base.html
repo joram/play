@@ -5,7 +5,7 @@
   <title>Battlesnake</title>
 
   {% load static %}
-<!--   <link rel="stylesheet" href="{% static 'application.css' %}"> -->
+  <link rel="stylesheet" href="{% static 'application.css' %}">
   <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
   <!-- ================== GOOGLE FONTS ==================-->
   <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500" rel="stylesheet">
@@ -109,7 +109,7 @@
       {% endblock %}
     </div>
   </nav>
-  <main class="app container">
+  <main class="app container-fluid">
     {% for message in messages %}
     <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
