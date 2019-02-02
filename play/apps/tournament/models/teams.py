@@ -10,6 +10,7 @@ class Team(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
+    can_register_in_tournaments = models.BooleanField(default=False)
 
     @property
     def snakes(self):
@@ -20,12 +21,19 @@ class Team(models.Model):
     @property
     def tournament_snakes(self):
         from apps.tournament.models import TournamentSnake
+
         return TournamentSnake.objects.filter(snake__in=self.snakes)
 
     @property
     def available_tournaments(self):
         from apps.tournament.models import Tournament
-        return Tournament.objects.filter(status=Tournament.REGISTRATION).exclude(id__in=[ts.tournament.id for ts in self.tournament_snakes])
+
+        return Tournament.objects.filter(status=Tournament.REGISTRATION).exclude(
+            id__in=[ts.tournament.id for ts in self.tournament_snakes]
+        )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         app_label = "tournament"

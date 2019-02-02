@@ -82,62 +82,70 @@
       }
     </style>
     <div class="container">
-      <div class="row">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
       {% for round in tournament_bracket.rounds %}
-        <div class="col-sm">
-        {% for heat in round.heats %}
-          <ul class="list-group" style="width:200px; padding-bottom:10px;">
-            {% for heat_snake in heat.snakes %}
-              <li class="list-group-item">
-                {{ heat_snake.snake.name }}
-              </li>
-            {% endfor %}
+         <li class="nav-item">
+            <a class="nav-link" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
+         </li>
+        {% endfor %}
+      </ul>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+      </div>
+
+      <div class="tab-content" id="myTabContent">
+      {% for round in tournament_bracket.rounds %}
+        <div class="tab-pane fade show{% if forloop.first %} active{% endif %}" id="round-{{ round.number }}" role="tabpanel" aria-labelledby="home-tab">
+          <ul class="nav nav-tabs" id="heatTabls" role="tablist">
+          {% for heat in round.heats %}
+             <li class="nav-item">
+                <a class="nav-link" id="round-{{ round.number }}-heat-{{ heat.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}-heat-{{ heat.number }}" role="tab" aria-controls="home" aria-selected="true">Heat {{ heat.number }}</a>
+             </li>
+          {% endfor %}
           </ul>
 
-          <div class="heat-games">
-            <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
-              Create Next Game
-            </a>
-            <ul class="games">
-              {% for heat_game in heat.games %}
-              <li class="heat_game">
-                <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                  Game {{ heat_game.number }}
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-            <div class="heat-games">
-              <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
-                Create Next Game
-              </a>
-              <ul class="games">
-                {% for heat_game in heat.games %}
-                <li class="heat_game">
-                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                    Play Game {{ heat_game.number }}
-                  </a> |
-                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
-                    AutoPlay Game {{ heat_game.number }}
-                  </a> |
-                  <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game_status }}  |
-                  <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}/delete">
-                    delete
-                  </a>
-                </li>
-                {% endfor %}
-              </ul>
+          <div class="tab-content" id="heatTabContent">
+          {% for heat in round.heats %}
+            <div class="tab-pane fade show{% if forloop.first %} active{% endif %}" id="round-{{ round.number }}-heat-{{ heat.number }}" role="tabpanel" aria-labelledby="home-tab">
+              <div class="row">
+                <div class="colM">
+                  <ul class="list-group" style="width:200px; padding-bottom:10px;">
+                  {% for snake in heat.snakes %}
+                    <li class="list-group-item{% if snake.winner %} active{% endif %}">{{ snake.name }}</li>
+                  {% endfor %}
+                </ul>
+                </div>
+                <div class="colM">
+                  <div class="heat-games">
+                    <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
+                      Create Next Game
+                    </a>
+                    <ul class="games">
+                      {% for heat_game in heat.games %}
+                      <li class="heat_game">
+                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
+                          Play Game {{ heat_game.number }}
+                        </a> |
+                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
+                          AutoPlay Game {{ heat_game.number }}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-          </li>
           {% endfor %}
-        </ul>
-      </li>
+          </div>
+        </div>
       {% empty %}
-      <h4>There are no rounds</h4>
+        <h4>There are no rounds</h4>
       {% endfor %}
       </div>
+
     </div>
+
   </div>
 </div>
 

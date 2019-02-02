@@ -2,6 +2,9 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
+from apps.authentication.views import send_to_login
+
+admin.site.login = send_to_login
 
 urlpatterns = [
     path("admin/", admin.site.urls),
