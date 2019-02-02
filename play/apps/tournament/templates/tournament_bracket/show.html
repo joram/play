@@ -1,6 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
+{% if tournament_bracket.winners %}
+<div class="card" style="margin-bottom: 10px;">
+  <div class="card-header">
+    Winners
+  </div>
+
+  <div class="card-body container">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            {% for winner in tournament_bracket.winners %}
+            <li class="list-group-item">{{ winner.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <div class="card" style="margin-bottom: 10px;">
   <div class="card-header">
     Expected Progression
@@ -46,7 +68,7 @@
         <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/csv">
           Export as CSV
         </a>
-        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/current_game">
+        <a class="dropdown-item" href="/tournament/{{ tournament_bracket.tournament.id }}/current_game">
           View Current Game
         </a>
       </div>
@@ -60,40 +82,39 @@
       }
     </style>
     <div class="container">
+        <a style="float: right" href="/tournament/bracket/{{ tournament_bracket.id }}/update/games">Update Game Statuses</a>
       <ul class="nav nav-tabs" id="myTab" role="tablist">
-      {% for round in tournament_bracket.rounds %}
+        {% for round in tournament_bracket.rounds %}
          <li class="nav-item">
-            <a class="nav-link" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
+            <a class="nav-link {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
          </li>
         {% endfor %}
       </ul>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-      </div>
 
-      <div class="tab-content" id="myTabContent">
+            <br/>
+      <div class="tab-content">
       {% for round in tournament_bracket.rounds %}
-        <div class="tab-pane fade show{% if forloop.first %} active{% endif %}" id="round-{{ round.number }}" role="tabpanel" aria-labelledby="home-tab">
-          <ul class="nav nav-tabs" id="heatTabls" role="tablist">
+        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}" role="tabpanel" aria-labelledby="home-tab">
+          <ul class="nav nav-tabs" id="heatTables" role="tablist">
           {% for heat in round.heats %}
              <li class="nav-item">
-                <a class="nav-link" id="round-{{ round.number }}-heat-{{ heat.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}-heat-{{ heat.number }}" role="tab" aria-controls="home" aria-selected="true">Heat {{ heat.number }}</a>
+                <a class="nav-link {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}-heat-{{ heat.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}-heat-{{ heat.number }}" role="tab" aria-controls="home" aria-selected="true">Heat {{ heat.number }}</a>
              </li>
           {% endfor %}
           </ul>
-
+        <br/>
           <div class="tab-content" id="heatTabContent">
           {% for heat in round.heats %}
-            <div class="tab-pane fade show{% if forloop.first %} active{% endif %}" id="round-{{ round.number }}-heat-{{ heat.number }}" role="tabpanel" aria-labelledby="home-tab">
+            <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}-heat-{{ heat.number }}" role="tabpanel" aria-labelledby="home-tab">
               <div class="row">
-                <div class="colM">
+                <div class="col">
                   <ul class="list-group" style="width:200px; padding-bottom:10px;">
-                  {% for snake in heat.snakes %}
-                    <li class="list-group-item{% if snake.winner %} active{% endif %}">{{ snake.name }}</li>
-                  {% endfor %}
-                </ul>
+                      {% for snake in heat.snakes %}
+                        <li class="list-group-item{% if snake.first or snake.second %} active{% endif %}">{{ snake.snake.name }}</li>
+                      {% endfor %}
+                  </ul>
                 </div>
-                <div class="colM">
+                <div class="col-8">
                   <div class="heat-games">
                     <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
                       Create Next Game
@@ -101,12 +122,13 @@
                     <ul class="games">
                       {% for heat_game in heat.games %}
                       <li class="heat_game">
-                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                          Play Game {{ heat_game.number }}
-                        </a> |
                         <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
-                          AutoPlay Game {{ heat_game.number }}
-                        </a>
+                          View  {{ heat_game.number }}
+                        </a> |
+                          <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game.status }}  |
+                          <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}/delete">
+                            delete
+                          </a>
                       </li>
                       {% endfor %}
                     </ul>
@@ -126,5 +148,27 @@
 
   </div>
 </div>
+
+<script>
+  function updatedGameStates(data){
+    console.log(data);
+  }
+
+  domready(function () {
+
+    $(".watch_game").click(function(e){
+      heat_game_id = e.target.id;
+      $.ajax({
+        data: {
+          heat_game_id: heat_game_id,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        url: "/tournament/{{tournament_bracket.tournament.id}}/current_game",
+        type: 'post',
+        success: updatedGameStates,
+      })
+    })
+  });
+</script>
 
 {% endblock %}
