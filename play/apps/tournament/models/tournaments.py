@@ -68,6 +68,9 @@ class Tournament(models.Model):
 class TournamentBracket(models.Model):
     name = models.CharField(max_length=256)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    board_width = models.IntegerField(default=20)
+    board_height = models.IntegerField(default=20)
+    board_food = models.IntegerField(default=10)
     snakes = models.ManyToManyField(
         Snake, through="TournamentSnake", through_fields=("bracket", "snake")
     )
@@ -325,7 +328,12 @@ class HeatGameManager(models.Manager):
 
         from apps.game.models import Game
 
-        game = Game(width=20, height=20, food=10, snakes=snake_ids)
+        game = Game(
+            width=heat.round.tournament_bracket.board_width,
+            height=heat.round.tournament_bracket.board_height,
+            food=heat.round.tournament_bracket.board_food,
+            snakes=snake_ids,
+        )
         game.create()
         game.save()
 
