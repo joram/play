@@ -107,14 +107,14 @@
           {% for heat in round.heats %}
             <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}-heat-{{ heat.number }}" role="tabpanel" aria-labelledby="home-tab">
               <div class="row">
-                <div class="col-md">
+                <div class="col">
                   <ul class="list-group" style="width:200px; padding-bottom:10px;">
                       {% for snake in heat.snakes %}
                         <li class="list-group-item{% if snake.first or snake.second %} active{% endif %}">{{ snake.snake.name }}</li>
                       {% endfor %}
                   </ul>
                 </div>
-                <div class="col-md">
+                <div class="col-8">
                   <div class="heat-games">
                     <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
                       Create Next Game
@@ -122,12 +122,13 @@
                     <ul class="games">
                       {% for heat_game in heat.games %}
                       <li class="heat_game">
-                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}">
-                          Play Game {{ heat_game.number }}
-                        </a> |
                         <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
-                          AutoPlay Game {{ heat_game.number }}
-                        </a>
+                          View  {{ heat_game.number }}
+                        </a> |
+                          <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game.status }}  |
+                          <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}/delete">
+                            delete
+                          </a>
                       </li>
                       {% endfor %}
                     </ul>
