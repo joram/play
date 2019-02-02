@@ -1,1 +1,28 @@
 {% extends 'base.html' %}
+
+{% block content %}
+    {% for game in games %}
+        <div style="float:left; text-align: center; overflow: hidden; width: 300px">
+            <div class="feed-board">
+                <iframe
+                    id="iframe_game"
+                    src="{{ game.url | safe }}"
+                    frameborder="0"
+                    scrolling="no"
+                    marginheight="0"
+                    marginwidth="0"
+                    style="
+                      position: absolute;
+                      height: 100%;
+                      width: 100%;
+                      left: 0;
+                      top: 0;
+                    ">
+                </iframe>
+            </div>
+            <br/>
+            <a href="/games/{{ game.engine_id }}">View</a>
+        </div>
+    {% endfor %}
+
+{% endblock %}

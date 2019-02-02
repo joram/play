@@ -21,3 +21,11 @@
   height: 840px;
   margin: 0 auto;
 }
+
+.feed-board {
+  position: relative;
+  width: 400px;
+  height: 280px;
+  margin: 0 0;
+  float:left;
+}
