@@ -79,7 +79,7 @@ class AddTeamMemberForm(forms.Form):
 
 
 class TournamentBracketForm(forms.ModelForm):
-    snakes = forms.ModelMultipleChoiceField(Snake.objects.all(), required=False)
+    snakes = forms.ModelMultipleChoiceField(Snake.objects.all().order_by("name"), required=False)
 
     class Meta:
         model = TournamentBracket
