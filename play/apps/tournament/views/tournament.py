@@ -137,9 +137,13 @@ def set_current_game(request, tournament_id):
         pass
 
     heat_game.update(status=HeatGame.WATCHED)
-    watch_heat_game.update(status=HeatGame.WATCHING)
-    heat_games = HeatGame.objects.filter(heat__in=heats)
 
+    if watch_heat_game[0].game is None or watch_heat_game[0].game.engine_id is None:
+        watch_heat_game[0].game.create()
+        watch_heat_game[0].game.run()
+    watch_heat_game.update(status=HeatGame.WATCHING)
+
+    heat_games = HeatGame.objects.filter(heat__in=heats)
     return JsonResponse(
         {
             "heat_games": [

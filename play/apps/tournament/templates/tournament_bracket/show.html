@@ -114,9 +114,6 @@
                 </div>
                 <div class="col-8">
                   <div class="heat-games">
-                    <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
-                      Create Next Game
-                    </a>
                     <ul class="games">
                       {% for heat_game in heat.games %}
                       <li class="heat_game">
@@ -129,6 +126,18 @@
                           </a>
                       </li>
                       {% endfor %}
+                      {% if heat.status == "complete" %}
+                        Heat's Complete
+                      {% else %}
+                        {% if not heat.latest_game or heat.latest_game.status != "complete" %}
+                          <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/create_game/">
+                            Create Next Game
+                          </a>
+                        {% else %}
+                          Wait for latest game to finish before creating next
+                        {% endif %}
+                      {% endif %}
+
                     </ul>
                   </div>
                 </div>
