@@ -213,3 +213,12 @@ def run_game(request, id, heat_id, heat_game_number):
         return redirect(f"/games/{heat_game.game.engine_id}?autoplay=true")
 
     return redirect(f"/games/{heat_game.game.engine_id}")
+
+@admin_required
+@login_required
+def tree(request, id):
+    bracket = TournamentBracket.objects.get(id=id)
+    context = {
+        "bracket": bracket,
+    }
+    return render(request, "tournament_bracket/tree.html", context)
