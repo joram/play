@@ -45,8 +45,7 @@
             }
 
             // watching new game
-            console.log(data.heat_game.game.url+"?autoplay=true");
-            $('#game').attr('src', data.heat_game.game.url+"?autoplay=true");
+            $('#game').attr('src', data.heat_game.game.url+"&autoplay=true&countdown=10");
             breadcrumbs = data.heat_game.heat.round.bracket.tournament.name+" > "+
               data.heat_game.heat.round.bracket.name+" > Round "+
               data.heat_game.heat.round.number+" > Heat "+
