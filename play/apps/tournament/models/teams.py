@@ -2,14 +2,13 @@ from django.db import models
 
 from util.fields import ShortUUIDField
 from apps.authentication.models import User
-from apps.snake.models import Snake, UserSnake
+from apps.snake.models import UserSnake
 
 
 class Team(models.Model):
     id = ShortUUIDField(prefix="tem", max_length=128, primary_key=True)
     name = models.CharField(max_length=128)
     description = models.TextField()
-    snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
     can_register_in_tournaments = models.BooleanField(default=False)
 
     @property
