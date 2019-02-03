@@ -20,7 +20,7 @@ def test_new(client):
 def test_new_with_snakes(client):
     user = user_factory.login_as(client)
     snake = snake_factory.basic(n=1, commit=True, user=user)
-    team_factory.basic(user=user, snake=snake)
+    team_factory.basic(user=user)
     response = client.get("/games/new/")
     assert response.status_code == 200
 
@@ -49,7 +49,7 @@ def test_create(mock_run, client):
     mock_run.return_value = id
     user = user_factory.login_as(client)
     snake = snake_factory.basic(n=1, commit=True, user=user)
-    team_factory.basic(user=user, snake=snake)
+    team_factory.basic(user=user)
 
     response = client.post(
         f"/games/new/",

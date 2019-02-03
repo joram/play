@@ -26,9 +26,6 @@ class TeamForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, *args, **kwargs):
-        self.snake.name = self.cleaned_data["name"]
-        self.snake.save()
-
         team = super().save(commit=False)
         team.save()
 
