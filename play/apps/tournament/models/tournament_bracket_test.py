@@ -26,7 +26,7 @@ def _arrange_tournament(name, num_snakes=8):
     t = TournamentBracket.objects.create(name=name, tournament=tg)
     for i in range(1, num_snakes + 1):
         snake = Snake.objects.create(name=f"Snake {i}", id=f"snk_{i}")
-        team = Team.objects.create(name="test team", snake=snake)
+        team = Team.objects.create(name="test team")
         user = User.objects.create(username=f"user_{i}")
         TeamMember.objects.create(team=team, user=user)
         UserSnake.objects.create(snake=snake, user=user)

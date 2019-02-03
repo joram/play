@@ -10,8 +10,7 @@ snake_factory = SnakeFactory()
 
 def test_index(client):
     user = user_factory.login_as(client)
-    snake = snake_factory.basic(commit=True)
-    team_factory.basic(user=user, snake=snake)
+    team_factory.basic(user=user)
     response = client.get("/team/")
     assert response.status_code == 200
 
@@ -34,16 +33,14 @@ def test_create(client):
 
 def test_edit(client):
     user = user_factory.login_as(client)
-    snake = snake_factory.basic(commit=True)
-    team_factory.basic(user=user, snake=snake)
+    team_factory.basic(user=user)
     response = client.get(f"/team/edit/")
     assert response.status_code == 200
 
 
 def test_update(client):
     user = user_factory.login_as(client)
-    snake = snake_factory.basic(commit=True, user=user)
-    team = team_factory.basic(user=user, snake=snake)
+    team = team_factory.basic(user=user)
     response = client.post(
         f"/team/",
         {
@@ -53,7 +50,5 @@ def test_update(client):
         },
     )
     assert response.status_code == 302
-    snake.refresh_from_db()
     team.refresh_from_db()
-    assert snake.name == "test3"
     assert team.name == "test3"

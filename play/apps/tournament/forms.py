@@ -20,25 +20,13 @@ class TeamForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-        self.load_snake_data()
 
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
 
-    def load_snake_data(self):
-        if self.instance and self.instance.snake_id:
-            self.snake = self.instance.snake
-            self.initial["snake_url"] = self.instance.snake.url
-        else:
-            self.snake = Snake()
-
     def save(self, *args, **kwargs):
-        self.snake.name = self.cleaned_data["name"]
-        self.snake.save()
-
         team = super().save(commit=False)
-        team.snake = self.snake
         team.save()
 
         TeamMember.objects.get_or_create(user=self.user, team=team)
