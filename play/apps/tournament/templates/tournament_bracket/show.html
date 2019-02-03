@@ -34,6 +34,7 @@
       {% for round in progression %}
         <div class="col-sm">
           <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            <li class="list-group-item">Round: {{forloop.counter}}</li>
             <li class="list-group-item">{{ round.num_games }} games</li>
             <li class="list-group-item">{{ round.snakes_per_game }} snakes per game.</li>
           </ul>
