@@ -9,3 +9,7 @@ class Player(BaseModel):
     @property
     def email(self):
         return self.user.email
+
+    @property
+    def username(self):
+        return self.user.username
