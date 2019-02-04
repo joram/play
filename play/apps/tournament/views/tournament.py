@@ -89,6 +89,10 @@ def cast_current_game(request, tournament_id):
         # problem
         pass
 
+    if heat_game.game is None or heat_game.game.engine_id is None:
+        heat_game.game.create()
+        heat_game.game.run()
+
     tournament.casting_uri = generate_game_url(heat_game.first().game.engine_id)+"&autoplay=true&countdown=10"
     tournament.save()
 

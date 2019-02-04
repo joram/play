@@ -228,10 +228,12 @@ def tree(request, id):
 
 @admin_required
 @login_required
-def cast_tree(request, id):
+def cast_page(request, id):
     bracket = TournamentBracket.objects.get(id=id)
-    split_url = urlsplit(request.build_absolute_uri())
-    casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
-    bracket.tournament.casting_uri = casting_uri
-    bracket.tournament.save()
+    if request.GET.get("page") == "tree":
+        split_url = urlsplit(request.build_absolute_uri())
+        casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+        bracket.tournament.casting_uri = casting_uri
+        bracket.tournament.save()
+
     return redirect(f"/tournament/bracket/{id}/")
