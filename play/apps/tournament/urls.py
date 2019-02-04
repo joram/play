@@ -77,6 +77,10 @@ urlpatterns = [
         method_dispatch(GET=tournament_views.tournament_bracket.tree),
     ),
     url(
+        r"^tournament/bracket/(?P<id>\w+)/set-casting",
+        method_dispatch(GET=tournament_views.tournament_bracket.cast_tree),
+    ),
+    url(
         r"^tournament/bracket/(?P<id>\w+)/create/next/round$",
         method_dispatch(GET=tournament_views.tournament_bracket.create_next_round),
     ),

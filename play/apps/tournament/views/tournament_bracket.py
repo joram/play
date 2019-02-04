@@ -214,6 +214,7 @@ def run_game(request, id, heat_id, heat_game_number):
 
     return redirect(f"/games/{heat_game.game.engine_id}")
 
+
 @admin_required
 @login_required
 def tree(request, id):
@@ -222,3 +223,19 @@ def tree(request, id):
         "bracket": bracket,
     }
     return render(request, "tournament_bracket/tree.html", context)
+
+
+@admin_required
+@login_required
+def cast_tree(request, id):
+    bracket = TournamentBracket.objects.get(id=id)
+
+    from urllib.parse import urlsplit, urlunsplit
+
+    split_url = urlsplit(request.build_absolute_uri())
+    casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+    # + f"/tournament/bracket/{id}/tree"
+    # casting_uri = ""
+    bracket.tournament.casting_uri = casting_uri
+    bracket.tournament.save()
+    return redirect(f"/tournament/bracket/{id}/")

@@ -18,13 +18,30 @@
     <div id="no_game"> NO GAMES ARE RUNNING CURRENTLY</div>
     <script>
       tournament_id = {{ tournament.id }};
-      current_game_id = -1;
+      current_url = "";
       $("#no_game").show();
       $("#game").hide();
 
       domready(function () {
+        function watchURL(url) {
 
-        function getCurrentWatchingGame () {
+          if(current_url === url){
+            return false;
+          }
+          console.log("switching to: "+url);
+
+          // already watching
+          if(url !== ""){
+            $("#no_game").hide();
+            $("#game").show();
+          }
+
+          $('#game').attr('src', url);
+          current_url = url;
+          return true;
+        }
+
+        function getCurrentWatchingGame() {
           $.get({
             url: '/tournament/'+tournament_id+'/current_game?json=true',
             success: onSuccessUpdateGame,
@@ -33,27 +50,7 @@
 
           function onSuccessUpdateGame (data) {
             setTimeout(getCurrentWatchingGame,1000);  // every second
-            new_game = data.heat_game.game;
-
-            // already watching
-            if(new_game.id === current_game_id){
-              return
-            }
-            if(new_game.id !== -1){
-              $("#no_game").hide();
-              $("#game").show();
-            }
-
-            // watching new game
-            $('#game').attr('src', data.heat_game.game.url+"&autoplay=true&countdown=10");
-            breadcrumbs = data.heat_game.heat.round.bracket.tournament.name+" > "+
-              data.heat_game.heat.round.bracket.name+" > Round "+
-              data.heat_game.heat.round.number+" > Heat "+
-              data.heat_game.heat.number+" > Game "+
-              data.heat_game.number+" ("+data.heat_game.game.engine_id+")";
-            $("#breadcrumbs").html(breadcrumbs);
-            current_game_id = new_game.id;
-
+            watchURL(data.tournament.casting_uri);
           }
         }
 
