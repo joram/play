@@ -1,12 +1,12 @@
-from django.urls import path
+from django.conf.urls import url
 from apps.platform.views import player, players
 from util.routing import method_dispatch as route
 
 urlpatterns = [
-    path(
-        "profile",
+    url(
+        r"^profile/$",
         route(GET=player.edit, PUT=player.update, DELETE=player.delete),
         name="profile",
     ),
-    path("players/<username>", route(GET=players.show), name="player"),
+    url(r"^players/(?P<username>\w+)/$", route(GET=players.show), name="player"),
 ]
