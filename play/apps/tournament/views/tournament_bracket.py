@@ -1,4 +1,5 @@
 import csv
+from urllib.parse import urlsplit
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -229,13 +230,8 @@ def tree(request, id):
 @login_required
 def cast_tree(request, id):
     bracket = TournamentBracket.objects.get(id=id)
-
-    from urllib.parse import urlsplit, urlunsplit
-
     split_url = urlsplit(request.build_absolute_uri())
     casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
-    # + f"/tournament/bracket/{id}/tree"
-    # casting_uri = ""
     bracket.tournament.casting_uri = casting_uri
     bracket.tournament.save()
     return redirect(f"/tournament/bracket/{id}/")

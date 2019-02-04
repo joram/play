@@ -339,7 +339,7 @@ class HeatGame(models.Model):
     UNWATCHED = "UW"
     WATCHING = "W"
     WATCHED = "WD"
-    STATUSES = ((UNWATCHED, "Unwatched"), (WATCHING, "Watching"), (WATCHED, "Watched"))
+    STATUSES = ((UNWATCHED, "Not Casted Yet"), (WATCHING, "Casting"), (WATCHED, "Casted"))
     status = models.CharField(max_length=2, choices=STATUSES, default=UNWATCHED)
     number = models.IntegerField(default=1)
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)

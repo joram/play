@@ -120,7 +120,7 @@ urlpatterns = [
         r"^tournament/(?P<tournament_id>\w+)/current_game$",
         method_dispatch(
             GET=tournament_views.tournament.show_current_game,
-            POST=tournament_views.tournament.set_current_game,
+            POST=tournament_views.tournament.cast_current_game,
         ),
     ),
 ]

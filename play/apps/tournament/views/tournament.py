@@ -82,19 +82,19 @@ def show_current_game(request, tournament_id):
 @admin_required
 @login_required
 @transaction.atomic
-def set_current_game(request, tournament_id):
+def cast_current_game(request, tournament_id):
     tournament = Tournament.objects.get(id=tournament_id)
-    rounds = Round.objects.filter(tournament_bracket__in=tournament.brackets)
-    heats = Heat.objects.filter(round__in=rounds)
-    heat_games = HeatGame.objects.filter(heat__in=heats)
-    watch_heat_game = heat_games.filter(id=request.POST.get("heat_game_id"))
-    if not watch_heat_game.exists():
+    heat_game = HeatGame.objects.filter(id=request.POST.get("heat_game_id"))
+    if not heat_game.exists():
         # problem
         pass
 
-    tournament.casting_uri = generate_game_url(watch_heat_game.first().game.engine_id)+"&autoplay=true&countdown=10"
+    tournament.casting_uri = generate_game_url(heat_game.first().game.engine_id)+"&autoplay=true&countdown=10"
     tournament.save()
 
+    rounds = Round.objects.filter(tournament_bracket__in=tournament.brackets)
+    heats = Heat.objects.filter(round__in=rounds)
+    heat_games = HeatGame.objects.filter(heat__in=heats)
     return JsonResponse(
         {
             "heat_games": [
