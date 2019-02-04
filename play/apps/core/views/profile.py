@@ -25,6 +25,6 @@ def update(request):
 def delete(request):
     user = request.user
     logout(request)
-    request.user.profile.delete()
     user.delete()
+    user.profile.delete()
     return redirect("/")
