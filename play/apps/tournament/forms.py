@@ -1,13 +1,18 @@
 from django import forms
 from django.forms import ValidationError
-from apps.tournament.models import Team, TeamMember, TournamentBracket, Tournament, TournamentSnake
+
 from apps.authentication.models import User
 from apps.snake.models import Snake
-from apps.utils.url import is_valid_url
+from apps.tournament.models import (
+    Team,
+    TeamMember,
+    TournamentBracket,
+    Tournament,
+    TournamentSnake,
+)
 
 
 class TeamForm(forms.ModelForm):
-
     class Meta:
         model = Team
         fields = ["name", "description"]
@@ -15,25 +20,13 @@ class TeamForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-        self.load_snake_data()
 
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
 
-    def load_snake_data(self):
-        if self.instance and self.instance.snake_id:
-            self.snake = self.instance.snake
-            self.initial["snake_url"] = self.instance.snake.url
-        else:
-            self.snake = Snake()
-
     def save(self, *args, **kwargs):
-        self.snake.name = self.cleaned_data["name"]
-        self.snake.save()
-
         team = super().save(commit=False)
-        team.snake = self.snake
         team.save()
 
         TeamMember.objects.get_or_create(user=self.user, team=team)
@@ -74,7 +67,7 @@ class AddTeamMemberForm(forms.Form):
 
 
 class TournamentBracketForm(forms.ModelForm):
-    snakes = forms.ModelMultipleChoiceField(Snake.objects.all(), required=False)
+    snakes = forms.ModelMultipleChoiceField(Snake.objects.all().order_by("name"), required=False)
 
     class Meta:
         model = TournamentBracket
@@ -82,38 +75,39 @@ class TournamentBracketForm(forms.ModelForm):
 
 
 class TournamentForm(forms.ModelForm):
-    snakes = forms.ModelMultipleChoiceField(Snake.objects.all(), required=False)
+    # snakes = forms.ModelMultipleChoiceField(Snake.objects.all(), required=False)
 
     class Meta:
         model = Tournament
-        fields = ["name", "date", "snakes", "status", "single_snake_per_team"]
+        fields = ["name", "date", "status", "single_snake_per_team"]
 
 
 class TournamentSnakeForm(forms.ModelForm):
-
     def __init__(self, user, tournament, snake, bracket, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.team = TeamMember.objects.get(user=user).team
         self.user = user
         self.snake = snake
         self.tournament = tournament
-        self.fields['snake'].choices = [(s.id, s.name) for s in self.team.snakes]
-        self.initial['snake'] = snake
-        self.fields['bracket'].choices = [(b.id, b.name) for b in self.tournament.brackets]
-        self.initial['bracket'] = bracket
+        self.fields["snake"].choices = [(s.id, s.name) for s in self.team.snakes]
+        self.initial["snake"] = snake
+        self.fields["bracket"].choices = [
+            (b.id, b.name) for b in self.tournament.brackets
+        ]
+        self.initial["bracket"] = bracket
 
     def is_valid(self):
         return self.tournament.status == Tournament.REGISTRATION
 
     def save(self, *args, **kwargs):
         if self.tournament.single_snake_per_team:
-            qs = TournamentSnake.objects.filter(snake__in=self.team.snakes, tournament=self.tournament)
+            qs = TournamentSnake.objects.filter(
+                snake__in=self.team.snakes, tournament=self.tournament
+            )
             qs.delete()
 
         ts, _ = TournamentSnake.objects.get_or_create(
-            snake=self.snake,
-            bracket=self.bracket,
-            tournament=self.tournament,
+            snake=self.snake, bracket=self.bracket, tournament=self.tournament
         )
         return ts
 
