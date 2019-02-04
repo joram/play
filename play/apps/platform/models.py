@@ -5,3 +5,7 @@ from util.models import BaseModel
 
 class Player(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    @property
+    def email(self):
+        return self.user.email
