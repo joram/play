@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="mb-4 text-center">Profile</h1>
-
 <div class="form-group card">
+  <h5 class="card-header">Player Profile</h5>
   <div class="card-body">
-    <form method="post" novalidate action="/profile/">
+    <form method="post" novalidate action="/profile">
       {% csrf_token %}
       <input type="hidden" name="_method" value="PUT" >
       {% include '_form.html' with form=form %}
@@ -14,14 +13,13 @@
   </div>
 </div>
 
-<hr />
 
-<div class="form-group card">
-  <div class="card-body bg-warning">
-    <form method="post" novalidate action="/profile/">
+<div class="form-group card mt-5">
+  <h5 class="card-header">Delete my Account</h5>
+  <div class="card-body">
+    <form method="post" novalidate action="/profile">
       {% csrf_token %}
       <input type="hidden" name="_method" value="DELETE" >
-      {% include '_form.html' with form=form %}
       <button type="submit" class="btn btn-primary">Delete Account</button>
     </form>
   </div>

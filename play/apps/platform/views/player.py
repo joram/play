@@ -21,7 +21,7 @@ def update(request):
         form.save()
         messages.add_message(request, messages.INFO, "Updated profile")
         return redirect("profile")
-    return render(request, "player/edit.html", {"form": form})
+    return render(request, "player/edit.html", {"form": form}, status=400)
 
 
 @login_required

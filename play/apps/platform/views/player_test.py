@@ -19,6 +19,12 @@ def test_update(client):
     assert Player.objects.get(user=user).email == "my-new-email"
 
 
+def test_update_no_email(client):
+    user_factory.login_as(client)
+    response = client.post("/profile", {"email": "", "_method": "PUT"})
+    assert response.status_code == 400
+
+
 def test_delete(client):
     user = user_factory.login_as(client)
     player_factory.player(user)

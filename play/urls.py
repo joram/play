@@ -13,7 +13,6 @@ urlpatterns = [
     path("", include("apps.leaderboard.urls")),
     path("", include("apps.tournament.urls")),
     path("", include("apps.snake.urls")),
-    path("", include("apps.profile.urls")),
     path("", include("apps.platform.urls")),
 ]
 
