@@ -69,6 +69,9 @@
         <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/csv">
           Export as CSV
         </a>
+        <a class="dropdown-item" href="/tournament/bracket/{{ tournament_bracket.id }}/set-casting?page=tree">
+          Cast Tree
+        </a>
       </div>
     </div>
   </div>
@@ -120,7 +123,7 @@
                         <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
                           View  {{ heat_game.number }}
                         </a> |
-                          <button class="watch_game" id="{{ heat_game.id }}">Watch</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game.status }}  |
+                          <button class="cast_game" id="{{ heat_game.id }}">Cast</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game.status }}  |
                           <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}/delete">
                             delete
                           </a>
@@ -159,11 +162,12 @@
 <script>
   function updatedGameStates(data){
     console.log(data);
+    //  TODO
   }
 
   domready(function () {
 
-    $(".watch_game").click(function(e){
+    $(".cast_game").click(function(e){
       heat_game_id = e.target.id;
       $.ajax({
         data: {

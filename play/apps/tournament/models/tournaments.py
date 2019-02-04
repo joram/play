@@ -45,6 +45,8 @@ class Tournament(models.Model):
         (IN_PROGRESS, "In Progress"),
         (COMPLETE, "Complete"),
     )
+
+    casting_uri = models.CharField(default="", max_length=1024)
     status = models.CharField(max_length=2, choices=STATUSES, default=LOCKED)
     single_snake_per_team = models.BooleanField(default=True)
     name = models.CharField(max_length=256)
@@ -66,6 +68,7 @@ class Tournament(models.Model):
 
 
 class TournamentBracket(models.Model):
+
     name = models.CharField(max_length=256)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     snakes = models.ManyToManyField(
@@ -336,7 +339,7 @@ class HeatGame(models.Model):
     UNWATCHED = "UW"
     WATCHING = "W"
     WATCHED = "WD"
-    STATUSES = ((UNWATCHED, "Unwatched"), (WATCHING, "Watching"), (WATCHED, "Watched"))
+    STATUSES = ((UNWATCHED, "Not Casted Yet"), (WATCHING, "Casting"), (WATCHED, "Casted"))
     status = models.CharField(max_length=2, choices=STATUSES, default=UNWATCHED)
     number = models.IntegerField(default=1)
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)

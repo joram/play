@@ -73,6 +73,14 @@ urlpatterns = [
         method_dispatch(GET=tournament_views.tournament_bracket.show_csv),
     ),
     url(
+        r"^tournament/bracket/(?P<id>\w+)/tree$",
+        method_dispatch(GET=tournament_views.tournament_bracket.tree),
+    ),
+    url(
+        r"^tournament/bracket/(?P<id>\w+)/set-casting",
+        method_dispatch(GET=tournament_views.tournament_bracket.cast_page),
+    ),
+    url(
         r"^tournament/bracket/(?P<id>\w+)/create/next/round$",
         method_dispatch(GET=tournament_views.tournament_bracket.create_next_round),
     ),
@@ -112,7 +120,7 @@ urlpatterns = [
         r"^tournament/(?P<tournament_id>\w+)/current_game$",
         method_dispatch(
             GET=tournament_views.tournament.show_current_game,
-            POST=tournament_views.tournament.set_current_game,
+            POST=tournament_views.tournament.cast_current_game,
         ),
     ),
 ]
