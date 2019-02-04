@@ -8,5 +8,5 @@ urlpatterns = [
         route(GET=player.edit, PUT=player.update, DELETE=player.delete),
         name="profile",
     ),
-    url(r"^players/(?P<username>\w+)/$", route(GET=players.show), name="player"),
+    url(r"^players/(?P<username>[\w\-]+)/$", route(GET=players.show), name="player"),
 ]

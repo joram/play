@@ -4,7 +4,7 @@
 <div class="form-group card">
   <h5 class="card-header">Player Profile</h5>
   <div class="card-body">
-    <form method="post" novalidate action="/profile">
+    <form method="post" novalidate action="/profile/">
       {% csrf_token %}
       <input type="hidden" name="_method" value="PUT" >
       {% include '_form.html' with form=form %}
@@ -17,7 +17,7 @@
 <div class="form-group card mt-5">
   <h5 class="card-header">Delete my Account</h5>
   <div class="card-body">
-    <form method="post" novalidate action="/profile">
+    <form method="post" novalidate action="/profile/">
       {% csrf_token %}
       <input type="hidden" name="_method" value="DELETE" >
       <button type="submit" class="btn btn-primary">Delete Account</button>
