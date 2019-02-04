@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -14,7 +16,8 @@ def index(request):
         Game.Status.STOPPED,
         Game.Status.COMPLETE,
     )
-    games = Game.objects.filter(status__in=statuses).order_by("-created")[:6]
+    games = list(Game.objects.filter(status__in=statuses).order_by("-created")[:20])
+    random.shuffle(games)
     return render(
         request,
         "home.html",
@@ -25,7 +28,7 @@ def index(request):
                     + "&autoplay=true&hideScoreboard=true",
                     "engine_id": g.engine_id,
                 }
-                for g in games
+                for g in games[:6]
             ]
         },
     )
