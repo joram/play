@@ -1,12 +1,12 @@
 from django import forms
-from apps.platform.models import Player
+from apps.core.models import Profile
 
 
-class PlayerForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     email = forms.CharField(required=True, widget=forms.EmailInput)
 
     class Meta:
-        model = Player
+        model = Profile
         fields = []
 
     def __init__(self, *args, **kwargs):
@@ -14,7 +14,7 @@ class PlayerForm(forms.ModelForm):
         self.fields["email"].initial = self.instance.user.email
 
     def save(self, *args, **kwargs):
-        player = super().save(*args, **kwargs)
-        player.user.email = self.cleaned_data["email"]
-        player.user.save()
-        return player
+        profile = super().save(*args, **kwargs)
+        profile.user.email = self.cleaned_data["email"]
+        profile.user.save()
+        return profile

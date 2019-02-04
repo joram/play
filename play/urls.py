@@ -13,7 +13,7 @@ urlpatterns = [
     path("", include("apps.leaderboard.urls")),
     path("", include("apps.tournament.urls")),
     path("", include("apps.snake.urls")),
-    path("", include("apps.platform.urls")),
+    path("", include("apps.core.urls")),
 ]
 
 if settings.DEBUG:

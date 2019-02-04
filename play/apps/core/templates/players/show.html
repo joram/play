@@ -5,23 +5,19 @@
 <div class="row">
   <div class="col-md-4">
     <div class="card mb-4">
-      <img class="card-img-top" src="https://github.com/{{ player.username }}.png?size=150">
+      <img class="card-img-top" src="https://github.com/{{ profile.username }}.png?size=150">
     </div>
 
-    <h5>{{ player.username }}</h5>
+    <h5>{{ profile.username }}</h5>
 
     <ul class="list-unstyled">
       <li>
         <i class="fa fa-github"></i>
-        <a target="_blank" href="https://github.com/{{ player.username }}">GitHub</a>
-      </li>
-      <li>
-        <i class="fa fa-globe"></i>
-        Vancouver
+        <a target="_blank" href="https://github.com/{{ profile.username }}">GitHub</a>
       </li>
     </ul>
 
-    {% if player.user == user %}
+    {% if profile.user == user %}
       <hr />
       <a class="btn btn-secondary btn-block" href="/profile">Edit</a>
     {% endif %}

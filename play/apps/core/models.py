@@ -3,7 +3,7 @@ from apps.authentication.models import User
 from util.models import BaseModel
 
 
-class Player(BaseModel):
+class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     @property
