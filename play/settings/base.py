@@ -86,9 +86,9 @@ INSTALLED_APPS = [
     "apps.authentication",
     "apps.game",
     "apps.leaderboard",
-    "apps.profile",
     "apps.snake",
     "apps.tournament",
+    "apps.core",
 ]
 
 MIDDLEWARE = [
