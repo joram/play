@@ -1,1 +1,13 @@
+<h2>Snakes</h2>
+<table class="table">
+{% for snake in snakes %}
+    <tr>
+        <td>
+            <a href="/s/{{ snake.id }}">{{ snake.name }}</a>
+        </td>
+        <td>{{ snake.url }}</td>
+    </tr>
+{% endfor %}
+</table>
+
 <a href="/s/new">Add Snake</a>
