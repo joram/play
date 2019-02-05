@@ -13,7 +13,7 @@
 
 <ul class="list-group">
   {% for game in games %}
-    <li class="list-group-item d-flex w-100 justify-content-between">
+    <li class="list-group-item d-flex justify-content-between">
       <div>
         <h5 class="mb-1">
           Game
@@ -39,8 +39,8 @@
         </div>
       </div>
       <div class="align-self-center">
-        <a href="/games/{{game.engine_id}}" class="btn btn-light btn-lg" title="Replay this game">
-          <i class="fa fa-play"></i>
+        <a href="/games/{{game.engine_id}}" class="btn btn-light" title="Replay this game">
+          Play <i class="la la-play"></i>
         </a>
       </div>
 
