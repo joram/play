@@ -126,12 +126,15 @@ def test_bracket_with_2_snakes(update_mock):
     _complete_games_in_round(round1)
 
     g1 = round1.heats[0].games[0]
-    g2 = round1.heats[0].games[1]
     bracket.cached_rounds = None
 
     assert round1.status == "complete"
-    assert len(bracket.winners) == 2
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake]
+    assert len(bracket.winners) == 1
+    assert bracket.winners == [g1.winner.snake]
+    expected_runner_ups = [
+        gs.snake for gs in g1.game.get_snakes().exclude(snake_id=g1.winner.snake.id)
+    ]
+    assert bracket.runner_ups == expected_runner_ups
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
@@ -143,10 +146,13 @@ def test_bracket_with_3_snakes(update_mock):
 
     g1 = round1.heats[0].games[0]
     g2 = round1.heats[0].games[1]
-    g3 = round1.heats[0].games[2]
     assert round1.status == "complete"
-    assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
+    assert len(bracket.winners) == 2
+    assert bracket.winners == [g1.winner.snake, g2.winner.snake]
+    expected_runner_ups = [
+        gs.snake for gs in g2.game.get_snakes().exclude(snake_id=g2.winner.snake.id)
+    ]
+    assert bracket.runner_ups == expected_runner_ups
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")

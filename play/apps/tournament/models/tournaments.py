@@ -119,16 +119,19 @@ class TournamentBracket(models.Model):
             return False
         if self.latest_round.heats.count() != 1:
             return False
-        if self.latest_round.heats[0].games.count() != 3:
+        if self.latest_round.heats[0].games.count() != self.latest_round.heats[0].desired_games:
             return False
         if self.latest_round.status != "complete":
             return False
 
-        first_place_game = self.latest_round.heats[0].games[0]
-        second_place_game = self.latest_round.heats[0].games[1]
-        third_place_game = self.latest_round.heats[0].games[2]
-        snakes = [first_place_game.winner.snake, second_place_game.winner.snake]
-        if third_place_game.winner is not None:
+        final_games = self.latest_round.heats[0].games
+        first_place_game = final_games[0]
+        snakes = [first_place_game.winner.snake]
+        if len(final_games) > 1:
+            second_place_game = self.latest_round.heats[0].games[1]
+            snakes.append(second_place_game.winner.snake)
+        if len(final_games) > 2:
+            third_place_game = self.latest_round.heats[0].games[2]
             snakes.append(third_place_game.winner.snake)
         return snakes
 
@@ -228,7 +231,7 @@ class RoundManager(models.Manager):
 
             return round
 
-        heat = Heat.objects.create(number=1, round=round, desired_games=3)
+        heat = Heat.objects.create(number=1, round=round, desired_games=min(3, num_snakes-1))
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
         return round
