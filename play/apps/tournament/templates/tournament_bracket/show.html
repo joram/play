@@ -87,7 +87,7 @@
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         {% for round in tournament_bracket.rounds %}
          <li class="nav-item">
-            <a class="nav-link {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
+            <a class="nav-link {% if forloop.last %}show active{% endif %}" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
          </li>
         {% endfor %}
       </ul>
@@ -95,7 +95,7 @@
             <br/>
       <div class="tab-content">
       {% for round in tournament_bracket.rounds %}
-        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="round-{{ round.number }}" role="tabpanel" aria-labelledby="home-tab">
+        <div class="tab-pane fade {% if forloop.last %}show active{% endif %}" id="round-{{ round.number }}" role="tabpanel" aria-labelledby="home-tab">
           <ul class="nav nav-tabs" id="heatTables" role="tablist">
           {% for heat in round.heats %}
              <li class="nav-item">
