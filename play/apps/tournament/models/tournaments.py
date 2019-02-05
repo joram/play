@@ -110,13 +110,21 @@ class TournamentBracket(models.Model):
             return False
         if self.latest_round.heats.count() != 1:
             return False
-        if self.latest_round.heats[0].games.count() != 1:
+        if self.latest_round.heats[0].games.count() != 3:
             return False
         if self.latest_round.status != "complete":
             return False
 
-        final_game = self.latest_round.heats[0].games[0]
-        final_game.game.ranked_snakes()
+        first_place_game = self.latest_round.heats[0].games[0]
+        second_place_game = self.latest_round.heats[0].games[1]
+        third_place_game = self.latest_round.heats[0].games[2]
+        snakes = [
+            first_place_game.winner.snake,
+            second_place_game.winner.snake,
+        ]
+        if third_place_game.winner is not None:
+            snakes.append(third_place_game.winner.snake)
+        return snakes
 
     @property
     def snake_count(self):
@@ -181,6 +189,7 @@ class RoundManager(models.Manager):
         num_snakes = len(round.snakes)
         # reduction round
         if num_snakes > 6 and round.tournament_bracket.tournament.snakes.count() > 8:
+            print("reduction round")
 
             # create heats
             num_heats = int(math.ceil(num_snakes / max_snakes_per))
@@ -189,7 +198,7 @@ class RoundManager(models.Manager):
             if num_snakes > 24 and num_heats == 4:
                 num_heats = 6
             heats = [
-                Heat.objects.create(number=i + 1, round=round)
+                Heat.objects.create(number=i + 1, round=round, desired_games=2)
                 for i in range(0, num_heats)
             ]
 
@@ -200,8 +209,8 @@ class RoundManager(models.Manager):
 
             return round
 
-        # finals, TODO: this needs to be updated i think, desired_games should be 3?
-        heat = Heat.objects.create(number=1, round=round, desired_games=1)
+        print("final heat")
+        heat = Heat.objects.create(number=1, round=round, desired_games=3)
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
         return round
