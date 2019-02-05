@@ -34,4 +34,3 @@ def status(id):
         }
 
     return {"status": status, "turn": turn, "snakes": snakes}
-    return {"status": status, "turn": turn, "snakes": snakes}
