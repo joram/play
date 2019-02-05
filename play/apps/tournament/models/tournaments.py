@@ -92,6 +92,7 @@ class TournamentBracket(models.Model):
             raise RoundNotCompleteException
 
         num = max([r.number for r in self.rounds] + [0]) + 1
+        self.cached_rounds = None  # clear out cached data
         return Round.objects.create(number=num, tournament_bracket=self)
 
     @property
@@ -108,7 +109,7 @@ class TournamentBracket(models.Model):
 
     @property
     def latest_round(self):
-        if self.rounds == 0:
+        if len(self.rounds) == 0:
             return None
         return self.rounds[0]
 
@@ -274,10 +275,10 @@ class Heat(models.Model):
 
     @property
     def latest_game(self):
-        hgs = HeatGame.objects.filter(heat=self).order_by("-number")
-        if len(hgs) == 0:
+        hgs = self.games.order_by("-number")
+        if hgs.count() == 0:
             return None
-        return hgs[0]
+        return hgs.first()
 
     @property
     def winners(self):
@@ -289,7 +290,7 @@ class Heat(models.Model):
 
     @property
     def status(self):
-        if len(self.games) < self.desired_games:
+        if self.games.count() < self.desired_games:
             return "running"
         from apps.game.models import Game
 
@@ -299,7 +300,7 @@ class Heat(models.Model):
         return "complete"
 
     def create_next_game(self):
-        if len(self.games) >= self.desired_games:
+        if self.games.count() >= self.desired_games:
             raise DesiredGamesReachedValidationError()
 
         n = self.games.count() + 1
@@ -310,7 +311,8 @@ class Heat(models.Model):
             and self.latest_game.game.status != Game.Status.COMPLETE
         ):
             raise Exception("can't create next game")
-        return HeatGame.objects.create(heat=self, number=n)
+        hg = HeatGame.objects.create(heat=self, number=n)
+        return hg
 
     class Meta:
         app_label = "tournament"
