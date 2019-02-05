@@ -111,7 +111,7 @@ class TournamentBracket(models.Model):
     def latest_round(self):
         if len(self.rounds) == 0:
             return None
-        return self.rounds[0]
+        return self.rounds[-1]
 
     @property
     def winners(self):
@@ -127,13 +127,24 @@ class TournamentBracket(models.Model):
         first_place_game = self.latest_round.heats[0].games[0]
         second_place_game = self.latest_round.heats[0].games[1]
         third_place_game = self.latest_round.heats[0].games[2]
-        snakes = [
-            first_place_game.winner.snake,
-            second_place_game.winner.snake,
-        ]
+        snakes = [first_place_game.winner.snake, second_place_game.winner.snake]
         if third_place_game.winner is not None:
             snakes.append(third_place_game.winner.snake)
         return snakes
+
+    @property
+    def runner_ups(self):
+        winners = self.winners
+        if winners is False:
+            return False
+
+        first_place_game = self.latest_round.heats[0].games[0]
+        final_six = first_place_game.game.get_snakes()
+        game_snakes = final_six.exclude(snake_id__in=[w.id for w in winners])
+        print([gs.id for gs in winners])
+        print([gs.snake.id for gs in final_six])
+        print([gs.snake.id for gs in game_snakes])
+        return [gs.snake for gs in game_snakes]
 
     @property
     def snake_count(self):
