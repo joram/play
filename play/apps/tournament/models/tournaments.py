@@ -113,25 +113,35 @@ class TournamentBracket(models.Model):
             return None
         return self.rounds[-1]
 
+    def get_complete_final_heat(self):
+        if self.latest_round is None:
+            return None
+
+        # the final round has exactly one heat
+        if self.latest_round.heats.count() != 1:
+            return None
+        last_heat = self.latest_round.heats.first()
+
+        if last_heat.games.count() != last_heat.desired_games:
+            return None
+        if self.latest_round.status != "complete":
+            return None
+        return last_heat
+
     @property
     def winners(self):
-        if self.latest_round is None:
-            return False
-        if self.latest_round.heats.count() != 1:
-            return False
-        if self.latest_round.heats[0].games.count() != self.latest_round.heats[0].desired_games:
-            return False
-        if self.latest_round.status != "complete":
+        last_heat = self.get_complete_final_heat()
+        if last_heat is None:
             return False
 
-        final_games = self.latest_round.heats[0].games
+        final_games = last_heat.games
         first_place_game = final_games[0]
         snakes = [first_place_game.winner.snake]
         if len(final_games) > 1:
-            second_place_game = self.latest_round.heats[0].games[1]
+            second_place_game = last_heat.games[1]
             snakes.append(second_place_game.winner.snake)
         if len(final_games) > 2:
-            third_place_game = self.latest_round.heats[0].games[2]
+            third_place_game = last_heat.games[2]
             snakes.append(third_place_game.winner.snake)
         return snakes
 
@@ -144,9 +154,6 @@ class TournamentBracket(models.Model):
         first_place_game = self.latest_round.heats[0].games[0]
         final_six = first_place_game.game.get_snakes()
         game_snakes = final_six.exclude(snake_id__in=[w.id for w in winners])
-        print([gs.id for gs in winners])
-        print([gs.snake.id for gs in final_six])
-        print([gs.snake.id for gs in game_snakes])
         return [gs.snake for gs in game_snakes]
 
     @property
