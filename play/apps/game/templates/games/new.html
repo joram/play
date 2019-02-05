@@ -53,24 +53,24 @@
       <div id="snake_form_rows">
         <div class="form-group d-flex justify-content-end">
           <button type="button"
-            class="btn btn-secondary js-clear-form"
-            role="button">
+            class="btn btn-secondary js-clear-form">
             Clear form
           </button>
         </div>
 
         {% for form in snake_formset %}
           <div class="card form-group js-snake-formset">
-            <div class="card-body form-row">
+            <div class="card-body form-row justify-content-between">
               {% for field in form %}
                 {% render_field field %}
               {% endfor %}
+
               <div>
                 <h5 class="js-snake-name"></h5>
                 <p class="js-snake-url"></p>
               </div>
 
-              <div class="d-flex w-100 align-items-center justify-content-center">
+              <div class="d-flex align-items-center">
                 <div class="dropdown mr-3">
                   <button type="button"
                     class="btn btn-secondary dropdown-toggle"
@@ -103,7 +103,7 @@
       <hr />
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-block">
-          Create Game
+          Start Game
         </button>
       </div>
     </form>

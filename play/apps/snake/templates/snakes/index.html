@@ -16,40 +16,45 @@
   </div>
   <ul class="list-group list-group-flush">
     {% for snake in snakes %}
-    <li class="list-group-item d-flex justify-content-between">
-      <div style="max-width: 80%;">
-        <h5>
-          {{ snake.name }}
+    <li class="list-group-item">
+      <div class="d-flex justify-content-between mb-2">
+        <div style="max-width: 65%;">
+          <h5 class="text-truncate">
+            {{ snake.name }}
+          </h5>
+        </div>
+        <div>
           <button type="button"
-            class="btn btn-sm btn-light js-show-snake-status"
+            class="btn btn-light btn-outline btn-sm js-show-snake-status"
             data-toggle="popover"
-            data-snake-url="{{ snake.url }}"
-            >
-              <i class="fa fa-info"></i>
+            data-snake-url="{{ snake.url }}">
+            Status
           </button>
-        </h5>
-        <p>
+          <a href="/snakes/{{ snake.id }}/edit"
+            class="btn btn-primary btn-sm"
+            title="Edit snake details"
+            role="button">
+            Edit
+          </a>
+          <button type="submit"
+            class="btn btn-danger btn-sm"
+            title="Delete snake"
+            data-toggle="modal"
+            data-target="#delete_snake_modal"
+            data-id="{{ snake.id }}"
+            data-name="{{ snake.name }}">
+            Delete
+          </button>
+        </div>
+      </div>
+      <p>
+        URL:
+        <button type="button"
+          class="btn btn-link p-0"
+          data-clipboard-text="{{ snake.url }}">
           <code>{{ snake.url }}</code>
-          <button class="btn btn-link btn-sm" data-clipboard-text="{{ snake.url }}" title="Copy to clipboard">
-            <i class="fa fa-copy"></i>
-          </button>
-        </p>
-      </div>
-      <div>
-        <a href="/snakes/{{ snake.id }}/edit" class="btn btn-primary btn-sm" title="Edit snake details">
-          <i class="fa fa-edit"></i>
-        </a>
-        <button
-          type="submit"
-          class="btn btn-danger btn-sm"
-          title="Delete snake"
-          data-toggle="modal"
-          data-target="#delete_snake_modal"
-          data-id="{{ snake.id }}"
-          data-name="{{ snake.name }}">
-          <i class="fa fa-trash"></i>
         </button>
-      </div>
+      </p>
     </li>
     {% endfor %}
   </ul>
