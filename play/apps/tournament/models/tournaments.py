@@ -75,6 +75,8 @@ class TournamentBracket(models.Model):
         Snake, through="TournamentSnake", through_fields=("bracket", "snake")
     )
 
+    cached_rounds = None
+
     header_row = [
         "Round",
         "Heat",
@@ -94,15 +96,21 @@ class TournamentBracket(models.Model):
 
     @property
     def rounds(self):
-        rounds = Round.objects.filter(tournament_bracket=self).order_by("-number")
-        return list(rounds)
+        if self.cached_rounds is None:
+            self.cached_rounds = list(
+                self.round_set.all()
+                .prefetch_related(
+                    "heat_set__heatgame_set__game", "heat_set__snakeheat_set__snake"
+                )
+                .order_by("number")
+            )
+        return self.cached_rounds
 
     @property
     def latest_round(self):
-        rounds = self.rounds
-        if len(rounds) == 0:
+        if self.rounds == 0:
             return None
-        return rounds[0]
+        return self.rounds[0]
 
     @property
     def winners(self):
@@ -124,8 +132,8 @@ class TournamentBracket(models.Model):
 
     def game_details(self):
         games = []
-        for round in self.rounds:
-            for heat in round.heats:
+        for r in self.rounds:
+            for heat in r.heats:
                 for hg in heat.games:
                     status = hg.game.status if hg.game is not None else None
                     games.append(
@@ -133,7 +141,7 @@ class TournamentBracket(models.Model):
                             "id": hg.game.id,
                             "url": generate_game_url(hg.game.engine_id),
                             "status": status,
-                            "round": round.number,
+                            "round": r.number,
                             "heat": heat.number,
                             "heat_game": hg.number,
                         }
@@ -237,7 +245,7 @@ class Round(models.Model):
 
     @property
     def heats(self):
-        return Heat.objects.filter(round=self)
+        return self.heat_set.all()
 
     @property
     def status(self):
@@ -258,13 +266,11 @@ class Heat(models.Model):
 
     @property
     def snakes(self):
-        snake_heats = SnakeHeat.objects.filter(heat=self)
-        return snake_heats
+        return self.snakeheat_set.all()
 
     @property
     def games(self):
-        qs = HeatGame.objects.filter(heat=self)
-        return qs
+        return self.heatgame_set.all()
 
     @property
     def latest_game(self):
@@ -339,7 +345,11 @@ class HeatGame(models.Model):
     UNWATCHED = "UW"
     WATCHING = "W"
     WATCHED = "WD"
-    STATUSES = ((UNWATCHED, "Not Casted Yet"), (WATCHING, "Casting"), (WATCHED, "Casted"))
+    STATUSES = (
+        (UNWATCHED, "Not Casted Yet"),
+        (WATCHING, "Casting"),
+        (WATCHED, "Casted"),
+    )
     status = models.CharField(max_length=2, choices=STATUSES, default=UNWATCHED)
     number = models.IntegerField(default=1)
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
