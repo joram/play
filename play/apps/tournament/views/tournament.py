@@ -67,7 +67,6 @@ def edit(request, id):
     return render(request, "tournament/edit.html", {"form": form})
 
 
-@admin_required
 @login_required
 def show_current_game(request, tournament_id):
     tournament = Tournament.objects.get(id=tournament_id)
