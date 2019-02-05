@@ -83,7 +83,7 @@ class TournamentBracketForm(forms.ModelForm):
 
     class Meta:
         model = TournamentBracket
-        fields = ["name", "snakes", "board_width", "board_height", "board_food"]
+        fields = ["name", "snakes", "board_width", "board_height", "board_food", "board_max_turns_to_next_food_spawn"]
 
 
 class TournamentForm(forms.ModelForm):

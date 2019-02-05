@@ -49,7 +49,7 @@ class Game(BaseModel):
         config = {
             "width": self.width,
             "height": self.height,
-            "max_turns_to_next_food_spawn": self.max_turns_to_next_food_spawn,
+            "maxTurnsToNextFoodSpawn": self.max_turns_to_next_food_spawn,
             "food": self.food,
             "snakes": [],
         }

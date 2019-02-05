@@ -333,6 +333,7 @@ class HeatGameManager(models.Manager):
             width=heat.round.tournament_bracket.board_width,
             height=heat.round.tournament_bracket.board_height,
             food=heat.round.tournament_bracket.board_food,
+            max_turns_to_next_food_spawn=heat.round.tournament_bracket.board_max_turns_to_next_food_spawn,
             snakes=snake_ids,
         )
         game.create()
