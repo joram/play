@@ -234,7 +234,7 @@ def cast_page(request, id):
     if request.GET.get("page") == "tree":
         split_url = urlsplit(request.build_absolute_uri())
         casting_uri = (
-            f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+            f"/tournament/bracket/{id}/tree"
         )
 
         # flag previously watching games as watched
