@@ -16,6 +16,14 @@ class GameStatusJob:
         for game in Game.objects.filter(status__in=self.active_statuses):
             try:
                 status = game.update_from_engine()
+            except Exception as e:
+                game.status = Game.Status.ERROR
+                game.save()
+                # Something wrong with this game, don't care
+                print(f"Unable to update game {game.id}", e)
+                pass
+
+            try:
                 if game.leaderboard_game and game.status == Game.Status.COMPLETE:
                     sorted_snakes = sorted(
                         sorted(status["snakes"].items(), key=lambda s: s[1]["death"]),
