@@ -68,9 +68,10 @@ class Tournament(models.Model):
 class TournamentBracket(models.Model):
     name = models.CharField(max_length=256)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    board_width = models.IntegerField(default=20)
-    board_height = models.IntegerField(default=20)
-    board_food = models.IntegerField(default=10)
+    board_width = models.IntegerField(default=11)
+    board_height = models.IntegerField(default=11)
+    board_food = models.IntegerField(default=2)
+    board_max_turns_to_next_food_spawn = models.IntegerField(default=15)
     snakes = models.ManyToManyField(
         Snake, through="TournamentSnake", through_fields=("bracket", "snake")
     )
