@@ -2,32 +2,31 @@
 {% block content %}
 <div class="card">
   <div class="card-header">
-    My Tournament Team
-    <span class="pull-right">
-      <a href="/team/edit">
-        <i class="fa fa-edit"></i> Edit
-      </a>
-    </span>
+    My Team
+    <a href="/team/edit" class="pull-right">
+      Edit
+    </a>
   </div>
   <div class="card-body container">
-
     <div class="row">
       <div class="col-md-6">
-        <h4 class="card-title">{{ team.name }}</h4>
+        <h3 class="card-title">{{ team.name }}</h3>
         <p>
           {{ team.description }}
         </p>
       </div>
       <div class="col-md-6">
-        <h4 class="card-title d-inline-block">Members</h4>
-        <a class="btn btn-primary btn-sm float-right" href="/team/members/new">Add</a>
+        <div class="d-flex justify-content-between mb-3">
+          <h3 class="card-title d-inline-block">Members</h3>
+          <a href="/team/members/new" class="btn btn-primary btn-sm" role="button">Add</a>
+        </div>
 
         <ul class="list-unstyled">
           {% for member in members %}
             <li class="media mb-3">
               <img
                 src="https://github.com/{{member.user.username}}.png?size=64"
-                alt="{{member.user.username}} GitHub profile avatar"
+                alt="{{ member.user.username }} GitHub profile avatar"
                 height="64"
                 width="64"
                 class="mr-3 rounded"
@@ -35,17 +34,16 @@
               <div class="media-body">
                 <a href="https://github.com/{{member.user.username}}" class="d-inline-block">
                   <h5>
-                    {{member.user.username}}
+                    {{ member.user.username }}
                   </h5>
                 </a>
-                <button
-                  type="submit"
-                  class="btn btn-danger btn-sm float-right"
+                <button type="submit"
+                  class="btn btn-danger btn-outline float-right btn-sm"
                   data-toggle="modal"
                   data-target="#delete_user_modal"
                   data-id="{{ member.user.id }}"
                   data-username="{{ member.user.username }}">
-                  <i class="fa fa-trash"></i>
+                  Delete
                 </button>
               </div>
             </li>
@@ -69,8 +67,8 @@
 
               {% if ts.tournament.is_registration_open %}
               <div style="float:right;">
-                <a href="/tournament/snake/{{ts.id}}/edit"><i class="fa fa-edit"></i> Edit</a>
-                <a href="/tournament/snake/{{ts.id}}/delete"><i class="fa fa-trash"></i> Delete</a>
+                <a href="/tournament/snake/{{ts.id}}/edit"><i class="la la-edit"></i> Edit</a>
+                <a href="/tournament/snake/{{ts.id}}/delete"><i class="la la-trash"></i> Delete</a>
               </div>
               {% endif %}
               <br/>
@@ -84,13 +82,12 @@
         <br/>
         <div>
           {% for t in team.available_tournaments %}
-            <a class="btn btn-primary btn-sm" href="/tournament/{{ t.id }}/compete">Compete in {{ t.name }}</a>
+            <a class="btn btn-primary" href="/tournament/{{ t.id }}/compete">Compete in {{ t.name }}</a>
           {% endfor %}
         </div>
       </div>
     </div>
     {% endif %}
-
   </div>
 </div>
 

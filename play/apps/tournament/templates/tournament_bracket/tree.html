@@ -1,38 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Battlesnake</title>
+{% extends 'base.html' %}
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'application.css' %}">
-    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    {% block extra_css %}{% endblock %}
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36561803-13"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-36561803-13');
-    </script>
-    {% block google_analytics %}{% endblock %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/domready/1.0.8/ready.min.js" integrity="sha256-z7v8HmIeZylwLaPn0X0Ym8dFyV0vkFVe4BkVW/iuwmQ=" crossorigin="anonymous"></script>
-    {% block extra_js %}{% endblock %}
-
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <p class="text-center" style="width:100%; font-size: 2rem;">{{ bracket.tournament.name }} > {{ bracket.name }} > Round {{ bracket.latest_round.number }}</p>
-      </div>
-      <div class="row">
+{% block outside_content %}
+  <div class="container">
+    <div class="row">
+      <p class="text-center" style="width:100%; font-size: 2rem;">{{ bracket.tournament.name }} > {{ bracket.name }} > Round {{ bracket.latest_round.number }}</p>
+    </div>
+    <div class="row">
       {% for heat in bracket.latest_round.heats %}
         <div class="colM" style="padding:5px">
         <ul class="list-group float-left" style="width:200px;">
@@ -51,8 +24,6 @@
         </ul>
         </div>
       {% endfor %}
-      </div>
     </div>
-
-  </body>
-</html>
+  </div>
+{% endblock %}

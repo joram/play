@@ -17,9 +17,9 @@
   <link rel="stylesheet" href="{% static 'theme/css/icons/line-awesome.min.css' %}">
   <link rel="stylesheet" href="{% static 'theme/css/icons/simple-line-icons.css' %}">
   <!-- ======================= DRIP ICONS ===================================-->
-  <link rel="stylesheet" href="{% static 'theme/css/icons/dripicons.min.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'theme/css/icons/dripicons.min.css' %}"> -->
   <!-- ======================= MATERIAL DESIGN ICONIC FONTS =================-->
-  <link rel="stylesheet" href="{% static 'theme/css/icons/material-design-iconic-font.min.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'theme/css/icons/material-design-iconic-font.min.css' %}"> -->
   <!-- ======================= PAGE VENDOR STYLES ===========================-->
   <link rel="stylesheet" href="{% static 'theme/vendor/datatables.net-bs4/css/dataTables.bootstrap4.css' %}">
   <!-- ======================= GLOBAL COMMON STYLES ============================-->
@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{% static 'theme/css/layouts/horizontal/menu-type/auto-hide.css' %}">
   <!-- ======================= THEME COLOR STYLES ===========================-->
   <link rel="stylesheet" href="{% static 'theme/css/layouts/horizontal/themes/theme-j.css' %}">
-  <!-- ======================= OUR STYLES ===========================-->  
+  <!-- ======================= OUR STYLES ===========================-->
   <link rel="stylesheet" href="{% static 'application.css' %}">
   {% block extra_css %}{% endblock %}
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -41,7 +41,6 @@
     gtag('js', new Date());
     gtag('config', 'UA-36561803-13');
   </script>
-  {% block google_analytics %}{% endblock %}  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
@@ -52,7 +51,7 @@
 </head>
 <body class="layout-horizontal menu-auto-hide">
   <nav class="navbar navbar-expand flex-column flex-no-wrap bg-primary navbar-dark flex-md-row bd-navbar">
-    <a class="navbar-brand" href="/">BATTLESNAKE</a>
+    <a class="navbar-brand" href="/">Battlesnake</a>
     {% block navbar %}
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -76,37 +75,35 @@
     {% endblock %}
     <div class="navbar-nav flex-row ml-md-auto d-md-flex">
       {% block navbar_right %}
-          {% if not user.is_anonymous %}
-            <div class="dropdown">
-              <a href="#"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                style="text-decoration: none; color: var(--dark)"
-              >
-                <img
-                  src="https://github.com/{{ user.username }}.png?size=64"
-                  alt="{{ user.username }} GitHub profile avatar"
-                  height="24"
-                  width="24"
-                  class="w-35 rounded-circle"
-                />
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
-                <p class="dropdown-header">
-                    <a href="/profile" style="text-decoration: none; color: #212529">
-                      Logged in as <br />
-                      <strong>{{ user.username }}</strong>
-                    </a>
-                </p>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/team">My Tournament Team</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout">Logout</a>
-              </div>
+        {% if user.is_authenticated %}
+          <div class="dropdown">
+            <a href="#"
+              class="dropdown-toggle"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              style="text-decoration: none; color: var(--dark)"
+            >
+              <img
+                src="https://github.com/{{ user.username }}.png?size=64"
+                alt="{{ user.username }} GitHub profile avatar"
+                height="24"
+                width="24"
+                class="w-35 rounded-circle"
+              />
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <p class="dropdown-header">
+                  <a href="/profile" style="text-decoration: none; color: #212529">
+                    Logged in as <strong>{{ user.username }}</strong>
+                  </a>
+              </p>
+              <a class="dropdown-item" href="/logout">Logout</a>
             </div>
-          {% endif %}
+          </div>
+        {% else %}
+          <a href="/login/" class="nav-link">Login</a>
+        {% endif %}
       {% endblock %}
     </div>
   </nav>
