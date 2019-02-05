@@ -448,6 +448,15 @@ class SnakeHeat(models.Model):
             return False
         return self.heat.games[1].winner.snake == self.snake
 
+    @property
+    def third(self):
+        if self.heat.games.count() <= 2:
+            return False
+        if self.heat.games[2].winner is None:
+            return False
+        return self.heat.games[2].winner.snake == self.snake
+
+
     class Meta:
         app_label = "tournament"
         unique_together = ("heat", "snake")
