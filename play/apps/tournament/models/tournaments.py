@@ -115,21 +115,50 @@ class TournamentBracket(models.Model):
     def latest_round(self):
         if len(self.rounds) == 0:
             return None
-        return self.rounds[0]
+        return self.rounds[-1]
+
+    def get_complete_final_heat(self):
+        if self.latest_round is None:
+            return None
+
+        # the final round has exactly one heat
+        if self.latest_round.heats.count() != 1:
+            return None
+        last_heat = self.latest_round.heats.first()
+
+        if last_heat.games.count() != last_heat.desired_games:
+            return None
+        if self.latest_round.status != "complete":
+            return None
+        return last_heat
 
     @property
     def winners(self):
-        if self.latest_round is None:
-            return False
-        if self.latest_round.heats.count() != 1:
-            return False
-        if self.latest_round.heats[0].games.count() != 1:
-            return False
-        if self.latest_round.status != "complete":
+        last_heat = self.get_complete_final_heat()
+        if last_heat is None:
             return False
 
-        final_game = self.latest_round.heats[0].games[0]
-        final_game.game.ranked_snakes()
+        final_games = last_heat.games
+        first_place_game = final_games[0]
+        snakes = [first_place_game.winner.snake]
+        if len(final_games) > 1:
+            second_place_game = last_heat.games[1]
+            snakes.append(second_place_game.winner.snake)
+        if len(final_games) > 2:
+            third_place_game = last_heat.games[2]
+            snakes.append(third_place_game.winner.snake)
+        return snakes
+
+    @property
+    def runner_ups(self):
+        winners = self.winners
+        if winners is False:
+            return False
+
+        first_place_game = self.latest_round.heats[0].games[0]
+        final_six = first_place_game.game.get_snakes()
+        game_snakes = final_six.exclude(snake_id__in=[w.id for w in winners])
+        return [gs.snake for gs in game_snakes]
 
     @property
     def snake_count(self):
@@ -202,7 +231,7 @@ class RoundManager(models.Manager):
             if num_snakes > 24 and num_heats == 4:
                 num_heats = 6
             heats = [
-                Heat.objects.create(number=i + 1, round=round)
+                Heat.objects.create(number=i + 1, round=round, desired_games=2)
                 for i in range(0, num_heats)
             ]
 
@@ -213,8 +242,7 @@ class RoundManager(models.Manager):
 
             return round
 
-        # finals, TODO: this needs to be updated i think, desired_games should be 3?
-        heat = Heat.objects.create(number=1, round=round, desired_games=1)
+        heat = Heat.objects.create(number=1, round=round, desired_games=min(3, num_snakes-1))
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
         return round
