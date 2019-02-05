@@ -1,4 +1,5 @@
 from django.db import models
+
 from apps.authentication.models import User
 from util.models import BaseModel
 

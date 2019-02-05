@@ -1,5 +1,5 @@
 from django import forms
-from apps.core.models import Profile
+from apps.core.models import Profile, Snake
 
 
 class ProfileForm(forms.ModelForm):
@@ -18,3 +18,9 @@ class ProfileForm(forms.ModelForm):
         profile.user.email = self.cleaned_data["email"]
         profile.user.save()
         return profile
+
+
+class SnakeForm(forms.ModelForm):
+    class Meta:
+        model = Snake
+        fields = ["name", "url"]

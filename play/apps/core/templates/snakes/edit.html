@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-group card">
+  <h5 class="card-header">Create Snake</h5>
+  <div class="card-body">
+    <form method="post" novalidate action="/s/new">
+      {% csrf_token %}
+      <input type="hidden" name="_method" value="PUT" >
+      {% include '_form.html' with form=form %}
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
