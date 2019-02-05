@@ -14,6 +14,7 @@ from apps.tournament.models import (
     Tournament,
     TournamentBracket,
     TournamentSnake,
+    Round,
     Heat,
     HeatGame,
     PreviousGameTiedException,
@@ -233,6 +234,12 @@ def cast_page(request, id):
     if request.GET.get("page") == "tree":
         split_url = urlsplit(request.build_absolute_uri())
         casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+
+        # flag previously watching games as watched
+        rounds = Round.objects.filter(tournament_bracket__in=bracket.tournament.brackets)
+        heats = Heat.objects.filter(round__in=rounds)
+        HeatGame.objects.filter(heat__in=heats, status=HeatGame.WATCHING).update(status=HeatGame.WATCHED)
+
         bracket.tournament.casting_uri = casting_uri
         bracket.tournament.save()
 
