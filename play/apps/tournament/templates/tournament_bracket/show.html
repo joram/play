@@ -10,40 +10,30 @@
   <div class="card-body container">
     <div class="container">
       <div class="row">
+
         <div class="col-sm">
           <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            <li class="list-group-item">Winners</li>
             {% for winner in tournament_bracket.winners %}
             <li class="list-group-item">{{ winner.name }}</li>
             {% endfor %}
           </ul>
         </div>
+
+        <div class="col-sm">
+          <ul class="list-group" style="width:200px; padding-bottom:10px;">
+            <li class="list-group-item">Runner Ups</li>
+            {% for runner_up in tournament_bracket.runner_ups %}
+            <li class="list-group-item">{{ runner_up.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
 {% endif %}
-
-<div class="card" style="margin-bottom: 10px;">
-  <div class="card-header">
-    Expected Progression
-  </div>
-
-  <div class="card-body container">
-    <div class="container">
-      <div class="row">
-      {% for round in progression %}
-        <div class="col-sm">
-          <ul class="list-group" style="width:200px; padding-bottom:10px;">
-            <li class="list-group-item">Round: {{forloop.counter}}</li>
-            <li class="list-group-item">{{ round.num_games }} games</li>
-            <li class="list-group-item">{{ round.snakes_per_game }} snakes per game.</li>
-          </ul>
-        </div>
-      {% endfor %}
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="card" style="margin-bottom: 10px;">
   <div class="card-header">

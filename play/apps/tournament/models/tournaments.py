@@ -146,7 +146,8 @@ class TournamentBracket(models.Model):
             snakes.append(second_place_game.winner.snake)
         if len(final_games) > 2:
             third_place_game = last_heat.games[2]
-            snakes.append(third_place_game.winner.snake)
+            if third_place_game.winner is not None:
+                snakes.append(third_place_game.winner.snake)
         return snakes
 
     @property
