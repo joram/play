@@ -25,28 +25,6 @@
 
 <div class="card" style="margin-bottom: 10px;">
   <div class="card-header">
-    Expected Progression
-  </div>
-
-  <div class="card-body container">
-    <div class="container">
-      <div class="row">
-      {% for round in progression %}
-        <div class="col-sm">
-          <ul class="list-group" style="width:200px; padding-bottom:10px;">
-            <li class="list-group-item">Round: {{forloop.counter}}</li>
-            <li class="list-group-item">{{ round.num_games }} games</li>
-            <li class="list-group-item">{{ round.snakes_per_game }} snakes per game.</li>
-          </ul>
-        </div>
-      {% endfor %}
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="card" style="margin-bottom: 10px;">
-  <div class="card-header">
     {{ tournament_bracket.name }}
 
     <a href="/tournament/bracket/{{ tournament_bracket.id }}/edit">
