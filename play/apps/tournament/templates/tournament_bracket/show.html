@@ -101,7 +101,7 @@
                 <div class="col">
                   <ul class="list-group" style="width:200px; padding-bottom:10px;">
                       {% for snake in heat.snakes %}
-                        <li class="list-group-item{% if snake.first or snake.second %} active{% endif %}">{{ snake.snake.name }}</li>
+                        <li class="list-group-item{% if snake.first or snake.second or snake.third %} active{% endif %}">{{ snake.snake.name }}</li>
                       {% endfor %}
                   </ul>
                 </div>
