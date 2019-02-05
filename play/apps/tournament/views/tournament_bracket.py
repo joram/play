@@ -1,11 +1,14 @@
 import csv
+from urllib.parse import urlsplit
 
-from django import forms
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+
+from apps.authentication.decorators import admin_required
+from apps.game.models import Game
 from apps.tournament.forms import TournamentBracketForm
 from apps.tournament.models import (
     Tournament,
@@ -13,8 +16,10 @@ from apps.tournament.models import (
     TournamentSnake,
     Heat,
     HeatGame,
+    PreviousGameTiedException,
+    DesiredGamesReachedValidationError,
+    RoundNotCompleteException,
 )
-from apps.authentication.decorators import admin_required
 
 
 @admin_required
@@ -85,22 +90,6 @@ def edit(request, bracket_id):
 
 @admin_required
 @login_required
-def show_current_game(request, id):
-    tournament_bracket = TournamentBracket.objects.get(id=id)
-
-    if request.GET.get("json") == "true":
-        details = tournament_bracket.game_details()
-        return JsonResponse({"games": details})
-
-    return render(
-        request,
-        "tournament_bracket/show_current_game.html",
-        {"tournament_bracket": tournament_bracket},
-    )
-
-
-@admin_required
-@login_required
 def show(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
 
@@ -122,12 +111,6 @@ def show(request, id):
         else f"{min_snakes_per_game}"
     )
     while total_snakes > 8:
-        print(
-            round,
-            game_count,
-            (min_snakes_per_game, max_snakes_per_game),
-            snakes_advancing,
-        )
         progression_details.append(
             {
                 "round": round,
@@ -147,10 +130,6 @@ def show(request, id):
             "advancing": snakes_advancing,
         }
     )
-    print(
-        round, game_count, (min_snakes_per_game, max_snakes_per_game), snakes_advancing
-    )
-
     return render(
         request,
         "tournament_bracket/show.html",
@@ -178,15 +157,48 @@ def show_csv(request, id):
 @login_required
 def create_next_round(request, id):
     tournament_bracket = TournamentBracket.objects.get(id=id)
-    tournament_bracket.create_next_round()
+    try:
+        tournament_bracket.create_next_round()
+    except RoundNotCompleteException as e:
+        messages.error(request, e.message)
     return redirect(f"/tournament/bracket/{id}")
+
+
+@admin_required
+@login_required
+def update_game_statuses(request, bracket_id):
+    bracket = TournamentBracket.objects.get(id=bracket_id)
+    for heat in bracket.latest_round.heats:
+        for hg in heat.games:
+            if (
+                hg.game.status == Game.Status.PENDING
+                or hg.game.status == Game.Status.RUNNING
+            ) and hg.game.engine_id is not None:
+                hg.game.update_from_engine()
+                hg.game.save()
+    return redirect(f"/tournament/bracket/{bracket_id}")
 
 
 @admin_required
 @login_required
 def create_game(request, id, heat_id):
     heat = Heat.objects.get(id=heat_id)
-    heat.create_next_game()
+    try:
+        heat.create_next_game()
+    except PreviousGameTiedException:
+        messages.error(request, "Previous game tied. It must be rerun")
+    except DesiredGamesReachedValidationError:
+        messages.error(request, "shouldn't create another game for this heat")
+    except Exception as e:
+        messages.error(request, e.__str__())
+    return redirect(f"/tournament/bracket/{id}/")
+
+
+@admin_required
+@login_required
+def delete_game(request, id, heat_id, heat_game_number):
+    heat_game = HeatGame.objects.get(heat_id=heat_id, number=heat_game_number)
+    heat_game.delete()
     return redirect(f"/tournament/bracket/{id}/")
 
 
@@ -202,3 +214,26 @@ def run_game(request, id, heat_id, heat_game_number):
         return redirect(f"/games/{heat_game.game.engine_id}?autoplay=true")
 
     return redirect(f"/games/{heat_game.game.engine_id}")
+
+
+@admin_required
+@login_required
+def tree(request, id):
+    bracket = TournamentBracket.objects.get(id=id)
+    context = {
+        "bracket": bracket,
+    }
+    return render(request, "tournament_bracket/tree.html", context)
+
+
+@admin_required
+@login_required
+def cast_page(request, id):
+    bracket = TournamentBracket.objects.get(id=id)
+    if request.GET.get("page") == "tree":
+        split_url = urlsplit(request.build_absolute_uri())
+        casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+        bracket.tournament.casting_uri = casting_uri
+        bracket.tournament.save()
+
+    return redirect(f"/tournament/bracket/{id}/")

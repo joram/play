@@ -1,1 +1,29 @@
 {% extends 'base.html' %}
+
+{% block outside_content %}
+    <div style="margin-bottom: 15px">To get started, <a href="/snakes">create a snake</a> or <a href="/games">play a game</a></div>
+    {% for game in games %}
+        <div style="float:left; text-align: center; overflow: hidden; width: 300px; margin-bottom: 20px">
+            <div class="feed-board">
+                <iframe
+                    id="iframe_game"
+                    src="{{ game.url | safe }}"
+                    frameborder="0"
+                    scrolling="no"
+                    marginheight="0"
+                    marginwidth="0"
+                    style="
+                      position: absolute;
+                      height: 100%;
+                      width: 100%;
+                      left: 0;
+                      top: 0;
+                    ">
+                </iframe>
+            </div>
+            <a href="/games/{{ game.engine_id }}">Watch Game</a>
+            <br/>
+        </div>
+    {% endfor %}
+
+{% endblock %}

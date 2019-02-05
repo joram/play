@@ -64,7 +64,6 @@ urlpatterns = [
             PUT=tournament_views.tournament_snake.delete,
         ),
     ),
-
     url(
         r"^tournament/bracket/(?P<id>\w+)/$",
         method_dispatch(GET=tournament_views.tournament_bracket.show),
@@ -74,12 +73,20 @@ urlpatterns = [
         method_dispatch(GET=tournament_views.tournament_bracket.show_csv),
     ),
     url(
-        r"^tournament/bracket/(?P<id>\w+)/current_game$",
-        method_dispatch(GET=tournament_views.tournament_bracket.show_current_game),
+        r"^tournament/bracket/(?P<id>\w+)/tree$",
+        method_dispatch(GET=tournament_views.tournament_bracket.tree),
+    ),
+    url(
+        r"^tournament/bracket/(?P<id>\w+)/set-casting",
+        method_dispatch(GET=tournament_views.tournament_bracket.cast_page),
     ),
     url(
         r"^tournament/bracket/(?P<id>\w+)/create/next/round$",
         method_dispatch(GET=tournament_views.tournament_bracket.create_next_round),
+    ),
+    url(
+        r"^tournament/bracket/(?P<bracket_id>\w+)/update/games",
+        method_dispatch(GET=tournament_views.tournament_bracket.update_game_statuses),
     ),
     url(
         r"^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/create_game/$",
@@ -92,6 +99,10 @@ urlpatterns = [
         r"^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/game/(?P<heat_game_number>\w+)/$",
         method_dispatch(GET=tournament_views.tournament_bracket.run_game),
     ),
+    url(
+        r"^tournament/bracket/(?P<id>\w+)/heat/(?P<heat_id>\w+)/game/(?P<heat_game_number>\w+)/delete",
+        method_dispatch(GET=tournament_views.tournament_bracket.delete_game),
+    ),
     url(r"^tournaments/$", method_dispatch(GET=tournament_views.tournament.index)),
     url(
         r"^tournament/new/$",
@@ -103,6 +114,13 @@ urlpatterns = [
         r"^tournament/(?P<id>\w+)/edit/$",
         method_dispatch(
             GET=tournament_views.tournament.edit, POST=tournament_views.tournament.edit
+        ),
+    ),
+    url(
+        r"^tournament/(?P<tournament_id>\w+)/current_game$",
+        method_dispatch(
+            GET=tournament_views.tournament.show_current_game,
+            POST=tournament_views.tournament.cast_current_game,
         ),
     ),
 ]

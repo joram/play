@@ -105,6 +105,11 @@ class Game(BaseModel):
             if living_snakes.count() == 1:
                 return living_snakes.first()
 
+    def ranked_snakes(self):
+        if self.status == self.Status.COMPLETE:
+            snakes = self.get_snakes().order_by("-turns")
+            return snakes
+
     @property
     def leaderboard_game(self):
         from apps.leaderboard.models import GameLeaderboard
