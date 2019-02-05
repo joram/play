@@ -100,7 +100,9 @@ def show(request, id):
     import math
 
     game_count = math.ceil(total_snakes / 8)
-    snakes_per_game = total_snakes / game_count
+    snakes_per_game = 0
+    if game_count != 0:
+        snakes_per_game = total_snakes / game_count
     min_snakes_per_game = math.floor(snakes_per_game)
     max_snakes_per_game = math.ceil(snakes_per_game)
     snakes_advancing = game_count * 2
@@ -220,9 +222,7 @@ def run_game(request, id, heat_id, heat_game_number):
 @login_required
 def tree(request, id):
     bracket = TournamentBracket.objects.get(id=id)
-    context = {
-        "bracket": bracket,
-    }
+    context = {"bracket": bracket}
     return render(request, "tournament_bracket/tree.html", context)
 
 
@@ -232,7 +232,9 @@ def cast_page(request, id):
     bracket = TournamentBracket.objects.get(id=id)
     if request.GET.get("page") == "tree":
         split_url = urlsplit(request.build_absolute_uri())
-        casting_uri = f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+        casting_uri = (
+            f"{split_url.scheme}://{split_url.netloc}/tournament/bracket/{id}/tree"
+        )
         bracket.tournament.casting_uri = casting_uri
         bracket.tournament.save()
 
