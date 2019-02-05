@@ -36,7 +36,7 @@ class Game(BaseModel):
     width = models.IntegerField()
     height = models.IntegerField()
     food = models.IntegerField()
-    max_turns_to_next_food_spawn = models.IntegerField(default=0)
+    max_turns_to_next_food_spawn = models.IntegerField(default=15)
 
     def __init__(self, *args, **kwargs):
         self.snakes = kwargs.get("snakes", [])

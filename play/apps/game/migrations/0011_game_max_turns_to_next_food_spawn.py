@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='game',
             name='max_turns_to_next_food_spawn',
-            field=models.IntegerField(default=0),
+            field=models.IntegerField(default=15),
         ),
     ]
