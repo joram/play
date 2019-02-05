@@ -11,7 +11,7 @@ class MatchStarter:
     def chunks(self, l, n):
         """Yield successive n-sized chunks from l."""
         for i in range(0, len(l), n):
-            yield l[i : i + n]
+            yield l[i : i + n]  # noqa: E203
 
     def matches(self):
         """ Select matches to run. A random mix of snakes. """
@@ -40,7 +40,9 @@ class MatchStarter:
             return
 
         snakes = [vars(s) for s in Snake.objects.filter(id__in=snake_ids)]
-        game = Game(width=10, height=10, food=5, snakes=snakes)
+        game = Game(
+            width=11, height=11, food=2, snakes=snakes, max_turns_to_next_food_spawn=15
+        )
         game.create()
         game.run()
         GameLeaderboard(game=game).save()
