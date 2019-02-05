@@ -198,7 +198,6 @@ class RoundManager(models.Manager):
         num_snakes = len(round.snakes)
         # reduction round
         if num_snakes > 6 and round.tournament_bracket.tournament.snakes.count() > 8:
-            print("reduction round")
 
             # create heats
             num_heats = int(math.ceil(num_snakes / max_snakes_per))
@@ -218,7 +217,6 @@ class RoundManager(models.Manager):
 
             return round
 
-        print("final heat")
         heat = Heat.objects.create(number=1, round=round, desired_games=3)
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
