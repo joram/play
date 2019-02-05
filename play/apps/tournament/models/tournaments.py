@@ -74,7 +74,7 @@ class TournamentBracket(models.Model):
     board_width = models.IntegerField(default=11)
     board_height = models.IntegerField(default=11)
     board_food = models.IntegerField(default=2)
-    board_max_turns_to_next_food_spawn = models.IntegerField(default=15)
+    board_max_turns_to_next_food_spawn = models.IntegerField(null=True, blank=True, default=15)
     snakes = models.ManyToManyField(
         Snake, through="TournamentSnake", through_fields=("bracket", "snake")
     )
@@ -369,11 +369,15 @@ class HeatGameManager(models.Manager):
 
         from apps.game.models import Game
 
+        max_turns = 15
+        if heat.round.tournament_bracket.board_max_turns_to_next_food_spawn is not None:
+            max_turns = heat.round.tournament_bracket.board_max_turns_to_next_food_spawn
+
         game = Game(
             width=heat.round.tournament_bracket.board_width,
             height=heat.round.tournament_bracket.board_height,
             food=heat.round.tournament_bracket.board_food,
-            max_turns_to_next_food_spawn=heat.round.tournament_bracket.board_max_turns_to_next_food_spawn,
+            max_turns_to_next_food_spawn=max_turns,
             snakes=snake_ids,
         )
         game.create()
