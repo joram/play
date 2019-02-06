@@ -1,19 +1,7 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="container-fluid text-center" style="padding-bottom: 2rem;">
-  <h1>Game <small class="text-muted">{{ id }}</small></h1>
-
-  <button
-    type="button"
-    id="iframe_restart"
-    class="btn btn-primary">
-    <span class="la la-refresh"></span> Restart Game
-  </button>
-</div>
-{% endblock %}
 
 {% block outside_content %}
-<div class="fullscreen-board-frame">
+<div class="fullscreen-board-frame card m-b-100">
   <iframe
     id="iframe_game"
     src="{{ url | safe }}"
@@ -22,6 +10,7 @@
     marginheight="0"
     marginwidth="0"
     onload="this.contentWindow.focus()"
+    class="p-3"
     style="
       position: absolute;
       height: 100%;
@@ -33,11 +22,19 @@
 </div>
 {% endblock %}
 
-{% block js_dom_ready %}
-$('#iframe_restart').on('click', function (e) {
-  e.preventDefault()
-  var $iframe = $('#iframe_game')
-  $iframe.attr('src', $iframe.attr('src'))
-  $iframe.contentWindow.focus()
-})
+{% block content_footer %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col text-center">
+      <h3>Sponsored by:</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-center">
+      <a href="https://github.com" title="GitHub">
+        <img src="/static/img/GitHub_Logo.png" alt="GitHub Logo" width="200px" />
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

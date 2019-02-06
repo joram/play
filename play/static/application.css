@@ -23,10 +23,14 @@
   margin: 0 auto;
 }
 
+
+/**
+ * Homepage, Games list
+*/
 .feed-board {
   position: relative;
   width: 400px;
   height: 260px;
   margin: 0 0;
-  float:left;
+  float: left;
 }
