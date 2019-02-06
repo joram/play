@@ -58,6 +58,7 @@ def new(request, tournament_id):
 
 @admin_required
 @login_required
+@transaction.atomic
 def edit(request, bracket_id):
     tournament_bracket = TournamentBracket.objects.get(id=bracket_id)
     if request.method == "POST":
@@ -66,6 +67,9 @@ def edit(request, bracket_id):
         if form.is_valid():
             bracket = form.save(commit=False)
             bracket.save()
+
+            for ts in TournamentSnake.objects.filter(bracket=tournament_bracket):
+                ts.delete()
 
             # Save related sneks
             for snake in form.cleaned_data["snakes"]:
