@@ -97,7 +97,9 @@ def cast_current_game(request, tournament_id):
     # flag previously watching games as watched
     rounds = Round.objects.filter(tournament_bracket__in=tournament.brackets)
     heats = Heat.objects.filter(round__in=rounds)
-    HeatGame.objects.filter(heat__in=heats, status=HeatGame.WATCHING).update(status=HeatGame.WATCHED)
+    HeatGame.objects.filter(heat__in=heats, status=HeatGame.WATCHING).update(
+        status=HeatGame.WATCHED
+    )
 
     heat_game.status = HeatGame.WATCHING
     heat_game.save()

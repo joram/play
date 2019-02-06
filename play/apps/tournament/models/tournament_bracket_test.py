@@ -278,7 +278,6 @@ def test_bracket_with_96_snakes(update_mock):
     round3 = bracket.create_next_round()
     _complete_games_in_round(round3)
 
-
     g1 = round3.heats[0].games[0]
     g2 = round3.heats[0].games[1]
     g3 = round3.heats[0].games[2]

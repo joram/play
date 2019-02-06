@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('game', '0010_merge_20181221_2129'),
-    ]
+    dependencies = [("game", "0010_merge_20181221_2129")]
 
     operations = [
         migrations.AddField(
-            model_name='game',
-            name='max_turns_to_next_food_spawn',
+            model_name="game",
+            name="max_turns_to_next_food_spawn",
             field=models.IntegerField(default=15),
-        ),
+        )
     ]

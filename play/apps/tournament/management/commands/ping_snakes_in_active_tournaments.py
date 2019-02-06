@@ -3,6 +3,7 @@ from django.core.management import BaseCommand
 from apps.tournament.models import Tournament
 from apps.snake.models import Snake
 
+
 class Command(BaseCommand):
     help = "Ping all snakes in active tournaments"
 

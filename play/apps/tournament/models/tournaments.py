@@ -74,7 +74,9 @@ class TournamentBracket(models.Model):
     board_width = models.IntegerField(default=11)
     board_height = models.IntegerField(default=11)
     board_food = models.IntegerField(default=2)
-    board_max_turns_to_next_food_spawn = models.IntegerField(null=True, blank=True, default=15)
+    board_max_turns_to_next_food_spawn = models.IntegerField(
+        null=True, blank=True, default=15
+    )
     snakes = models.ManyToManyField(
         Snake, through="TournamentSnake", through_fields=("bracket", "snake")
     )
@@ -243,7 +245,9 @@ class RoundManager(models.Manager):
 
             return round
 
-        heat = Heat.objects.create(number=1, round=round, desired_games=min(3, num_snakes-1))
+        heat = Heat.objects.create(
+            number=1, round=round, desired_games=min(3, num_snakes - 1)
+        )
         for snake in round.snakes:
             SnakeHeat.objects.create(snake=snake, heat=heat)
         return round
@@ -455,7 +459,6 @@ class SnakeHeat(models.Model):
         if self.heat.games[2].winner is None:
             return False
         return self.heat.games[2].winner.snake == self.snake
-
 
     class Meta:
         app_label = "tournament"
