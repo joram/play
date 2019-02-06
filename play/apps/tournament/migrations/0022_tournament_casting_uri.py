@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0021_remove_team_snake'),
-    ]
+    dependencies = [("tournament", "0021_remove_team_snake")]
 
     operations = [
         migrations.AddField(
-            model_name='tournament',
-            name='casting_uri',
-            field=models.CharField(default='', max_length=1024),
-        ),
+            model_name="tournament",
+            name="casting_uri",
+            field=models.CharField(default="", max_length=1024),
+        )
     ]

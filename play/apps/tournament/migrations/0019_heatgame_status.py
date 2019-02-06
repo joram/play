@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0018_auto_20190128_2225'),
-    ]
+    dependencies = [("tournament", "0018_auto_20190128_2225")]
 
     operations = [
         migrations.AddField(
-            model_name='heatgame',
-            name='status',
-            field=models.CharField(choices=[('UW', 'Unwatched'), ('W', 'Watching'), ('WD', 'Watched')], default='UW', max_length=2),
-        ),
+            model_name="heatgame",
+            name="status",
+            field=models.CharField(
+                choices=[("UW", "Unwatched"), ("W", "Watching"), ("WD", "Watched")],
+                default="UW",
+                max_length=2,
+            ),
+        )
     ]

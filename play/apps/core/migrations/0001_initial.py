@@ -11,20 +11,34 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('authentication', '0003_auto_20190128_2353'),
-    ]
+    dependencies = [("authentication", "0003_auto_20190128_2353")]
 
     operations = [
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('created', util.fields.CreatedDateTimeField(blank=True, default=util.time.now, editable=False)),
-                ('modified', util.fields.ModifiedDateTimeField(blank=True, default=util.time.now, editable=False)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
+                (
+                    "created",
+                    util.fields.CreatedDateTimeField(
+                        blank=True, default=util.time.now, editable=False
+                    ),
+                ),
+                (
+                    "modified",
+                    util.fields.ModifiedDateTimeField(
+                        blank=True, default=util.time.now, editable=False
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
-        ),
+            options={"abstract": False},
+        )
     ]

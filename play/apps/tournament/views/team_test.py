@@ -23,10 +23,7 @@ def test_index_redirect(client):
 
 def test_create(client):
     user = user_factory.login_as(client)
-    response = client.post(
-        "/team/new/",
-        {"name": "test2", "description": "test"},
-    )
+    response = client.post("/team/new/", {"name": "test2", "description": "test"})
     assert response.status_code == 302
     assert TeamMember.objects.get(user=user) is not None
 
@@ -42,12 +39,7 @@ def test_update(client):
     user = user_factory.login_as(client)
     team = team_factory.basic(user=user)
     response = client.post(
-        f"/team/",
-        {
-            "name": "test3",
-            "description": "test",
-            "_method": "put",
-        },
+        f"/team/", {"name": "test3", "description": "test", "_method": "put"}
     )
     assert response.status_code == 302
     team.refresh_from_db()
