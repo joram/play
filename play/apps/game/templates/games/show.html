@@ -36,6 +36,8 @@
 {% block js_dom_ready %}
 $('#iframe_restart').on('click', function (e) {
   e.preventDefault()
-  $('#iframe_game').attr('src', $('#iframe_game').attr('src'))
+  var $iframe = $('#iframe_game')
+  $iframe.attr('src', $iframe.attr('src'))
+  $iframe.contentWindow.focus()
 })
 {% endblock %}
