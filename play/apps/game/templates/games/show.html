@@ -4,10 +4,9 @@
   <h1>Game <small class="text-muted">{{ id }}</small></h1>
 
   <button
-  type="button"
+    type="button"
     id="iframe_restart"
-    class="btn btn-primary"
-    >
+    class="btn btn-primary">
     <span class="la la-refresh"></span> Restart Game
   </button>
 </div>
@@ -22,6 +21,7 @@
     scrolling="no"
     marginheight="0"
     marginwidth="0"
+    onload="this.contentWindow.focus()"
     style="
       position: absolute;
       height: 100%;
