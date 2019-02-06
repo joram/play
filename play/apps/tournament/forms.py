@@ -20,7 +20,7 @@ class TeamForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-        self.fields['description'].label = "Team Backstory"
+        self.fields["description"].label = "Team Backstory"
 
     def clean(self):
         cleaned_data = super().clean()
