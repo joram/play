@@ -1,4 +1,5 @@
 from django import forms
+
 from apps.core.models import Profile, Snake
 
 
@@ -27,10 +28,3 @@ class SnakeForm(forms.ModelForm):
     class Meta:
         model = Snake
         fields = ["name", "url"]
-
-    def save(self, *args, **kwargs):
-        return Snake.objects.create(
-            profile=kwargs["profile"],
-            name=self.cleaned_data["name"],
-            url=self.cleaned_data["url"],
-        )

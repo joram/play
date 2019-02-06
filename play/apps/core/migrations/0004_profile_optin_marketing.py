@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0003_auto_20190205_1754'),
-    ]
+    dependencies = [("core", "0003_auto_20190205_1754")]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='optin_marketing',
+            model_name="profile",
+            name="optin_marketing",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

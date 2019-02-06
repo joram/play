@@ -11,6 +11,7 @@ urlpatterns = [
         name="profile",
     ),
     url(r"^u/(?P<username>[\w\-]+)/$", route(GET=profiles.show), name="u"),
-    path("s/new/", snake.create),
-    path("s/<snake_id>/", snake.index),
+    path("s/new/", route(GET=snake.new, POST=snake.create)),
+    path("s/<snake_id>/", route(GET=snake.show)),
+    path("s/<snake_id>/edit/", route(GET=snake.edit, PUT=snake.update)),
 ]

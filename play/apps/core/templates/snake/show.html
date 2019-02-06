@@ -1,1 +1,62 @@
 {% extends "base.html" %}
+
+{% block content %}
+    <div class="float-right">
+        <a href="/s/{{ snake.id }}/edit">Edit</a> | Follow | Share
+    </div>
+    <div class="row">
+        <div class="col">
+            <h1>{{ snake.name }}</h1>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group list-group-flush sidenav">
+                <a href="#games" class="list-group-item active">Latest Games</a>
+                <a href="#badges" class="list-group-item">Badges</a>
+                <a href="#ranking" class="list-group-item">Ranking</a>
+                <a href="#edit-code" class="list-group-item">Edit Code</a>
+                <a href="#statistics" class="list-group-item">Statistics</a>
+            </div>
+        </div>
+        <div class="col">
+            <div id="games" class="info-section">
+                <div class="float-right">
+                    <a class="btn btn-primary<" href="/games/new">Play Game</a>
+                </div>
+                <h2>Games</h2>
+
+                {% for g in snake.games %}
+                    {{ g }}
+                {% endfor %}
+            </div>
+            <div id="badges" class="hide info-section">
+                <h2>Badges</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_dom_ready %}
+    $(".sidenav a").on('click', function() {
+        $(".sidenav a").removeClass("active")
+        $(this).addClass("active")
+        section = $(this).attr("href")
+        showSection(section)
+    })
+
+    function showSection(section) {
+        $(".info-section").addClass("hide")
+        $(section).removeClass("hide")
+    }
+
+    if (window.location.hash) {
+        showSection(window.location.hash)
+        $(".sidenav a").removeClass("active").each(function(i, a) {
+            if ($(a).attr("href") == window.location.hash) {
+                $(this).addClass("active")
+            }
+        })
+    }
+{% endblock %}
