@@ -20,7 +20,5 @@ def index(request):
         reverse=True,
     )
     return render(
-        request,
-        "leaderboard/index.html",
-        {"ranked": ranked, "user": request.user, "user": request.user},
+        request, "leaderboard/index.html", {"ranked": ranked, "user": request.user}
     )

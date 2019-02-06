@@ -5,3 +5,5 @@ steps:
   args: ['run', '-e', 'ENV=local', 'gcr.io/$PROJECT_ID/play:$SHORT_SHA', 'pytest']
 - name: 'jbbarth/black'
   args: ['--check', '.']
+- name: 'alpine/flake8'
+  args: ['.']

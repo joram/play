@@ -1,16 +1,16 @@
-import json
+import random
+import uuid
 
 import mock
-import uuid
-import random
+
+from apps.authentication.models import User
+from apps.game.factories import GameFactory
 from apps.game.jobs import GameStatusJob
 from apps.game.models import Game, GameSnake
-from apps.game.factories import GameFactory
 from apps.leaderboard.jobs import MatchStarter
+from apps.leaderboard.models import UserSnakeLeaderboard, LeaderboardResult
 from apps.snake.factories import SnakeFactory
 from apps.snake.models import UserSnake
-from apps.authentication.models import User
-from apps.leaderboard.models import UserSnakeLeaderboard, LeaderboardResult
 
 game_factory = GameFactory()
 snake_factory = SnakeFactory()

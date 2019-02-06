@@ -1,4 +1,4 @@
-from settings.base import *
+from settings.base import *  # noqa: F403
 
 import os
 
@@ -6,6 +6,6 @@ import os
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),  # noqa: F405
     }
 }

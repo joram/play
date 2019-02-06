@@ -19,7 +19,7 @@ def test_new(client):
 
 def test_new_with_snakes(client):
     user = user_factory.login_as(client)
-    snake = snake_factory.basic(n=1, commit=True, user=user)
+    snake_factory.basic(n=1, commit=True, user=user)
     team_factory.basic(user=user)
     response = client.get("/games/new/")
     assert response.status_code == 200

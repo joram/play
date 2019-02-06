@@ -14,7 +14,6 @@ from apps.tournament.models import (
     Tournament,
     RoundNotCompleteException,
 )
-from apps.utils.helpers import generate_game_url
 
 
 def _arrange_tournament(name, num_snakes=8):
@@ -122,7 +121,7 @@ def test_bracket_with_2_snakes(update_mock):
     bracket = _arrange_tournament("single heat", 2)
 
     round1 = bracket.create_next_round()
-    assert bracket.winners == False
+    assert bracket.winners is False
     _complete_games_in_round(round1)
 
     g1 = round1.heats[0].games[0]

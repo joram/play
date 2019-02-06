@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.shortcuts import render, redirect
+
 from apps.tournament.forms import TournamentSnakeForm
 from apps.tournament.models import Tournament, TournamentSnake, Snake, TournamentBracket
-from apps.authentication.decorators import admin_required
 
 
 @login_required
