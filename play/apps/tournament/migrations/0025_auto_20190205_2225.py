@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0024_merge_20190205_2049'),
-    ]
+    dependencies = [("tournament", "0024_merge_20190205_2049")]
 
     operations = [
         migrations.AlterField(
-            model_name='tournamentbracket',
-            name='board_max_turns_to_next_food_spawn',
+            model_name="tournamentbracket",
+            name="board_max_turns_to_next_food_spawn",
             field=models.IntegerField(blank=True, default=15, null=True),
-        ),
+        )
     ]

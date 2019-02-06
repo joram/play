@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0020_merge_20190202_0617'),
-    ]
+    dependencies = [("tournament", "0020_merge_20190202_0617")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='team',
-            name='snake',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="team", name="snake")]

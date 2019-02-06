@@ -7,7 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from apps.authentication.decorators import admin_required
-from apps.game.models import Game
 from apps.tournament.forms import TournamentBracketForm
 from apps.tournament.models import (
     Tournament,
@@ -175,10 +174,7 @@ def update_game_statuses(request, bracket_id):
     bracket = TournamentBracket.objects.get(id=bracket_id)
     for heat in bracket.latest_round.heats:
         for hg in heat.games:
-            if (
-                hg.game.status == Game.Status.PENDING
-                or hg.game.status == Game.Status.RUNNING
-            ) and hg.game.engine_id is not None:
+            if hg.game.engine_id is not None:
                 hg.game.update_from_engine()
                 hg.game.save()
     return redirect(f"/tournament/bracket/{bracket_id}")

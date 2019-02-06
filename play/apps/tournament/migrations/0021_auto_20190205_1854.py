@@ -5,29 +5,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tournament', '0020_merge_20190202_0617'),
-    ]
+    dependencies = [("tournament", "0020_merge_20190202_0617")]
 
     operations = [
         migrations.AddField(
-            model_name='tournamentbracket',
-            name='board_food',
+            model_name="tournamentbracket",
+            name="board_food",
             field=models.IntegerField(default=2),
         ),
         migrations.AddField(
-            model_name='tournamentbracket',
-            name='board_height',
+            model_name="tournamentbracket",
+            name="board_height",
             field=models.IntegerField(default=11),
         ),
         migrations.AddField(
-            model_name='tournamentbracket',
-            name='board_max_turns_to_next_food_spawn',
+            model_name="tournamentbracket",
+            name="board_max_turns_to_next_food_spawn",
             field=models.IntegerField(default=15),
         ),
         migrations.AddField(
-            model_name='tournamentbracket',
-            name='board_width',
+            model_name="tournamentbracket",
+            name="board_width",
             field=models.IntegerField(default=11),
         ),
     ]

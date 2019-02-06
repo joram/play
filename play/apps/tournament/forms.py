@@ -20,6 +20,7 @@ class TeamForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
+        self.fields["description"].label = "Team Backstory"
 
     def clean(self):
         cleaned_data = super().clean()
@@ -67,11 +68,20 @@ class AddTeamMemberForm(forms.Form):
 
 
 class TournamentBracketForm(forms.ModelForm):
-    snakes = forms.ModelMultipleChoiceField(Snake.objects.all().order_by("name"), required=False)
+    snakes = forms.ModelMultipleChoiceField(
+        Snake.objects.all().order_by("name"), required=False
+    )
 
     class Meta:
         model = TournamentBracket
-        fields = ["name", "snakes", "board_width", "board_height", "board_food", "board_max_turns_to_next_food_spawn"]
+        fields = [
+            "name",
+            "snakes",
+            "board_width",
+            "board_height",
+            "board_food",
+            "board_max_turns_to_next_food_spawn",
+        ]
 
 
 class TournamentForm(forms.ModelForm):
