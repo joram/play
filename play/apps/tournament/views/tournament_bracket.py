@@ -1,5 +1,4 @@
 import csv
-from urllib.parse import urlsplit
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -68,6 +67,9 @@ def edit(request, bracket_id):
         if form.is_valid():
             bracket = form.save(commit=False)
             bracket.save()
+
+            for ts in TournamentSnake.objects.filter(bracket=tournament_bracket):
+                ts.delete()
 
             # Save related sneks
             for snake in form.cleaned_data["snakes"]:
@@ -232,15 +234,16 @@ def tree(request, id):
 def cast_page(request, id):
     bracket = TournamentBracket.objects.get(id=id)
     if request.GET.get("page") == "tree":
-        split_url = urlsplit(request.build_absolute_uri())
-        casting_uri = (
-            f"/tournament/bracket/{id}/tree"
-        )
+        casting_uri = f"/tournament/bracket/{id}/tree"
 
         # flag previously watching games as watched
-        rounds = Round.objects.filter(tournament_bracket__in=bracket.tournament.brackets)
+        rounds = Round.objects.filter(
+            tournament_bracket__in=bracket.tournament.brackets
+        )
         heats = Heat.objects.filter(round__in=rounds)
-        HeatGame.objects.filter(heat__in=heats, status=HeatGame.WATCHING).update(status=HeatGame.WATCHED)
+        HeatGame.objects.filter(heat__in=heats, status=HeatGame.WATCHING).update(
+            status=HeatGame.WATCHED
+        )
 
         bracket.tournament.casting_uri = casting_uri
         bracket.tournament.save()
