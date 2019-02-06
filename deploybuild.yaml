@@ -13,3 +13,21 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-west1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=battlesnake-k8s-gke'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - set
+  - image
+  - cronjob.batch/play-jobs
+  - game-status-job=gcr.io/$PROJECT_ID/play:$TAG_NAME
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-west1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=battlesnake-k8s-gke'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - set
+  - image
+  - cronjob.batch/play-jobs
+  - run-leaderboard-matches=gcr.io/$PROJECT_ID/play:$TAG_NAME
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-west1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=battlesnake-k8s-gke'
