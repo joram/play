@@ -78,6 +78,7 @@ def show_current_game(request, tournament_id):
     )
 
 
+@admin_required
 @login_required
 @transaction.atomic
 def cast_current_game(request, tournament_id):
