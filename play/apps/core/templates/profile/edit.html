@@ -1,6 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<header class="page-header">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h1 class="separator">Edit Profile</h1>
+      <nav class="breadcrumb-wrapper" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/"><i class="la la-home"></i></a></li>
+          <li class="breadcrumb-item"><a href="/u/{{ user.username }}/">Profile</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        </ol>
+      </nav>
+    </div>
+    <ul class="actions top-right">
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="btn btn-fab" data-toggle="dropdown" aria-expanded="false">
+          <i class="la la-ellipsis-h"></i>
+        </a>
+        <div class="dropdown-menu dropdown-icon-menu dropdown-menu-right">
+          <div class="dropdown-header">
+            Menu
+          </div>
+          <a href="#delete-modal" data-toggle="modal" data-target="#delete-modal" class="dropdown-item">
+            <i class="la la-trash"></i> Delete my Account
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</header>
+
+
+{% if not profile.is_saved %}
+  <div class="card">
+    <div class="card-body">
+      <p class="lead">
+        Hey there! Thanks for signing up for battlesnake, we just need you to
+        confirm a few details below and you'll be ready to get snaking!
+      </p>
+    </div>
+  </div>
+{% endif %}
+
 <div class="form-group card">
   <h5 class="card-header">Profile</h5>
   <div class="card-body">
@@ -13,16 +56,31 @@
   </div>
 </div>
 
-
-<div class="form-group card mt-5">
-  <h5 class="card-header">Delete my Account</h5>
-  <div class="card-body">
-    <form method="post" novalidate action="/profile/">
-      {% csrf_token %}
-      <input type="hidden" name="_method" value="DELETE" >
-      <button type="submit" class="btn btn-primary">Delete Account</button>
-    </form>
-  </div>
+<div id="delete-modal" class="modal" tabindex="-1" role="dialog">
+  <form method="post" novalidate action="/profile/">
+    {% csrf_token %}
+    <input type="hidden" name="_method" value="DELETE" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete my Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure? This will delete all your account information including
+            your snakes and games.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Delete</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

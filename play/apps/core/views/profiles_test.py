@@ -19,5 +19,4 @@ def test_snakes_are_returned_in_response(client):
     Snake.objects.create(profile=profile, name="My Snake")
     response = client.get(f"/u/{profile.username}/")
 
-    assert response.context[-1]["snakes"][0].name == "My Snake"
-    assert response.context[-1]["snakes"][0].profile == profile
+    assert response.context[-1]["profile"].snakes[0].name == "My Snake"

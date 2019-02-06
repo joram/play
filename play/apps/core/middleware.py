@@ -1,15 +1,14 @@
-from apps.core.models import Profile
+from django.shortcuts import redirect
 
 
-def with_profile(action):
+def profile_required(action):
     """
-    With profile is simple middleware that ensures that a profile is
-    instantiated on the user object.
+    Redirects to an edit profile page which will activate the profile.
     """
 
     def middleware(request, *args, **kwargs):
-        if not hasattr(request.user, "profile"):
-            request.user.profile = Profile(user=request.user)
-        return action(request)
+        if not request.user.is_anonymous and not hasattr(request.user, "profile"):
+            return redirect("profile")
+        return action(request, *args, **kwargs)
 
     return middleware

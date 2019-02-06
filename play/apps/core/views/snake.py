@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from apps.core.forms import SnakeForm
-from apps.core.middleware import with_profile
+from apps.core.middleware import profile_required
 from apps.core.models import Snake
 
 
@@ -12,7 +12,7 @@ def index(request, snake_id):
 
 
 @login_required
-@with_profile
+@profile_required
 def create(request):
     form = SnakeForm()
     if request.POST:

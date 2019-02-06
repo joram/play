@@ -4,23 +4,29 @@
 
 <div class="row">
   <div class="col-md-4">
-    <div class="card mb-4">
-      <img class="card-img-top" src="https://github.com/{{ profile.username }}.png?size=150">
+    <div class="card">
+      <div class="card-body">
+        <div class="profile-card text-center">
+          <div class="thumb-xl member-thumb m-b-10 center-block">
+            <img src="https://github.com/{{ profile.username }}.png?size=150" class="rounded-circle img-thumbnail" alt="profile-image">
+          </div>
+
+          <h5>{{ profile.username }}</h5>
+
+          <ul class="list-unstyled">
+            <li>
+              <i class="la la-github"></i>
+              <a target="_blank" href="https://github.com/{{ profile.username }}">GitHub</a>
+            </li>
+          </ul>
+
+          {% if profile.user == user %}
+            <hr />
+            <a class="btn btn-secondary btn-block" href="/profile">Edit</a>
+          {% endif %}
+        </div>
+      </div>
     </div>
-
-    <h5>{{ profile.username }}</h5>
-
-    <ul class="list-unstyled">
-      <li>
-        <i class="la la-github"></i>
-        <a target="_blank" href="https://github.com/{{ profile.username }}">GitHub</a>
-      </li>
-    </ul>
-
-    {% if profile.user == user %}
-      <hr />
-      <a class="btn btn-secondary btn-block" href="/profile">Edit</a>
-    {% endif %}
   </div>
   <div class="col-md-8">
       {% include "profiles/_snakes.html" %}

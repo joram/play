@@ -30,3 +30,9 @@ def test_delete(client):
     profile_factory.profile(user)
     response = client.delete("/profile/")
     assert response.status_code == 302
+
+
+def test_delete_no_profile(client):
+    user_factory.login_as(client)
+    response = client.delete("/profile/")
+    assert response.status_code == 302

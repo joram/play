@@ -7,7 +7,10 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = []
+        fields = ["optin_marketing"]
+        labels = {
+            "optin_marketing": "Opt in to occasional updates and marketing communication"
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
