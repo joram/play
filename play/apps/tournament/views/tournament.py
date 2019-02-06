@@ -90,7 +90,7 @@ def cast_current_game(request, tournament_id):
         heat_game.game.run()
 
     tournament.casting_uri = (
-        generate_game_url(heat_game.game.engine_id) + "&autoplay=true&countdown=10"
+        generate_game_url(heat_game.game.engine_id) + "&countdown=10"
     )
     tournament.save()
 
