@@ -58,6 +58,7 @@ def new(request, tournament_id):
 
 @admin_required
 @login_required
+@transaction.atomic
 def edit(request, bracket_id):
     tournament_bracket = TournamentBracket.objects.get(id=bracket_id)
     if request.method == "POST":
