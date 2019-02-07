@@ -23,6 +23,7 @@ def create(request):
     if form.is_valid():
         game = form.save(request.user.profile)
         game.create()
+        game.gamesnake_set.add()
         game.run()
         return redirect(f"/g/{game.id}")
     return render(request, "game/new.html", {"form": form})

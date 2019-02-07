@@ -1,7 +1,7 @@
 from django import forms
 from django.db.models import Q
 
-from apps.core.models import Profile, Snake, Game
+from apps.core.models import Profile, Snake, Game, GameSnake
 
 
 class ProfileForm(forms.ModelForm):
@@ -55,11 +55,13 @@ class GameForm(forms.Form):
         game = Game.objects.create(
             width=data["width"], height=data["height"], max_turns_to_next_food_spawn=12
         )
+        snake_ids = self.cleaned_data["snakes"].split(",")
         snakes = Snake.objects.filter(
-            Q(id__in=data["snakes"].split(","))
-            & (Q(is_public=True) | Q(profile=profile))
-        ).all()
-        for s in snakes:
+            Q(id__in=snake_ids) & (Q(is_public=True) | Q(profile=profile))
+        )
+        for s in snakes.all():
             game.snakes.add(s)
+        for snake_id in snake_ids:
+            GameSnake.objects.create(snake=snakes.get(id=snake_id), game=game)
         game.save()
         return game

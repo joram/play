@@ -62,8 +62,14 @@
         $.ajax({
             url: "/g/snake-info/?snakes=" + snakes,
         }).done(function(data) {
-            $.each(data, function(i, item) {
-                table.append(`<tr><td>${item.text}</td><td class="text-right"><button type="button" class="btn btn-danger btn-sm remove-snake" data-snake-id="${item.value}">Remove</button></td></tr>`)
+
+            $.each(snakes.split(","), function(_, snakeId) {
+                $.each(data, function(_, item) {
+                    if (item.value != snakeId) {
+                        return
+                    }
+                    table.append('<tr><td>' + item.text + '</td><td class="text-right"><button type="button" class="btn btn-danger btn-sm remove-snake" data-snake-id=' + item.value + '>Remove</button></td></tr>')
+                })
             })
         })
     }

@@ -44,8 +44,8 @@ class Game(BaseModel):
             "maxTurnsToNextFoodSpawn": self.max_turns_to_next_food_spawn,
             "food": self.snakes.count(),
             "snakes": [
-                {"name": snake.name, "url": snake.url, "id": snake.id}
-                for snake in self.snakes.all()
+                {"name": gs.snake.name, "url": gs.snake.url, "id": gs.id}
+                for gs in self.gamesnake_set.all()
             ],
         }
         return config
@@ -67,10 +67,18 @@ class Game(BaseModel):
             self.status = status["status"]
             self.turn = status["turn"]
 
-            # for game_snake in self.get_snakes():
-            #     snake_status = status["snakes"][game_snake.id]
-            #     game_snake.death = snake_status["death"]
-            #     game_snake.save()
+            for game_snake in self.gamesnake_set():
+                snake_status = status["snakes"][game_snake.id]
+                game_snake.death = snake_status["death"]
+                game_snake.save()
 
             self.save()
             return status
+
+
+class GameSnake(BaseModel):
+    id = ShortUUIDField(prefix="gs", max_length=128, primary_key=True)
+    snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    death = models.CharField(default="pending", max_length=128)
+    turns = models.IntegerField(default=0)
