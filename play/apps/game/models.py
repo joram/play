@@ -76,7 +76,8 @@ class Game(BaseModel):
     def run(self):
         """ Call the engine to start the game. Returns the game id. """
         config = self.config()
-        self.engine_id = engine.run(config)
+        self.engine_id = engine.create(config)
+        engine.run(self.engine_id)
         self.save()
         return self.engine_id
 

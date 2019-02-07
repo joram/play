@@ -2,7 +2,15 @@
 
 {% block content %}
     <div class="float-right">
-        <a href="/s/{{ snake.id }}/edit">Edit</a> | Follow | Share
+        <a href="/s/{{ snake.id }}/edit">Edit</a>
+        | Follow | Share
+
+        {% if snake.profile == request.user.profile %}
+            |
+            <a href="#delete-modal" data-toggle="modal" data-target="#delete-modal">
+                <i class="la la-trash"></i> Delete
+            </a>
+        {% endif %}
     </div>
     <div class="row">
         <div class="col">
@@ -22,9 +30,11 @@
         </div>
         <div class="col">
             <div id="games" class="info-section">
-                <div class="float-right">
-                    <a class="btn btn-primary<" href="/games/new">Play Game</a>
-                </div>
+                {% if snake.is_public or snake.profile == request.user.profile %}
+                    <div class="float-right">
+                        <a class="btn btn-primary" href="/g/new/?snake-ids={{ snake.id }}">Play Game</a>
+                    </div>
+                {% endif %}
                 <h2>Games</h2>
 
                 {% for g in snake.games %}
@@ -35,6 +45,32 @@
                 <h2>Badges</h2>
             </div>
         </div>
+    </div>
+
+    <div id="delete-modal" class="modal" tabindex="-1" role="dialog">
+      <form method="post" novalidate action="/s/{{ snake.id }}/">
+        {% csrf_token %}
+        <input type="hidden" name="_method" value="DELETE" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete {{ snake.name }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>
+                This will delete {{ snake.name }} permanently, are you sure you want to do this?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-danger">Delete</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
 {% endblock %}
 

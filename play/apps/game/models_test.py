@@ -27,8 +27,9 @@ def test_game_engine_configuration():
 
 
 @mock.patch("apps.game.engine.run")
-def test_game_engine_call(run_mock):
-    run_mock.return_value = str(uuid.uuid4())
+@mock.patch("apps.game.engine.create")
+def test_game_engine_call(create_mock, run_mock):
+    create_mock.return_value = str(uuid.uuid4())
 
     game = game_factory.basic()
     snakes = snake_factory.basic(n=8, commit=True)

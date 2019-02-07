@@ -1,6 +1,7 @@
 from django import forms
+from django.db.models import Q
 
-from apps.core.models import Profile, Snake
+from apps.core.models import Profile, Snake, Game
 
 
 class ProfileForm(forms.ModelForm):
@@ -27,4 +28,38 @@ class ProfileForm(forms.ModelForm):
 class SnakeForm(forms.ModelForm):
     class Meta:
         model = Snake
-        fields = ["name", "url"]
+        fields = ["name", "url", "is_public"]
+
+
+class GameForm(forms.Form):
+    """
+        GameForm initializes a game and posts this to the engine to start the game.
+        """
+
+    board_size = forms.ChoiceField(
+        choices=[
+            ("small", "Small"),
+            ("medium", "Medium"),
+            ("large", "Large"),
+            ("custom", "Custom"),
+        ],
+        required=True,
+        initial="medium",
+    )
+    width = forms.IntegerField(initial=11, required=False, disabled=True)
+    height = forms.IntegerField(initial=11, required=False, disabled=True)
+    snakes = forms.CharField(widget=forms.HiddenInput())
+
+    def save(self, profile):
+        data = self.cleaned_data
+        game = Game.objects.create(
+            width=data["width"], height=data["height"], max_turns_to_next_food_spawn=12
+        )
+        snakes = Snake.objects.filter(
+            Q(id__in=data["snakes"].split(","))
+            & (Q(is_public=True) | Q(profile=profile))
+        ).all()
+        for s in snakes:
+            game.snakes.add(s)
+        game.save()
+        return game

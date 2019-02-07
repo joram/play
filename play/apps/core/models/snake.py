@@ -13,6 +13,7 @@ class Snake(BaseModel):
     name = models.CharField(max_length=128)
     url = models.CharField(max_length=128)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    is_public = models.BooleanField(default=False)
 
     def ping(self):
         ping_url = os.path.join(self.url, "/ping")
