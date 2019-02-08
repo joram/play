@@ -26,11 +26,12 @@ def test_new_with_snakes(client):
 
 
 @mock.patch("apps.game.engine.run")
-def test_show(mock_engine_run, client):
+@mock.patch("apps.game.engine.create")
+def test_show(create_mock, mock_engine_run, client):
     engine_id = "a879f127-55c2-4b0c-99c9-bce09c9fc0cf"
     url = "game=" + engine_id
 
-    mock_engine_run.return_value = engine_id
+    create_mock.return_value = engine_id
 
     user_factory.login_as(client)
     game = game_factory.basic()
@@ -44,9 +45,10 @@ def test_show(mock_engine_run, client):
 
 
 @mock.patch("apps.game.engine.run")
-def test_create(mock_run, client):
+@mock.patch("apps.game.engine.create")
+def test_create(create_mock, mock_run, client):
     id = "a879f127-55c2-4b0c-99c9-bce09c9fc0cf"
-    mock_run.return_value = id
+    create_mock.return_value = id
     user = user_factory.login_as(client)
     snake = snake_factory.basic(n=1, commit=True, user=user)
     team_factory.basic(user=user)

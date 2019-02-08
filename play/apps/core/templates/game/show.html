@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block outside_content %}
+<div class="fullscreen-board-frame card m-b-100">
+  <iframe
+    id="iframe_game"
+    src="{{ url | safe }}"
+    frameborder="0"
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0"
+    onload="this.contentWindow.focus()"
+    class="p-3"
+    style="
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+    ">
+  </iframe>
+</div>
+{% endblock %}
+
+{% block content_footer %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col text-center">
+      <h3>Battlesnake is proudly sponsored by:</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-center">
+      <a href="https://github.com" title="GitHub">
+        <img src="/static/img/GitHub_Logo.png" alt="GitHub Logo" width="200px" />
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

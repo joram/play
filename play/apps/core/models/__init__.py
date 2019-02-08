@@ -1,3 +1,4 @@
 # flake8: noqa
-from .profile import Profile
-from .snake import Snake
+from .profile import *
+from .snake import *
+from .game import *

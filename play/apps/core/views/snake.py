@@ -52,3 +52,11 @@ def update(request, snake_id):
         snake.save()
         return redirect(f"/u/{request.user.username}")
     return render(request, "snake/edit.html", {"form": form})
+
+
+@login_required
+@profile_required
+def delete(request, snake_id):
+    snake = Snake.objects.get(id=snake_id, profile=request.user.profile)
+    snake.delete()
+    return redirect(f"/u/{request.user.username}")

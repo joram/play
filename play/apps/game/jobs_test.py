@@ -42,10 +42,11 @@ def test_game_status_job(status_mock):
 
 
 @mock.patch("apps.game.engine.status")
+@mock.patch("apps.game.engine.create")
 @mock.patch("apps.game.engine.run")
-def test_update_leaderboard_game(run_mock, status_mock):
+def test_update_leaderboard_game(run_mock, create_mock, status_mock):
 
-    run_mock.return_value = str(uuid.uuid4())
+    create_mock.return_value = str(uuid.uuid4())
 
     snakes = snake_factory.basic(n=4, commit=True)
     user_snakes = [UserSnake(snake=s, user=User()) for s in snakes]
