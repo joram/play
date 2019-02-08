@@ -25,7 +25,8 @@
         <span>{{ t.name }} ({{t.date}})</span> 
         <a href="/tournament/{{ t.id }}/edit">[Edit]</a>
         <a href="/tournament/{{ t.id }}/bracket/new">[Create Bracket]</a>
-        <a href="/tournament/{{ t.id }}/current_game">[Cast]</a>
+        <a href="/tournament/{{ t.id }}/current_game">[Watch Casting]</a>
+        <a href="/tournament/{{ t.id }}/commentator">[Commentator Info]</a>
       </li>
       <ul>
         {% for b in t.brackets %}

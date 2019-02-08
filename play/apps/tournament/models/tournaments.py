@@ -3,7 +3,8 @@ import math
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from apps.snake.models import Snake
+from apps.tournament.models import TeamMember
+from apps.snake.models import Snake, UserSnake
 from apps.utils.helpers import generate_game_url
 
 
@@ -498,6 +499,12 @@ class HeatGame(models.Model):
 class SnakeHeat(models.Model):
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
     snake = models.ForeignKey(Snake, on_delete=models.CASCADE)
+
+    @property
+    def team(self):
+        user_snake = UserSnake.objects.get(snake=self.snake)
+        teammember = TeamMember.objects.get(user=user_snake.user)
+        return teammember.team
 
     @property
     def first(self):

@@ -118,4 +118,8 @@ urlpatterns = [
             POST=tournament_views.tournament.cast_current_game,
         ),
     ),
+    re_path(
+        r"^tournament/(?P<tournament_id>\w+)/commentator",
+        route(GET=tournament_views.tournament.commentator_details),
+    ),
 ]

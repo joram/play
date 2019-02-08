@@ -77,7 +77,7 @@
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         {% for round in tournament_bracket.rounds %}
          <li class="nav-item">
-            <a class="nav-link {% if forloop.last %}show active{% endif %}" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
+            <a class="nav-link {% if forloop.last %}show active{% endif %}" id="round-{{ round.number }}-tab" data-toggle="tab" href="#round-{{ round.number }}" role="tab" aria-controls="home" aria-selected="true">{{ round.name }}</a>
          </li>
         {% endfor %}
       </ul>
@@ -107,18 +107,32 @@
                 </div>
                 <div class="col-8">
                   <div class="heat-games">
-                    <ul class="games">
-                      {% for heat_game in heat.games %}
-                      <li class="heat_game">
-                        <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">
-                          View  {{ heat_game.number }}
-                        </a> |
-                          <button class="cast_game" id="{{ heat_game.id }}">Cast</button> | {{ heat_game.human_readable_status }}/{{ heat_game.game.status }}  |
-                          <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}/delete">
-                            delete
-                          </a>
-                      </li>
-                      {% endfor %}
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Game</th>
+                          <th scope="col">View</th>
+                          <th scope="col" >Cast</th>
+                          <th scope="col">Casting Status</th>
+                          <th scope="col">Game Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for heat_game in heat.games %}
+                        <tr>
+                          <td>{{ heat_game.number }}</td>
+                          <td>
+                            <a href="/tournament/bracket/{{ tournament_bracket.id }}/heat/{{ heat.id }}/game/{{ heat_game.number }}?autoplay=true">View</a>
+                          </td>
+                          <td>
+                            <button class="cast_game" id="{{ heat_game.id }}">Cast</button>
+                          </td>
+                          <td>{{ heat_game.human_readable_status }}</td>
+                          <td>{{ heat_game.game.status }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
                       {% if heat.status == "complete" %}
                         Heat's Complete
                       {% else %}
@@ -131,7 +145,7 @@
                         {% endif %}
                       {% endif %}
 
-                    </ul>
+                    </table>
                   </div>
                 </div>
               </div>
