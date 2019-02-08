@@ -8,6 +8,7 @@ from apps.tournament.models import (
     Snake,
     Team,
     User,
+    Round,
     TeamMember,
     UserSnake,
     TournamentSnake,
@@ -128,30 +129,32 @@ def test_bracket_with_2_snakes(update_mock):
     bracket.cached_rounds = None
 
     assert round1.status == "complete"
+    assert round1.heats[0].status == "complete"
+    assert round1.name == Round.NAME_FINAL_2
     assert len(bracket.winners) == 1
     assert bracket.winners == [g1.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g1.game.get_snakes().exclude(snake_id=g1.winner.snake.id)
-    ]
-    assert bracket.runner_ups == expected_runner_ups
+    expected_runner_ups = [gs.snake for gs in g1.game.get_snakes().exclude(snake_id=g1.winner.snake.id)]
+    # assert bracket.runner_ups == expected_runner_ups
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
 def test_bracket_with_3_snakes(update_mock):
     bracket = _arrange_tournament("single heat", 3)
-
     round1 = bracket.create_next_round()
     _complete_games_in_round(round1)
+    round2 = bracket.create_next_round()
+    _complete_games_in_round(round2)
 
-    g1 = round1.heats[0].games[0]
-    g2 = round1.heats[0].games[1]
     assert round1.status == "complete"
-    assert len(bracket.winners) == 2
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g2.game.get_snakes().exclude(snake_id=g2.winner.snake.id)
+    assert round1.heats[0].status == "complete"
+    assert round1.name == Round.NAME_FINAL_3
+    assert round2.name == Round.NAME_FINAL_2
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 2"),
+        Snake.objects.get(name="Snake 3"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == []
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
@@ -160,38 +163,57 @@ def test_bracket_with_4_snakes(update_mock):
 
     round1 = bracket.create_next_round()
     _complete_games_in_round(round1)
-
-    g1 = round1.heats[0].games[0]
-    g2 = round1.heats[0].games[1]
-    g3 = round1.heats[0].games[2]
+    round2 = bracket.create_next_round()
+    _complete_games_in_round(round2)
+    round3 = bracket.create_next_round()
+    _complete_games_in_round(round3)
 
     assert round1.status == "complete"
+    assert round1.heats[0].status == "complete"
+    assert round1.name == Round.NAME_FINAL_6
+    assert round2.name == Round.NAME_FINAL_3
+    assert round3.name == Round.NAME_FINAL_2
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 2"),
+        Snake.objects.get(name="Snake 3"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 4"),
+    ]
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
 def test_bracket_with_8_snakes(update_mock):
     bracket = _arrange_tournament("single heat", 8)
+    # Round1: 4 (2 games), 4 (2 games) -> 4 winners
+    # Round2: 4 (3 games) -> 3 winners
+    # Round3: 3 (2 games) -> 2 winners
+    # Round4: 2 (1 game) -> 1 winner
 
     round1 = bracket.create_next_round()
     _complete_games_in_round(round1)
-
-    g1 = round1.heats[0].games[0]
-    g2 = round1.heats[0].games[1]
-    g3 = round1.heats[0].games[2]
+    round2 = bracket.create_next_round()
+    _complete_games_in_round(round2)
+    round3 = bracket.create_next_round()
+    _complete_games_in_round(round3)
 
     assert round1.status == "complete"
+    assert round1.heats[0].status == "complete"
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 2"),
+        Snake.objects.get(name="Snake 3"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 4"),
+        Snake.objects.get(name="Snake 5"),
+        Snake.objects.get(name="Snake 6"),
+        Snake.objects.get(name="Snake 7"),
+        Snake.objects.get(name="Snake 8"),
+    ]
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
@@ -202,19 +224,25 @@ def test_bracket_with_9_snakes(update_mock):
     _complete_games_in_round(round1)
     round2 = bracket.create_next_round()
     _complete_games_in_round(round2)
-
-    g1 = round2.heats[0].games[0]
-    g2 = round2.heats[0].games[1]
-    g3 = round2.heats[0].games[2]
+    round3 = bracket.create_next_round()
+    _complete_games_in_round(round3)
+    round4 = bracket.create_next_round()
+    _complete_games_in_round(round4)
 
     assert round1.status == "complete"
+    assert round1.heats[0].status == "complete"
+    assert round1.heats[1].status == "complete"
     assert round2.status == "complete"
+    assert round2.heats[0].status == "complete"
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 2"),
+        Snake.objects.get(name="Snake 3"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 4"),
+    ]
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
@@ -225,22 +253,26 @@ def test_bracket_with_24_snakes(update_mock):
     _complete_games_in_round(round1)
     round2 = bracket.create_next_round()
     _complete_games_in_round(round2)
-
-    g1 = round2.heats[0].games[0]
-    g2 = round2.heats[0].games[1]
-    g3 = round2.heats[0].games[2]
+    round3 = bracket.create_next_round()
+    _complete_games_in_round(round3)
+    round4 = bracket.create_next_round()
+    _complete_games_in_round(round4)
 
     assert round1.status == "complete"
     assert round2.status == "complete"
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 10"),
+        Snake.objects.get(name="Snake 11"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 14"),
+        Snake.objects.get(name="Snake 12"),
+        Snake.objects.get(name="Snake 15"),
+    ]
 
 
-@pytest.mark.skip("something weird in here with how we access django objects")
 @mock.patch("apps.game.models.Game.update_from_engine")
 def test_bracket_with_25_snakes(update_mock):
     bracket = _arrange_tournament("single heat", 25)
@@ -251,19 +283,25 @@ def test_bracket_with_25_snakes(update_mock):
     _complete_games_in_round(round2)
     round3 = bracket.create_next_round()
     _complete_games_in_round(round3)
+    round4 = bracket.create_next_round()
+    _complete_games_in_round(round4)
+    round5 = bracket.create_next_round()
+    _complete_games_in_round(round5)
 
-    g1 = round3.heats[0].games[0]
-    g2 = round3.heats[0].games[1]
-    g3 = round3.heats[0].games[2]
     assert round1.status == "complete"
     assert round2.status == "complete"
     assert round3.status == "complete"
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 10"),
+        Snake.objects.get(name="Snake 11"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 12"),
+        Snake.objects.get(name="Snake 13"),
+        Snake.objects.get(name="Snake 14"),
+    ]
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
@@ -276,19 +314,25 @@ def test_bracket_with_96_snakes(update_mock):
     _complete_games_in_round(round2)
     round3 = bracket.create_next_round()
     _complete_games_in_round(round3)
+    round4 = bracket.create_next_round()
+    _complete_games_in_round(round4)
+    round5 = bracket.create_next_round()
+    _complete_games_in_round(round5)
 
-    g1 = round3.heats[0].games[0]
-    g2 = round3.heats[0].games[1]
-    g3 = round3.heats[0].games[2]
     assert round1.status == "complete"
     assert round2.status == "complete"
     assert round3.status == "complete"
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 10"),
+        Snake.objects.get(name="Snake 11"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 12"),
+        Snake.objects.get(name="Snake 13"),
+        Snake.objects.get(name="Snake 14"),
+    ]
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
@@ -303,17 +347,23 @@ def test_bracket_with_97_snakes(update_mock):
     _complete_games_in_round(round3)
     round4 = bracket.create_next_round()
     _complete_games_in_round(round4)
+    round5 = bracket.create_next_round()
+    _complete_games_in_round(round5)
+    round6 = bracket.create_next_round()
+    _complete_games_in_round(round6)
 
-    g1 = round4.heats[0].games[0]
-    g2 = round4.heats[0].games[1]
-    g3 = round4.heats[0].games[2]
     assert round1.status == "complete"
     assert round2.status == "complete"
     assert round3.status == "complete"
     assert round4.status == "complete"
     assert len(bracket.winners) == 3
-    assert bracket.winners == [g1.winner.snake, g2.winner.snake, g3.winner.snake]
-    expected_runner_ups = [
-        gs.snake for gs in g3.game.get_snakes().exclude(snake_id=g3.winner.snake.id)
+    assert bracket.winners == [
+        Snake.objects.get(name="Snake 1"),
+        Snake.objects.get(name="Snake 10"),
+        Snake.objects.get(name="Snake 11"),
     ]
-    assert bracket.runner_ups == expected_runner_ups
+    assert bracket.runner_ups == [
+        Snake.objects.get(name="Snake 16"),
+        Snake.objects.get(name="Snake 12"),
+        Snake.objects.get(name="Snake 14"),
+    ]
