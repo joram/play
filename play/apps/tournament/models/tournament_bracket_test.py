@@ -133,7 +133,6 @@ def test_bracket_with_2_snakes(update_mock):
     assert round1.name == Round.NAME_FINAL_2
     assert len(bracket.winners) == 1
     assert bracket.winners == [g1.winner.snake]
-    assert bracket.runner_ups == []
 
 
 @mock.patch("apps.game.models.Game.update_from_engine")
