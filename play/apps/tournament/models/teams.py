@@ -31,6 +31,13 @@ class Team(models.Model):
             id__in=[ts.tournament.id for ts in self.tournament_snakes]
         )
 
+    @property
+    def users(self):
+        return [
+            tm.user
+            for tm in TeamMember.objects.filter(team=self).order_by("user__username")
+        ]
+
     def __str__(self):
         return self.name
 

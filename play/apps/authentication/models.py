@@ -42,6 +42,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             "tristan-swu",
         ]
 
+    @property
+    def is_commentator(self):
+        return self.username.lower() in []
+
     def assigned_to_team(self):
         from apps.tournament.models import TeamMember
 

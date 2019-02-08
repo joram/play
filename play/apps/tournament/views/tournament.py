@@ -112,3 +112,16 @@ def cast_current_game(request, tournament_id):
             ]
         }
     )
+
+
+@admin_required
+@login_required
+def commentator_details(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    heats = Heat.objects.filter(round__tournament_bracket__in=tournament.brackets)
+    current_game = HeatGame.objects.filter(heat__in=heats)
+    return render(
+        request,
+        "tournament/commentator.html",
+        {"tournament": tournament, "current_game": current_game},
+    )

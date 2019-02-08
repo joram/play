@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+
+<h1>{{ tournament.name }}</h1>
+  <ul class="nav nav-tabs" id="brackets" role="tablist">
+    {% for bracket in tournament.brackets %}
+     <li class="nav-item">
+        <a class="nav-link {% if current_game.heat.round.bracket.id == bracket.id %}show active{% endif %}" id="bracket-{{ bracket.id }}-tab" data-toggle="tab" href="#bracket-{{ bracket.id }}" role="tab" aria-controls="home" aria-selected="true">{{ bracket.name }}</a>
+     </li>
+    {% endfor %}
+    <div class="tab-content container">
+      {% for bracket in tournament.brackets %}
+      <div class="tab-pane fade {% if current_game.heat.round.bracket.id == bracket.id %}show active{% endif %}" id="bracket-{{ bracket.id }}" role="tabpanel" aria-labelledby="home-tab">
+
+        <ul class="nav nav-tabs" id="bracket-{{bracket.id}}-rounds" role="tablist">
+          {% for round in bracket.rounds %}
+           <li class="nav-item">
+              <a class="nav-link {% if current_game.heat.round.id == round.id %}show active{% endif %}" id="round-{{ round.id }}-tab" data-toggle="tab" href="#round-{{ round.id }}" role="tab" aria-controls="home" aria-selected="true">Round {{ round.number }}</a>
+           </li>
+          {% endfor %}
+          <div class="tab-content container ">
+            {% for round in bracket.rounds %}
+            <div class="tab-pane fade {% if current_game.heat.round.id == round.id %}show active{% endif %}" id="round-{{ round.id }}" role="tabpanel" aria-labelledby="home-tab">
+
+
+
+
+              {% for heat in round.heats %}
+              <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="round-{{ round.id }}-heat-{{ heat.id }}" role="tabpanel" aria-labelledby="home-tab">
+
+                <ul class="nav nav-tabs" id="bracket-{{bracket.id}}-round-{{round.id}}-heats" role="tablist">
+                {% for heat in round.heats %}
+                  <li class="nav-item">
+                  <a class="nav-link {% if current_game.heat.id == heat.id %}show active{% endif %}" id="heat-{{ heat.id }}-tab" data-toggle="tab" href="#heat-{{ heat.id }}" role="tab" aria-controls="home" aria-selected="true">
+                    Heat {{ heat.number }}
+                  </a>
+                  </li>
+                {% endfor %}
+
+                <div class="tab-content container">
+                {% for heat in round.heats %}
+                <div class="tab-pane fade {% if current_game.heat.id == heat.id %}show active{% endif %}" id="heat-{{ heat.id }}" role="tabpanel" aria-labelledby="home-tab">
+
+                  {% for snake_heat in heat.snakes %}
+                  <div class="card" style="margin-bottom: 10px;">
+                    <div class="card-header">{{snake_heat.team.name}} ({% for user in snake_heat.team.users %}{{ user.username }}{% endfor %})</div>
+                    <div class="card-body container">
+                      {{ snake_heat.team.description }}
+                    </div>
+                  </div>
+                  {% endfor %}
+
+                </div>
+                {% endfor %}
+                </div>
+                </ul>
+              </div>
+              {% endfor %}
+
+
+
+
+
+
+            </div>
+            {% endfor %}
+          </div>
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </ul>
+</div>
+{% endblock %}
