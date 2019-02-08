@@ -272,6 +272,10 @@ class Round(models.Model):
         return [s.snake for s in self.previous.winners]
 
     @property
+    def name(self):
+        return f"Round {self.number}"
+
+    @property
     def snake_count(self):
         return len(self.snakes)
 
